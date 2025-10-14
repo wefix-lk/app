@@ -93,6 +93,16 @@ export default function ForgotPasswordScreen() {
             </Text>
           </View>
 
+          {/* Demo Mode Warning */}
+          {isDemoMode && !emailSent && (
+            <View style={styles.demoWarning}>
+              <Ionicons name="information-circle" size={20} color={Colors.warning} />
+              <Text style={styles.demoWarningText}>
+                Demo Mode: Emails won't be sent. Configure Firebase to enable actual password reset emails.
+              </Text>
+            </View>
+          )}
+
           {/* Form */}
           <View style={styles.form}>
             {emailSent ? (

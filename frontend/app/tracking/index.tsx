@@ -191,6 +191,18 @@ export default function TrackingScreen() {
                   <Text style={styles.detailsButtonText}>View Full Details</Text>
                   <Ionicons name="arrow-forward" size={16} color={Colors.primary} />
                 </TouchableOpacity>
+
+                {/* Cancel Booking Button - Only for early stages */}
+                {(booking.status === 'pending' || 
+                  booking.status === 'under-inspection') && (
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => handleCancelBooking(booking)}
+                  >
+                    <Ionicons name="close-circle-outline" size={18} color={Colors.error} />
+                    <Text style={styles.cancelButtonText}>Cancel Booking</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             );
           })

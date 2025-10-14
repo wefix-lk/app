@@ -145,7 +145,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 key={service.id}
                 style={[styles.serviceCard, { borderColor: service.color }]}
-                onPress={() => router.push(service.route as any)}
+                onPress={() => handleServicePress(service)}
               >
                 <View style={[styles.iconCircle, { backgroundColor: service.color + '20' }]}>
                   <Ionicons name={service.icon as any} size={32} color={service.color} />
@@ -156,6 +156,20 @@ export default function HomeScreen() {
             ))}
           </View>
         </View>
+
+        {/* Service Request Modal */}
+        {selectedService && (
+          <ServiceRequestModal
+            visible={showRequestModal}
+            onClose={() => {
+              setShowRequestModal(false);
+              setSelectedService(null);
+            }}
+            serviceTitle={selectedService.modalTitle}
+            serviceType={selectedService.serviceType}
+            borderColor={selectedService.color}
+          />
+        )}
 
         {/* Why Choose Us */}
         <View style={styles.section}>

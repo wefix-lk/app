@@ -5,18 +5,25 @@ import { useAuth } from '../contexts/AuthContext';
 import { Colors } from '../constants/Colors';
 
 export default function Index() {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading) {
       if (user) {
-        router.replace('/(tabs)/home');
+        // Redirect based on admin status
+        if (isAdmin) {
+          console.log('🔐 Redirecting admin to dashboard');
+          router.replace('/(admin)/dashboard');
+        } else {
+          console.log('👤 Redirecting user to home');
+          router.replace('/(tabs)/home');
+        }
       } else {
         router.replace('/(auth)/login');
       }
     }
-  }, [user, loading]);
+  }, [user, loading, isAdmin]);
 
   return (
     <View style={styles.container}>

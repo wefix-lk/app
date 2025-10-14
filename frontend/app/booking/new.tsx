@@ -91,27 +91,17 @@ export default function NewBookingScreen() {
       
       console.log('🎉 Booking created successfully!');
       
-      // Show success message and navigate
-      Alert.alert(
-        'Booking Successful! 🎉',
-        `Your ${tvBrand} ${tvModel} repair has been booked.\n\nBooking ID: ${bookingId}\n\nWe will contact you shortly at ${phone}.`,
-        [
-          { 
-            text: 'View Tracking', 
-            onPress: () => {
-              console.log('📍 Navigating to tracking...');
-              router.replace('/tracking');
-            }
-          },
-          {
-            text: 'Go to Home',
-            onPress: () => {
-              console.log('🏠 Navigating to home...');
-              router.replace('/(tabs)/home');
-            }
-          }
-        ]
-      );
+      // Navigate to success screen with booking details
+      router.push({
+        pathname: '/booking/success',
+        params: {
+          bookingId: bookingId,
+          tvBrand: tvBrand,
+          tvModel: tvModel,
+          issueType: issueTypes.find(i => i.value === issueType)?.label || issueType,
+          phone: phone,
+        }
+      });
     } catch (error: any) {
       console.error('❌ Booking error:', error);
       Alert.alert('Error', `Failed to create booking: ${error.message || 'Unknown error'}\n\nPlease try again.`);

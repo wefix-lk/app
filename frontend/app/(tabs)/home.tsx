@@ -316,10 +316,22 @@ const styles = StyleSheet.create({
   contactRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  contactInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  contactLabel: {
+    fontSize: 12,
+    color: Colors.textLight,
+    marginBottom: 2,
   },
   contactText: {
-    fontSize: 16,
+    fontSize: 15,
     color: Colors.text,
+    fontWeight: '500',
   },
 });

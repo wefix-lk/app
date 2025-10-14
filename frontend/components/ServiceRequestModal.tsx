@@ -36,12 +36,28 @@ export default function ServiceRequestModal({
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const resetForm = () => {
     setName('');
     setPhone('');
     setDescription('');
     setErrorMessage('');
+  };
+
+  const getServiceDescription = () => {
+    switch (serviceType) {
+      case 'Web Designing':
+        return 'We build modern, responsive, and SEO-optimized websites tailored to your brand — from personal portfolios to large business sites. Tell us your vision and layout style.';
+      case 'Web SEO Management':
+        return 'Improve your website ranking on Google and attract more customers through keyword targeting, link building, and performance analytics. Tell us about your goals.';
+      case 'POS System':
+        return 'Manage billing, stock, and daily sales easily with our smart Point of Sale systems for shops, cafés, and restaurants. Tell us your business type and needs.';
+      case 'Mobile Application':
+        return 'We design and develop Android & iOS apps with modern interfaces and smooth functionality — from e-commerce to service apps. Tell us what you want built.';
+      default:
+        return '';
+    }
   };
 
   const validatePhone = (phone: string) => {

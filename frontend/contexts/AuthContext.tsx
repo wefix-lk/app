@@ -101,6 +101,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Check for admin credentials first
+      if (email.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        console.log('🔐 Admin login detected');
+        const adminProfile: UserProfile = {
+          uid: 'admin_001',
+          email: ADMIN_EMAIL,
+          name: 'WeFix Admin',
+          createdAt: new Date().toISOString()
+        };
+        
+        await AsyncStorage.setItem('local_user', JSON.stringify(adminProfile));
+        await AsyncStorage.setItem('userToken', 'admin_001');
+        await AsyncStorage.setItem('isAdmin', 'true');
+        
+        setUser({ uid: 'admin_001', email: ADMIN_EMAIL });
+        setUserProfile(adminProfile);
+        setIsAdmin(true);
+        return;
+      }
+
       if (isDemoMode) {
         // Local development mode - check stored users
         const usersJson = await AsyncStorage.getItem('local_users');
@@ -118,9 +138,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           await AsyncStorage.setItem('local_user', JSON.stringify(userProfile));
           await AsyncStorage.setItem('userToken', storedUser.uid);
+          await AsyncStorage.removeItem('isAdmin');
           
           setUser({ uid: storedUser.uid, email: storedUser.email });
           setUserProfile(userProfile);
+          setIsAdmin(false);
         } else {
           throw new Error('Invalid email or password. Please check your credentials or create a new account.');
         }
@@ -128,6 +150,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Firebase mode
         const result = await signInWithEmailAndPassword(auth, email, password);
         await AsyncStorage.setItem('userToken', result.user.uid);
+        await AsyncStorage.removeItem('isAdmin');
+        setIsAdmin(false);
       }
     } catch (error: any) {
       console.error('Sign in error:', error);

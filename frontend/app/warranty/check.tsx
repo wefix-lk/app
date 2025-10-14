@@ -330,14 +330,14 @@ const styles = StyleSheet.create({
   },
   searchTypeContainer: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
     marginBottom: 20,
   },
   searchTypeButton: {
     flex: 1,
     backgroundColor: Colors.background,
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: Colors.border,

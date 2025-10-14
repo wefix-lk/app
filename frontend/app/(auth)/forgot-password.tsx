@@ -94,38 +94,75 @@ export default function ForgotPasswordScreen() {
 
           {/* Form */}
           <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <Ionicons name="mail-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Email Address"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                placeholderTextColor={Colors.textLight}
-              />
-            </View>
+            {emailSent ? (
+              // Success Message
+              <View style={styles.successContainer}>
+                <View style={styles.successIconContainer}>
+                  <Ionicons name="checkmark-circle" size={60} color={Colors.success} />
+                </View>
+                <Text style={styles.successTitle}>Email Sent!</Text>
+                <Text style={styles.successMessage}>
+                  A password reset link has been sent to your email. Please check your inbox.
+                </Text>
+                <Text style={styles.successSubtext}>
+                  Redirecting to login in 4 seconds...
+                </Text>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => router.back()}
+                >
+                  <Text style={styles.buttonText}>Back to Login</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              // Form
+              <>
+                {errorMessage ? (
+                  <View style={styles.errorContainer}>
+                    <Ionicons name="alert-circle" size={20} color={Colors.error} />
+                    <Text style={styles.errorText}>{errorMessage}</Text>
+                  </View>
+                ) : null}
 
-            <TouchableOpacity
-              style={[styles.button, loading && styles.buttonDisabled]}
-              onPress={handleResetPassword}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color={Colors.textWhite} />
-              ) : (
-                <Text style={styles.buttonText}>Send Reset Link</Text>
-              )}
-            </TouchableOpacity>
+                <View style={styles.inputContainer}>
+                  <Ionicons name="mail-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Email Address"
+                    value={email}
+                    onChangeText={(text) => {
+                      setEmail(text);
+                      setErrorMessage(''); // Clear error on input change
+                    }}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    placeholderTextColor={Colors.textLight}
+                    editable={!loading}
+                  />
+                </View>
 
-            <TouchableOpacity
-              style={styles.backToLogin}
-              onPress={() => router.back()}
-            >
-              <Ionicons name="arrow-back" size={16} color={Colors.primary} />
-              <Text style={styles.backToLoginText}> Back to Login</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, loading && styles.buttonDisabled]}
+                  onPress={handleResetPassword}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator color={Colors.textWhite} />
+                  ) : (
+                    <Text style={styles.buttonText}>Send Reset Link</Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.backToLogin}
+                  onPress={() => router.back()}
+                  disabled={loading}
+                >
+                  <Ionicons name="arrow-back" size={16} color={Colors.primary} />
+                  <Text style={styles.backToLoginText}> Back to Login</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

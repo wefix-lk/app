@@ -220,6 +220,53 @@ const styles = StyleSheet.create({
   form: {
     flex: 1,
   },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.error + '10',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    gap: 8,
+  },
+  errorText: {
+    flex: 1,
+    fontSize: 14,
+    color: Colors.error,
+    lineHeight: 20,
+  },
+  successContainer: {
+    alignItems: 'center',
+    paddingVertical: 24,
+  },
+  successIconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: Colors.success + '10',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  successTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginBottom: 12,
+  },
+  successMessage: {
+    fontSize: 16,
+    color: Colors.text,
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+  successSubtext: {
+    fontSize: 14,
+    color: Colors.textLight,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -119,6 +119,51 @@ export default function TrackingScreen() {
     }
   };
 
+  const handleDeleteBooking = (booking: any) => {
+    console.log('🗑️ Delete button clicked for booking:', booking.id);
+    setBookingToDelete(booking);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteBooking = async () => {
+    if (!bookingToDelete) return;
+
+    try {
+      console.log('🗑️ Permanently deleting booking:', bookingToDelete.id);
+      setShowDeleteModal(false);
+      
+      // Load all bookings
+      const bookingsJson = await AsyncStorage.getItem('local_bookings');
+      if (bookingsJson) {
+        const allBookings = JSON.parse(bookingsJson);
+        
+        // Remove the booking completely
+        const updatedBookings = allBookings.filter((b: any) => b.id !== bookingToDelete.id);
+        
+        // Save back to storage
+        await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
+        
+        // Reload bookings to update UI
+        await loadBookings();
+        
+        console.log('✅ Booking permanently deleted');
+        
+        // Show success message
+        Alert.alert(
+          'Deleted',
+          'Booking deleted successfully.',
+          [{ text: 'OK' }]
+        );
+      }
+      
+      setBookingToDelete(null);
+    } catch (error) {
+      console.error('❌ Error deleting booking:', error);
+      Alert.alert('Error', 'Failed to delete booking. Please try again.');
+      setBookingToDelete(null);
+    }
+  };
+
   const getStatusIndex = (status: string) => {
     return statusSteps.findIndex(s => s.key === status);
   };

@@ -135,6 +135,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Fixed Forgot Password screen - added email validation (format check), proper error handling for non-existent emails, success screen with checkmark icon, auto-redirect to login after 4 seconds. In demo mode, validates email exists in local storage. Firebase mode uses sendPasswordResetEmail. No more Alert.alert usage."
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed Login & Register screens - added inline error messages with red banners, red borders on input fields when errors occur, warning icons (⚠️) next to fields, email format validation, email kept pre-filled on errors. Errors clear automatically when user starts typing. All Alert.alert replaced with inline UI feedback."
   
   - task: "Home Dashboard Screen"
     implemented: true

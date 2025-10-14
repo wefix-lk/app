@@ -168,19 +168,22 @@ export default function WarrantyCheckScreen() {
           {/* Search Input */}
           <View style={styles.searchCard}>
             <Text style={styles.searchLabel}>
-              Enter {searchType === 'serial' ? 'Serial' : 'Bill'} Number
+              Enter {searchType === 'serial' ? 'Serial Number' : searchType === 'bill' ? 'Bill Number' : 'Phone Number'}
             </Text>
             <TextInput
               style={styles.input}
               placeholder={
                 searchType === 'serial'
                   ? 'e.g., SN123456789'
-                  : 'e.g., BILL-2025-0001'
+                  : searchType === 'bill'
+                  ? 'e.g., BILL-2025-0001'
+                  : 'e.g., 0764386737'
               }
               value={searchValue}
               onChangeText={setSearchValue}
               placeholderTextColor={Colors.textLight}
-              autoCapitalize="characters"
+              autoCapitalize={searchType === 'phone' ? 'none' : 'characters'}
+              keyboardType={searchType === 'phone' ? 'phone-pad' : 'default'}
             />
             <TouchableOpacity
               style={[styles.checkButton, loading && styles.checkButtonDisabled]}

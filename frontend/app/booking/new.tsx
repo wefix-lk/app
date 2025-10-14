@@ -44,7 +44,9 @@ export default function NewBookingScreen() {
 
     setLoading(true);
     try {
+      const bookingId = `booking_${Date.now()}`;
       const bookingData = {
+        id: bookingId,
         userId: user?.uid,
         tvBrand,
         tvModel,
@@ -65,7 +67,16 @@ export default function NewBookingScreen() {
         updatedAt: new Date().toISOString(),
       };
 
-      await addDoc(collection(db, 'bookings'), bookingData);
+      if (isFirebaseConfigured) {
+        // Firebase mode
+        await addDoc(collection(db, 'bookings'), bookingData);
+      } else {
+        // Demo mode - save to local storage
+        const bookingsJson = await AsyncStorage.getItem('local_bookings');
+        const bookings = bookingsJson ? JSON.parse(bookingsJson) : [];
+        bookings.push(bookingData);
+        await AsyncStorage.setItem('local_bookings', JSON.stringify(bookings));
+      }
       
       Alert.alert(
         'Success!',

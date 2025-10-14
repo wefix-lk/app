@@ -32,6 +32,7 @@ export default function HomeScreen() {
       icon: 'build',
       color: Colors.primary,
       route: '/booking/new',
+      type: 'route',
     },
     {
       id: '2',
@@ -40,6 +41,7 @@ export default function HomeScreen() {
       icon: 'shield-checkmark',
       color: Colors.secondary,
       route: '/warranty/check',
+      type: 'route',
     },
     {
       id: '3',
@@ -48,6 +50,7 @@ export default function HomeScreen() {
       icon: 'cart',
       color: Colors.info,
       route: '/(tabs)/shop',
+      type: 'route',
     },
     {
       id: '4',
@@ -56,8 +59,58 @@ export default function HomeScreen() {
       icon: 'location',
       color: Colors.warning,
       route: '/tracking',
+      type: 'route',
+    },
+    {
+      id: '5',
+      title: 'Web Designing',
+      description: 'Professional website creation',
+      icon: 'code-slash',
+      color: '#007BFF',
+      type: 'modal',
+      modalTitle: 'Tell us how you want your website',
+      serviceType: 'Web Designing',
+    },
+    {
+      id: '6',
+      title: 'Web SEO',
+      description: 'Boost your Google ranking',
+      icon: 'trending-up',
+      color: '#28A745',
+      type: 'modal',
+      modalTitle: 'Tell us about your website for SEO service',
+      serviceType: 'Web SEO Management',
+    },
+    {
+      id: '7',
+      title: 'POS System',
+      description: 'Modern POS solutions',
+      icon: 'desktop',
+      color: '#FFA500',
+      type: 'modal',
+      modalTitle: 'Tell us what kind of POS system you need',
+      serviceType: 'POS System',
+    },
+    {
+      id: '8',
+      title: 'Mobile App',
+      description: 'Custom Android & iOS apps',
+      icon: 'phone-portrait',
+      color: '#6F42C1',
+      type: 'modal',
+      modalTitle: 'Tell us how you want your mobile app',
+      serviceType: 'Mobile Application',
     },
   ];
+
+  const handleServicePress = (service: any) => {
+    if (service.type === 'route') {
+      router.push(service.route as any);
+    } else if (service.type === 'modal') {
+      setSelectedService(service);
+      setShowRequestModal(true);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>

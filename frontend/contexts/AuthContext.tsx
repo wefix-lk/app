@@ -225,17 +225,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const resetPassword = async (email: string) => {
     try {
       if (isDemoMode) {
-        // In demo mode, just show a success message
-        // In production, Firebase will send the email
-        console.log('Password reset requested for:', email);
+        // In demo mode, check if email exists in local storage
+        console.log('🔄 Password reset requested for:', email);
+        const usersJson = await AsyncStorage.getItem('local_users');
+        const users = usersJson ? JSON.parse(usersJson) : {};
+        
+        if (!users[email]) {
+          console.log('❌ Email not found:', email);
+          throw new Error('No account found with this email address.');
+        }
+        
+        console.log('✅ Email found, simulating password reset email sent');
+        // In production, Firebase will send the actual email
       } else {
+        // Firebase mode
         await sendPasswordResetEmail(auth, email);
       }
     } catch (error: any) {
+      console.error('❌ Reset password error:', error);
       if (error.code === 'auth/user-not-found') {
         throw new Error('No account found with this email address.');
+      } else if (error.code === 'auth/invalid-email') {
+        throw new Error('Invalid email address. Please check and try again.');
+      } else if (error.message) {
+        throw error; // Re-throw our custom errors
       } else {
-        throw new Error(error.message || 'Failed to send reset email');
+        throw new Error('Failed to send reset email. Please try again.');
       }
     }
   };

@@ -31,6 +31,8 @@ export default function TrackingScreen() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<any>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [bookingToDelete, setBookingToDelete] = useState<any>(null);
 
   useEffect(() => {
     loadBookings();

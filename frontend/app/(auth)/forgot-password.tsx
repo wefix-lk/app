@@ -240,6 +240,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
+  demoWarning: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.warning + '15',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: Colors.warning + '40',
+  },
+  demoWarningText: {
+    flex: 1,
+    fontSize: 13,
+    color: Colors.warning,
+    lineHeight: 18,
+  },
   form: {
     flex: 1,
   },

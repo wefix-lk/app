@@ -240,6 +240,24 @@ const styles = StyleSheet.create({
     color: Colors.text,
     marginBottom: 24,
   },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.error + '10',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    gap: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.error,
+  },
+  errorText: {
+    flex: 1,
+    fontSize: 14,
+    color: Colors.error,
+    lineHeight: 20,
+    fontWeight: '500',
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -249,6 +267,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: Colors.border,
+  },
+  inputContainerError: {
+    borderColor: Colors.error,
+    borderWidth: 2,
+    backgroundColor: Colors.error + '05',
+  },
+  warningIcon: {
+    marginLeft: 8,
   },
   inputIcon: {
     marginRight: 12,

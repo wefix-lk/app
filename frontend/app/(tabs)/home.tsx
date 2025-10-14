@@ -116,14 +116,62 @@ export default function HomeScreen() {
         {/* Contact Info */}
         <View style={styles.contactCard}>
           <Text style={styles.contactTitle}>Need Help?</Text>
-          <View style={styles.contactRow}>
+          
+          <TouchableOpacity 
+            style={styles.contactRow}
+            onPress={() => {
+              const phoneNumber = '+94112323812';
+              Linking.openURL(`tel:${phoneNumber}`);
+            }}
+          >
             <Ionicons name="call" size={20} color={Colors.primary} />
-            <Text style={styles.contactText}>  +94 77 123 4567</Text>
-          </View>
-          <View style={styles.contactRow}>
-            <Ionicons name="mail" size={20} color={Colors.primary} />
-            <Text style={styles.contactText}>  info@wefix.lk</Text>
-          </View>
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactLabel}>Landline</Text>
+              <Text style={styles.contactText}>+94 11 232 3812</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.contactRow}
+            onPress={() => {
+              const whatsappNumber = '94773300905';
+              Linking.openURL(`https://wa.me/${whatsappNumber}`);
+            }}
+          >
+            <Ionicons name="logo-whatsapp" size={20} color={Colors.secondary} />
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactLabel}>WhatsApp / Mobile</Text>
+              <Text style={styles.contactText}>+94 77 330 0905</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.contactRow}
+            onPress={() => {
+              const address = 'No. 12, Keyzer Street, Colombo 11, Pettah';
+              const encodedAddress = encodeURIComponent(address);
+              Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`);
+            }}
+          >
+            <Ionicons name="location" size={20} color={Colors.error} />
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactLabel}>Location</Text>
+              <Text style={styles.contactText}>No. 12, Keyzer Street,{'\n'}Colombo 11, Pettah</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.contactRow}
+            onPress={() => {
+              Linking.openURL('https://wefix.lk');
+            }}
+          >
+            <Ionicons name="globe" size={20} color={Colors.info} />
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactLabel}>Website</Text>
+              <Text style={styles.contactText}>wefix.lk</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

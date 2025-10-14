@@ -87,10 +87,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkLocalAuth = async () => {
     try {
       const localUser = await AsyncStorage.getItem('local_user');
+      const adminFlag = await AsyncStorage.getItem('isAdmin');
+      
       if (localUser) {
         const userData = JSON.parse(localUser);
         setUser({ uid: userData.uid, email: userData.email });
         setUserProfile(userData);
+        setIsAdmin(adminFlag === 'true');
+        console.log('👤 Restored session:', userData.email, adminFlag === 'true' ? '(Admin)' : '(User)');
       }
       setLoading(false);
     } catch (error) {

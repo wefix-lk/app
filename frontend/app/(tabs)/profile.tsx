@@ -27,11 +27,20 @@ export default function ProfileScreen() {
           text: 'Sign Out',
           style: 'destructive',
           onPress: async () => {
-            await signOut();
-            router.replace('/(auth)/login');
+            try {
+              await signOut();
+              // Use setTimeout to ensure sign out completes before navigation
+              setTimeout(() => {
+                router.replace('/(auth)/login');
+              }, 100);
+            } catch (error: any) {
+              console.error('Sign out error:', error);
+              Alert.alert('Error', 'Failed to sign out. Please try again.');
+            }
           },
         },
-      ]
+      ],
+      { cancelable: true }
     );
   };
 

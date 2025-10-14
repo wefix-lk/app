@@ -65,6 +65,94 @@ export default function BookingsScreen() {
     loadBookings();
   };
 
+  const handleCancelBooking = (booking: any) => {
+    console.log('🚫 Cancel button clicked for:', booking.id);
+    setSelectedBooking(booking);
+    setShowCancelModal(true);
+  };
+
+  const confirmCancelBooking = async () => {
+    if (!selectedBooking) return;
+
+    try {
+      console.log('🚫 Cancelling booking:', selectedBooking.id);
+      setShowCancelModal(false);
+
+      const bookingsJson = await AsyncStorage.getItem('local_bookings');
+      if (bookingsJson) {
+        const allBookings = JSON.parse(bookingsJson);
+        
+        const updatedBookings = allBookings.map((b: any) => {
+          if (b.id === selectedBooking.id) {
+            return {
+              ...b,
+              status: 'cancelled',
+              updatedAt: new Date().toISOString(),
+              timeline: [
+                ...b.timeline,
+                {
+                  status: 'cancelled',
+                  timestamp: new Date().toISOString(),
+                  note: 'Booking cancelled by user',
+                },
+              ],
+            };
+          }
+          return b;
+        });
+        
+        await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
+        await loadBookings();
+        
+        console.log('✅ Booking cancelled successfully');
+        Alert.alert('Success', 'Booking has been successfully cancelled.');
+      }
+      
+      setSelectedBooking(null);
+    } catch (error) {
+      console.error('❌ Error cancelling booking:', error);
+      Alert.alert('Error', 'Failed to cancel booking. Please try again.');
+      setSelectedBooking(null);
+    }
+  };
+
+  const handleDeleteBooking = (booking: any) => {
+    console.log('🗑️ Delete button clicked for:', booking.id);
+    setSelectedBooking(booking);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteBooking = async () => {
+    if (!selectedBooking) return;
+
+    try {
+      console.log('🗑️ Permanently deleting booking:', selectedBooking.id);
+      setShowDeleteModal(false);
+
+      const bookingsJson = await AsyncStorage.getItem('local_bookings');
+      if (bookingsJson) {
+        const allBookings = JSON.parse(bookingsJson);
+        const updatedBookings = allBookings.filter((b: any) => b.id !== selectedBooking.id);
+        
+        await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
+        await loadBookings();
+        
+        console.log('✅ Booking permanently deleted');
+        Alert.alert('Success', 'Booking deleted successfully.');
+      }
+      
+      setSelectedBooking(null);
+    } catch (error) {
+      console.error('❌ Error deleting booking:', error);
+      Alert.alert('Error', 'Failed to delete booking. Please try again.');
+      setSelectedBooking(null);
+    }
+  };
+
+  const canCancelBooking = (status: string) => {
+    return status === 'pending' || status === 'under-inspection';
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

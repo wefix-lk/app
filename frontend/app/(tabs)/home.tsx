@@ -173,12 +173,12 @@ export default function HomeScreen() {
 
         {/* Why Choose Us */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Why Choose WeFix.lk?</Text>
+          <Text style={styles.sectionTitle}>👉 Why Choose WeFix.lk?</Text>
           <View style={styles.featuresList}>
             <FeatureItem icon="checkmark-circle" text="Expert Technicians" />
             <FeatureItem icon="checkmark-circle" text="Original Parts Only" />
             <FeatureItem icon="checkmark-circle" text="Warranty Coverage" />
-            <FeatureItem icon="checkmark-circle" text="Free Pickup & Delivery" />
+            <FeatureItem icon="checkmark-circle" text="Pickup & Delivery Available in Colombo" />
             <FeatureItem icon="checkmark-circle" text="Real-time Tracking" />
             <FeatureItem icon="checkmark-circle" text="Competitive Pricing" />
           </View>

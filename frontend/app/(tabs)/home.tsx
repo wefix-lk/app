@@ -51,7 +51,7 @@ export default function HomeScreen() {
       description: 'View repair status',
       icon: 'location',
       color: Colors.warning,
-      route: '/(tabs)/bookings',
+      route: '/tracking',
     },
   ];
 

@@ -208,6 +208,9 @@ const styles = StyleSheet.create({
     color: Colors.error,
     marginLeft: 8,
   },
+  signOutButtonDisabled: {
+    opacity: 0.5,
+  },
   versionText: {
     fontSize: 12,
     color: Colors.textLight,

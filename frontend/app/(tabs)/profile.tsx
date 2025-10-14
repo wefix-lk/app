@@ -17,31 +17,26 @@ export default function ProfileScreen() {
   const { userProfile, signOut } = useAuth();
   const router = useRouter();
 
-  const handleSignOut = () => {
-    Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Sign Out',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await signOut();
-              // Use setTimeout to ensure sign out completes before navigation
-              setTimeout(() => {
-                router.replace('/(auth)/login');
-              }, 100);
-            } catch (error: any) {
-              console.error('Sign out error:', error);
-              Alert.alert('Error', 'Failed to sign out. Please try again.');
-            }
-          },
-        },
-      ],
-      { cancelable: true }
-    );
+  const [isSigningOut, setIsSigningOut] = React.useState(false);
+
+  const handleSignOut = async () => {
+    if (isSigningOut) return; // Prevent double clicks
+    
+    setIsSigningOut(true);
+    console.log('🔐 Sign out button clicked');
+    
+    try {
+      console.log('📤 Calling signOut function...');
+      await signOut();
+      console.log('✅ Sign out successful, navigating to login...');
+      
+      // Navigate to login screen
+      router.replace('/(auth)/login');
+    } catch (error: any) {
+      console.error('❌ Sign out error:', error);
+      Alert.alert('Error', 'Failed to sign out. Please try again.');
+      setIsSigningOut(false);
+    }
   };
 
   const menuItems = [

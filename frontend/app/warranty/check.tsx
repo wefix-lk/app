@@ -20,7 +20,7 @@ import { format, isPast } from 'date-fns';
 
 export default function WarrantyCheckScreen() {
   const router = useRouter();
-  const [searchType, setSearchType] = useState<'serial' | 'bill'>('serial');
+  const [searchType, setSearchType] = useState<'serial' | 'bill' | 'phone'>('serial');
   const [searchValue, setSearchValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [warrantyResult, setWarrantyResult] = useState<any>(null);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { Colors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import ServiceRequestModal from '../../components/ServiceRequestModal';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;
@@ -20,6 +21,8 @@ const cardWidth = (width - 48) / 2;
 export default function HomeScreen() {
   const { userProfile } = useAuth();
   const router = useRouter();
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [selectedService, setSelectedService] = useState<any>(null);
 
   const services = [
     {

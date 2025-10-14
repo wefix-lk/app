@@ -16,13 +16,14 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { Colors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { isFirebaseConfigured } from '../../config/firebase';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const { resetPassword } = useAuth();
+  const { resetPassword, isDemoMode } = useAuth();
   const router = useRouter();
 
   // Email validation regex

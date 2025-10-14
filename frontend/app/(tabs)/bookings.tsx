@@ -150,11 +150,44 @@ export default function BookingsScreen() {
   };
 
   const canCancelBooking = (status: string) => {
-    return status === 'pending' || status === 'under-inspection';
+    const cancellableStatuses = ['pending', 'booking-received', 'under-inspection'];
+    return cancellableStatuses.includes(status.toLowerCase());
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Cancel Booking Modal */}
+      <ConfirmationModal
+        visible={showCancelModal}
+        title="Cancel Booking"
+        message="Are you sure you want to cancel this booking?"
+        confirmText="Yes, Cancel Booking"
+        cancelText="No, Keep Booking"
+        onConfirm={confirmCancelBooking}
+        onCancel={() => {
+          setShowCancelModal(false);
+          setSelectedBooking(null);
+        }}
+        confirmColor={Colors.error}
+        icon="close-circle"
+      />
+
+      {/* Delete Booking Modal */}
+      <ConfirmationModal
+        visible={showDeleteModal}
+        title="Delete Booking"
+        message="Are you sure you want to permanently delete this booking?"
+        confirmText="Yes, Delete"
+        cancelText="No, Keep It"
+        onConfirm={confirmDeleteBooking}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setSelectedBooking(null);
+        }}
+        confirmColor={Colors.error}
+        icon="trash"
+      />
+
       <View style={styles.header}>
         <Text style={styles.title}>My Bookings</Text>
         <TouchableOpacity

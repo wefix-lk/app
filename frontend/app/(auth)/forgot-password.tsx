@@ -21,26 +21,44 @@ export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const { resetPassword } = useAuth();
   const router = useRouter();
 
+  // Email validation regex
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleResetPassword = async () => {
-    if (!email) {
-      Alert.alert('Error', 'Please enter your email address');
+    // Clear previous errors
+    setErrorMessage('');
+
+    // Validate email is not empty
+    if (!email.trim()) {
+      setErrorMessage('Please enter your email address');
+      return;
+    }
+
+    // Validate email format
+    if (!validateEmail(email.trim())) {
+      setErrorMessage('Please enter a valid email address');
       return;
     }
 
     setLoading(true);
     try {
-      await resetPassword(email);
+      await resetPassword(email.trim().toLowerCase());
       setEmailSent(true);
-      Alert.alert(
-        'Email Sent',
-        'Password reset instructions have been sent to your email.',
-        [{ text: 'OK', onPress: () => router.back() }]
-      );
+      
+      // Auto-navigate back to login after 4 seconds
+      setTimeout(() => {
+        router.back();
+      }, 4000);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to send reset email');
+      console.error('Reset password error:', error);
+      setErrorMessage(error.message || 'Failed to send reset email. Please try again.');
     } finally {
       setLoading(false);
     }

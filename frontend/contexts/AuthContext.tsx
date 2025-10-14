@@ -43,11 +43,16 @@ export const useAuth = () => {
   return context;
 };
 
+// Admin credentials (hard-coded for MVP)
+const ADMIN_EMAIL = 'wefixtvrepair@gmail.com';
+const ADMIN_PASSWORD = 'swift@123';
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDemoMode] = useState(!isFirebaseConfigured);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (isDemoMode) {

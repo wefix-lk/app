@@ -137,6 +137,32 @@ export default function WarrantyCheckScreen() {
                 Bill Number
               </Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.searchTypeButton,
+                searchType === 'phone' && styles.searchTypeButtonActive,
+              ]}
+              onPress={() => {
+                setSearchType('phone');
+                setSearchValue('');
+                setWarrantyResult(null);
+              }}
+            >
+              <Ionicons
+                name="call"
+                size={24}
+                color={searchType === 'phone' ? Colors.textWhite : Colors.text}
+              />
+              <Text
+                style={[
+                  styles.searchTypeText,
+                  searchType === 'phone' && styles.searchTypeTextActive,
+                ]}
+              >
+                Phone Number
+              </Text>
+            </TouchableOpacity>
           </View>
 
           {/* Search Input */}

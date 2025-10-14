@@ -101,10 +101,22 @@ export default function ForgotPasswordScreen() {
                 <View style={styles.successIconContainer}>
                   <Ionicons name="checkmark-circle" size={60} color={Colors.success} />
                 </View>
-                <Text style={styles.successTitle}>Email Sent!</Text>
-                <Text style={styles.successMessage}>
-                  A password reset link has been sent to your email. Please check your inbox.
+                <Text style={styles.successTitle}>
+                  {isDemoMode ? 'Request Processed' : 'Email Sent!'}
                 </Text>
+                <Text style={styles.successMessage}>
+                  {isDemoMode 
+                    ? 'Demo Mode: Password reset emails are not actually sent. In production with Firebase configured, a real password reset link would be sent to your email.'
+                    : 'A password reset link has been sent to your email. Please check your inbox and spam folder.'}
+                </Text>
+                {!isDemoMode && (
+                  <View style={styles.infoBox}>
+                    <Ionicons name="information-circle" size={20} color={Colors.info} />
+                    <Text style={styles.infoText}>
+                      The email may take a few minutes to arrive. Check your spam folder if you don't see it.
+                    </Text>
+                  </View>
+                )}
                 <Text style={styles.successSubtext}>
                   Redirecting to login in 4 seconds...
                 </Text>

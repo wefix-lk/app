@@ -52,6 +52,69 @@ export default function TrackingScreen() {
     }
   };
 
+  const handleCancelBooking = (booking: any) => {
+    Alert.alert(
+      'Cancel Booking',
+      'Are you sure you want to cancel this repair booking?',
+      [
+        {
+          text: 'No, Keep It',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes, Cancel Booking',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              console.log('🚫 Cancelling booking:', booking.id);
+              
+              // Load all bookings
+              const bookingsJson = await AsyncStorage.getItem('local_bookings');
+              if (bookingsJson) {
+                const allBookings = JSON.parse(bookingsJson);
+                
+                // Find and update the booking
+                const updatedBookings = allBookings.map((b: any) => {
+                  if (b.id === booking.id) {
+                    return {
+                      ...b,
+                      status: 'cancelled',
+                      updatedAt: new Date().toISOString(),
+                      timeline: [
+                        ...b.timeline,
+                        {
+                          status: 'cancelled',
+                          timestamp: new Date().toISOString(),
+                          note: 'Booking cancelled by user',
+                        },
+                      ],
+                    };
+                  }
+                  return b;
+                });
+                
+                // Save back to storage
+                await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
+                
+                // Reload bookings to update UI
+                await loadBookings();
+                
+                console.log('✅ Booking cancelled successfully');
+                Alert.alert(
+                  'Booking Cancelled',
+                  'Your booking has been successfully cancelled.'
+                );
+              }
+            } catch (error) {
+              console.error('❌ Error cancelling booking:', error);
+              Alert.alert('Error', 'Failed to cancel booking. Please try again.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const getStatusIndex = (status: string) => {
     return statusSteps.findIndex(s => s.key === status);
   };

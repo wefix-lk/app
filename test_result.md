@@ -145,17 +145,20 @@ frontend:
         agent: "main"
         comment: "Home screen shows services grid (Book Repair, Check Warranty, Shop Parts, Track Repair), welcome card, features list, and contact info"
   
-  - task: "Bookings Management Screen"
+  - task: "Bookings Management Screen with Cancel & Delete"
     implemented: true
-    working: true
+    working: "NA"
     file: "frontend/app/(tabs)/bookings.tsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
         comment: "Bookings list screen with empty state. Shows 'Book Repair Service' CTA when no bookings exist"
+      - working: "NA"
+        agent: "main"
+        comment: "Added Cancel and Delete booking buttons. Cancel button (red outline with ❌) shows for Pending/Booking Received/Under Inspection statuses. Delete button (solid red with 🗑️) shows only for cancelled bookings. Both use ConfirmationModal for user confirmation. Updates AsyncStorage/Firestore on action."
   
   - task: "Shop Products Screen"
     implemented: true

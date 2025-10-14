@@ -25,6 +25,7 @@ interface Stats {
 
 export default function AdminDashboard() {
   const { userProfile } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState<Stats>({
     totalBookings: 0,
     pendingBookings: 0,
@@ -34,6 +35,10 @@ export default function AdminDashboard() {
     serviceRequests: 0,
   });
   const [refreshing, setRefreshing] = useState(false);
+
+  const navigateToBookings = () => {
+    router.push('/(admin)/bookings');
+  };
 
   useEffect(() => {
     loadStats();

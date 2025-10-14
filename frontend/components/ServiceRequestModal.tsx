@@ -110,23 +110,18 @@ export default function ServiceRequestModal({
 
       console.log('✅ Service request submitted:', requestData);
 
-      // Show success message
-      Alert.alert(
-        'Thank You!',
-        "We'll contact you soon regarding your request.",
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              resetForm();
-              onClose();
-            },
-          },
-        ]
-      );
+      // Show success state
+      setShowSuccess(true);
+
+      // Auto-close modal after 4 seconds
+      setTimeout(() => {
+        setShowSuccess(false);
+        resetForm();
+        onClose();
+      }, 4000);
     } catch (error) {
       console.error('❌ Error submitting request:', error);
-      setErrorMessage('Failed to submit request. Please try again.');
+      setErrorMessage('⚠️ Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }

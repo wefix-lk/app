@@ -203,24 +203,35 @@ export default function TrackingScreen() {
             return (
               <View key={booking.id} style={styles.trackingCard}>
                 <View style={styles.cardHeader}>
-                  <View>
+                  <View style={styles.cardHeaderLeft}>
                     <Text style={styles.tvName}>{booking.tvBrand} {booking.tvModel}</Text>
                     <Text style={styles.issueType}>{booking.issueType.replace('-', ' ')}</Text>
                   </View>
-                  <View
-                    style={[
-                      styles.statusBadge,
-                      { backgroundColor: StatusColors[booking.status] + '20' },
-                    ]}
-                  >
-                    <Text
+                  <View style={styles.cardHeaderRight}>
+                    <View
                       style={[
-                        styles.statusText,
-                        { color: StatusColors[booking.status] },
+                        styles.statusBadge,
+                        { backgroundColor: StatusColors[booking.status] + '20' },
                       ]}
                     >
-                      {booking.status.replace('-', ' ')}
-                    </Text>
+                      <Text
+                        style={[
+                          styles.statusText,
+                          { color: StatusColors[booking.status] },
+                        ]}
+                      >
+                        {booking.status.replace('-', ' ')}
+                      </Text>
+                    </View>
+                    {/* Trash icon for cancelled bookings */}
+                    {booking.status === 'cancelled' && (
+                      <TouchableOpacity
+                        style={styles.deleteIcon}
+                        onPress={() => handleDeleteBooking(booking)}
+                      >
+                        <Ionicons name="trash" size={20} color={Colors.error} />
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
 

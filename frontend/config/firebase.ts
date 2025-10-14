@@ -1,39 +1,60 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
-// Test Firebase configuration
-// TODO: Replace with production credentials later
+// Firebase configuration
+// For production: Replace these with your actual Firebase project credentials
+// For development: Using demo mode with local storage fallback
 const firebaseConfig = {
-  apiKey: "AIzaSyDemoKey123456789",
-  authDomain: "wefix-demo.firebaseapp.com",
-  projectId: "wefix-demo",
-  storageBucket: "wefix-demo.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef123456"
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || "AIzaSyCL8jl4p3rYs1234567890abcdefghijk",
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN || "wefix-lk-demo.firebaseapp.com",
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || "wefix-lk-demo",
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET || "wefix-lk-demo.appspot.com",
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "123456789012",
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || "1:123456789012:web:abcdef123456789012"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Flag to indicate if we're using real Firebase or demo mode
+export const isFirebaseConfigured = !!(
+  process.env.EXPO_PUBLIC_FIREBASE_API_KEY &&
+  process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID
+);
 
-// Initialize Auth with AsyncStorage persistence for React Native
+// Initialize Firebase only if not already initialized
+let app;
 let auth;
-if (Platform.OS === 'web') {
-  auth = getAuth(app);
-} else {
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage)
-  });
+let db;
+let storage;
+
+try {
+  if (getApps().length === 0) {
+    app = initializeApp(firebaseConfig);
+    console.log('✅ Firebase initialized:', isFirebaseConfigured ? 'Production Mode' : 'Demo Mode');
+  } else {
+    app = getApps()[0];
+  }
+
+  // Initialize Auth with AsyncStorage persistence for React Native
+  if (Platform.OS === 'web') {
+    auth = getAuth(app);
+  } else {
+    auth = initializeAuth(app, {
+      persistence: getReactNativePersistence(AsyncStorage)
+    });
+  }
+
+  // Initialize Firestore
+  db = getFirestore(app);
+
+  // Initialize Storage
+  storage = getStorage(app);
+} catch (error) {
+  console.warn('⚠️ Firebase initialization error:', error);
+  console.log('📝 Running in local development mode');
 }
 
-// Initialize Firestore
-const db = getFirestore(app);
-
-// Initialize Storage
-const storage = getStorage(app);
-
-export { auth, db, storage };
-export default app;
+export { auth, db, storage, app as default };
+export { firebaseConfig };

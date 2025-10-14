@@ -283,6 +283,12 @@ export default function WarrantyCheckScreen() {
                 Bill Number: Check your purchase invoice or receipt
               </Text>
             </View>
+            <View style={styles.infoItem}>
+              <Ionicons name="call" size={20} color={Colors.primary} />
+              <Text style={styles.infoItemText}>
+                Phone Number: Use the number registered during repair or purchase
+              </Text>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

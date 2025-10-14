@@ -313,7 +313,7 @@ export default function BookingsManagement() {
                     <Text style={styles.sectionTitle}>Device</Text>
                     <Text style={styles.infoText}>Brand: {selectedBooking.tvBrand}</Text>
                     <Text style={styles.infoText}>Model: {selectedBooking.tvModel}</Text>
-                    <Text style={styles.infoText}>Issue: {selected Booking.issueType}</Text>
+                    <Text style={styles.infoText}>Issue: {selectedBooking.issueType}</Text>
                     <Text style={styles.infoText}>Description: {selectedBooking.issueDescription}</Text>
                   </View>
 

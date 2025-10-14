@@ -72,7 +72,12 @@ export default function BookingsScreen() {
         </TouchableOpacity>
       </View>
 
-      {bookings.length === 0 ? (
+      {loading ? (
+        <View style={styles.emptyContainer}>
+          <Ionicons name="hourglass-outline" size={60} color={Colors.primary} />
+          <Text style={styles.loadingText}>Loading bookings...</Text>
+        </View>
+      ) : bookings.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Ionicons name="calendar-outline" size={80} color={Colors.textLight} />
           <Text style={styles.emptyTitle}>No Bookings Yet</Text>
@@ -91,9 +96,63 @@ export default function BookingsScreen() {
           data={bookings}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[Colors.primary]}
+              tintColor={Colors.primary}
+            />
+          }
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.bookingCard}>
-              <Text>{item.tvBrand}</Text>
+            <TouchableOpacity 
+              style={styles.bookingCard}
+              onPress={() => router.push('/tracking')}
+            >
+              <View style={styles.bookingHeader}>
+                <View style={styles.bookingInfo}>
+                  <Text style={styles.tvName}>{item.tvBrand} {item.tvModel}</Text>
+                  <Text style={styles.issueText}>{item.issueType.replace('-', ' ')}</Text>
+                </View>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    { backgroundColor: StatusColors[item.status] + '20' },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.statusText,
+                      { color: StatusColors[item.status] },
+                    ]}
+                  >
+                    {item.status.replace('-', ' ')}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.bookingDetails}>
+                <View style={styles.detailRow}>
+                  <Ionicons name="calendar-outline" size={16} color={Colors.textLight} />
+                  <Text style={styles.detailText}>
+                    {format(new Date(item.createdAt), 'dd MMM yyyy, hh:mm a')}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Ionicons 
+                    name={item.pickupOption === 'pickup' ? 'car-outline' : 'home-outline'}
+                    size={16} 
+                    color={Colors.textLight} 
+                  />
+                  <Text style={styles.detailText}>
+                    {item.pickupOption === 'pickup' ? 'Free Pickup' : 'Home Service'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.bookingFooter}>
+                <Text style={styles.viewDetails}>View Tracking →</Text>
+              </View>
             </TouchableOpacity>
           )}
         />

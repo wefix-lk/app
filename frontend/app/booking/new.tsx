@@ -17,7 +17,8 @@ import { Colors } from '../../constants/Colors';
 import { tvBrands, issueTypes } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+import { db, isFirebaseConfigured } from '../../config/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function NewBookingScreen() {
   const { user } = useAuth();

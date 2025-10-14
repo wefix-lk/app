@@ -22,21 +22,44 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [hasError, setHasError] = useState(false);
   const { signIn, isDemoMode } = useAuth();
   const router = useRouter();
 
+  // Email validation regex
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+    // Clear previous errors
+    setErrorMessage('');
+    setHasError(false);
+
+    // Validate email and password are not empty
+    if (!email.trim() || !password.trim()) {
+      setErrorMessage('Please fill in all fields');
+      setHasError(true);
+      return;
+    }
+
+    // Validate email format
+    if (!validateEmail(email.trim())) {
+      setErrorMessage('Please enter a valid email address');
+      setHasError(true);
       return;
     }
 
     setLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(email.trim().toLowerCase(), password);
       router.replace('/(tabs)/home');
     } catch (error: any) {
-      Alert.alert('Login Failed', error.message || 'Please check your credentials');
+      console.error('Login error:', error);
+      setErrorMessage(error.message || 'Invalid email or password. Please try again.');
+      setHasError(true);
     } finally {
       setLoading(false);
     }

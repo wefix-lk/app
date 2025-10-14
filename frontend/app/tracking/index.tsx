@@ -274,6 +274,22 @@ export default function TrackingScreen() {
           })
         )}
       </ScrollView>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        visible={showCancelModal}
+        title="Cancel Booking"
+        message="Are you sure you want to cancel this repair booking?"
+        confirmText="Yes, Cancel"
+        cancelText="No, Keep It"
+        onConfirm={confirmCancelBooking}
+        onCancel={() => {
+          setShowCancelModal(false);
+          setBookingToCancel(null);
+        }}
+        confirmColor={Colors.error}
+        icon="alert-circle"
+      />
     </SafeAreaView>
   );
 }

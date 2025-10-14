@@ -244,4 +244,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  demoNotice: {
+    flexDirection: 'row',
+    backgroundColor: Colors.info + '15',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.info,
+  },
+  demoNoticeText: {
+    flex: 1,
+    fontSize: 13,
+    color: Colors.text,
+    marginLeft: 8,
+    lineHeight: 18,
+  },
 });

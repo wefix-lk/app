@@ -129,6 +129,7 @@ export default function AdminDashboard() {
             value={stats.totalBookings}
             icon="construct"
             color={Colors.primary}
+            onPress={navigateToBookings}
           />
 
           <StatCard
@@ -136,6 +137,7 @@ export default function AdminDashboard() {
             value={stats.pendingBookings}
             icon="time"
             color={Colors.warning}
+            onPress={navigateToBookings}
           />
 
           <StatCard

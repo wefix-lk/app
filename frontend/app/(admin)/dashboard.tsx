@@ -75,8 +75,12 @@ export default function AdminDashboard() {
     setRefreshing(false);
   };
 
-  const StatCard = ({ title, value, icon, color }: any) => (
-    <View style={[styles.statCard, { borderLeftColor: color }]}>
+  const StatCard = ({ title, value, icon, color, onPress }: any) => (
+    <TouchableOpacity 
+      style={[styles.statCard, { borderLeftColor: color }]}
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+    >
       <View style={styles.statContent}>
         <View style={[styles.iconContainer, { backgroundColor: color + '20' }]}>
           <Ionicons name={icon} size={28} color={color} />
@@ -85,8 +89,9 @@ export default function AdminDashboard() {
           <Text style={styles.statValue}>{value}</Text>
           <Text style={styles.statTitle}>{title}</Text>
         </View>
+        {onPress && <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

@@ -93,29 +93,60 @@ export default function LoginScreen() {
                 </Text>
               </View>
             )}
+
+            {/* Error Message */}
+            {errorMessage && (
+              <View style={styles.errorContainer}>
+                <Ionicons name="alert-circle" size={20} color={Colors.error} />
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              </View>
+            )}
             
-            <View style={styles.inputContainer}>
-              <Ionicons name="mail-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
+            <View style={[styles.inputContainer, hasError && styles.inputContainerError]}>
+              <Ionicons 
+                name="mail-outline" 
+                size={20} 
+                color={hasError ? Colors.error : Colors.textLight} 
+                style={styles.inputIcon} 
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Email Address"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setErrorMessage(''); // Clear error on input change
+                  setHasError(false);
+                }}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 placeholderTextColor={Colors.textLight}
+                editable={!loading}
               />
+              {hasError && (
+                <Ionicons name="warning" size={18} color={Colors.error} style={styles.warningIcon} />
+              )}
             </View>
 
-            <View style={styles.inputContainer}>
-              <Ionicons name="lock-closed-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
+            <View style={[styles.inputContainer, hasError && styles.inputContainerError]}>
+              <Ionicons 
+                name="lock-closed-outline" 
+                size={20} 
+                color={hasError ? Colors.error : Colors.textLight} 
+                style={styles.inputIcon} 
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Password"
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setErrorMessage(''); // Clear error on input change
+                  setHasError(false);
+                }}
                 secureTextEntry={!showPassword}
                 placeholderTextColor={Colors.textLight}
+                editable={!loading}
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
@@ -127,6 +158,9 @@ export default function LoginScreen() {
                   color={Colors.textLight}
                 />
               </TouchableOpacity>
+              {hasError && (
+                <Ionicons name="warning" size={18} color={Colors.error} style={styles.warningIcon} />
+              )}
             </View>
 
             <TouchableOpacity

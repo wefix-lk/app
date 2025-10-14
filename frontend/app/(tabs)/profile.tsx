@@ -59,24 +59,30 @@ export default function ProfileScreen() {
     },
     {
       id: '3',
+      title: 'Check Warranty',
+      icon: 'shield-checkmark-outline',
+      onPress: () => router.push('/warranty/check'),
+    },
+    {
+      id: '4',
       title: 'Saved Addresses',
       icon: 'location-outline',
       onPress: () => router.push('/profile/addresses'),
     },
     {
-      id: '4',
+      id: '5',
       title: 'Notifications',
       icon: 'notifications-outline',
       onPress: () => router.push('/profile/notifications'),
     },
     {
-      id: '5',
+      id: '6',
       title: 'Help & Support',
       icon: 'help-circle-outline',
       onPress: () => router.push('/profile/help'),
     },
     {
-      id: '6',
+      id: '7',
       title: 'About WeFix.lk',
       icon: 'information-circle-outline',
       onPress: () => router.push('/profile/about'),

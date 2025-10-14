@@ -55,7 +55,16 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await signIn(email.trim().toLowerCase(), password);
-      router.replace('/(tabs)/home');
+      
+      // Check if admin login
+      const isAdminFlag = await AsyncStorage.getItem('isAdmin');
+      if (isAdminFlag === 'true') {
+        console.log('🔐 Redirecting to Admin Dashboard');
+        router.replace('/(admin)/dashboard');
+      } else {
+        console.log('👤 Redirecting to User Home');
+        router.replace('/(tabs)/home');
+      }
     } catch (error: any) {
       console.error('Login error:', error);
       setErrorMessage(error.message || 'Invalid email or password. Please try again.');

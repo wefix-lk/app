@@ -37,12 +37,18 @@ export default function NewBookingScreen() {
   const [showIssuePicker, setShowIssuePicker] = useState(false);
 
   const handleSubmit = async () => {
+    console.log('🔘 Submit button clicked');
+    console.log('Form data:', { tvBrand, tvModel, issueType, address, phone });
+    
     if (!tvBrand || !tvModel || !issueType || !address || !phone) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      console.log('❌ Validation failed - missing required fields');
+      Alert.alert('Missing Information', 'Please fill in all required fields:\n• TV Brand\n• TV Model\n• Issue Type\n• Address\n• Phone Number');
       return;
     }
 
+    console.log('✅ Validation passed, creating booking...');
     setLoading(true);
+    
     try {
       const bookingId = `booking_${Date.now()}`;
       const bookingData = {
@@ -67,25 +73,48 @@ export default function NewBookingScreen() {
         updatedAt: new Date().toISOString(),
       };
 
+      console.log('💾 Saving booking data...', bookingData);
+
       if (isFirebaseConfigured) {
         // Firebase mode
+        console.log('📤 Saving to Firebase...');
         await addDoc(collection(db, 'bookings'), bookingData);
       } else {
         // Demo mode - save to local storage
+        console.log('💾 Saving to local storage (Demo mode)...');
         const bookingsJson = await AsyncStorage.getItem('local_bookings');
         const bookings = bookingsJson ? JSON.parse(bookingsJson) : [];
         bookings.push(bookingData);
         await AsyncStorage.setItem('local_bookings', JSON.stringify(bookings));
+        console.log('✅ Saved to local storage. Total bookings:', bookings.length);
       }
       
+      console.log('🎉 Booking created successfully!');
+      
+      // Show success message and navigate
       Alert.alert(
-        'Success!',
-        'Your repair booking has been created. We will contact you shortly.',
-        [{ text: 'OK', onPress: () => router.replace('/(tabs)/bookings') }]
+        'Booking Successful! 🎉',
+        `Your ${tvBrand} ${tvModel} repair has been booked.\n\nBooking ID: ${bookingId}\n\nWe will contact you shortly at ${phone}.`,
+        [
+          { 
+            text: 'View Tracking', 
+            onPress: () => {
+              console.log('📍 Navigating to tracking...');
+              router.replace('/tracking');
+            }
+          },
+          {
+            text: 'Go to Home',
+            onPress: () => {
+              console.log('🏠 Navigating to home...');
+              router.replace('/(tabs)/home');
+            }
+          }
+        ]
       );
     } catch (error: any) {
-      Alert.alert('Error', 'Failed to create booking. Please try again.');
-      console.error('Booking error:', error);
+      console.error('❌ Booking error:', error);
+      Alert.alert('Error', `Failed to create booking: ${error.message || 'Unknown error'}\n\nPlease try again.`);
     } finally {
       setLoading(false);
     }

@@ -347,10 +347,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
   },
   searchTypeText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: Colors.text,
-    marginTop: 8,
+    marginTop: 6,
+    textAlign: 'center',
   },
   searchTypeTextActive: {
     color: Colors.textWhite,

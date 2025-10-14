@@ -14,6 +14,7 @@ import { Colors, StatusColors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { format } from 'date-fns';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const statusSteps = [
   { key: 'pending', label: 'Booking Received', icon: 'checkmark-circle' },

@@ -62,6 +62,15 @@ export default function LoginScreen() {
           <View style={styles.form}>
             <Text style={styles.welcomeText}>Welcome Back!</Text>
             
+            {isDemoMode && (
+              <View style={styles.demoNotice}>
+                <Ionicons name="information-circle" size={20} color={Colors.info} />
+                <Text style={styles.demoNoticeText}>
+                  Demo Mode: Create an account to get started. Your data is stored locally.
+                </Text>
+              </View>
+            )}
+            
             <View style={styles.inputContainer}>
               <Ionicons name="mail-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
               <TextInput

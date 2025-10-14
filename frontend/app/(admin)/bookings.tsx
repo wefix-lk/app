@@ -1,47 +1,427 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  RefreshControl,
+  Modal,
+  Alert,
+  Linking,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { Colors, StatusColors } from '../../constants/Colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+interface Booking {
+  id: string;
+  userId: string;
+  customerName: string;
+  customerPhone: string;
+  tvBrand: string;
+  tvModel: string;
+  issueType: string;
+  issueDescription: string;
+  serviceType: string;
+  address: string;
+  status: string;
+  createdAt: string;
+  updatedAt?: string;
+  adminNote?: string;
+}
+
+const STATUS_OPTIONS = [
+  { label: 'Pending', value: 'pending', color: Colors.warning },
+  { label: 'Confirmed', value: 'confirmed', color: '#2196F3' },
+  { label: 'Parts Ordered', value: 'parts-ordered', color: '#9C27B0' },
+  { label: 'In Progress', value: 'in-progress', color: Colors.info },
+  { label: 'Testing', value: 'testing', color: '#FF9800' },
+  { label: 'Ready for Delivery', value: 'ready-for-delivery', color: Colors.success },
+  { label: 'Completed', value: 'completed', color: Colors.success },
+  { label: 'Cancelled', value: 'cancelled', color: Colors.error },
+];
 
 export default function BookingsManagement() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showStatusPicker, setShowStatusPicker] = useState(false);
+  const [editingAdminNote, setEditingAdminNote] = useState('');
+
+  useEffect(() => {
+    loadBookings();
+  }, []);
+
+  useEffect(() => {
+    filterBookings();
+  }, [bookings, searchQuery, statusFilter]);
+
+  const loadBookings = async () => {
+    try {
+      const bookingsJson = await AsyncStorage.getItem('bookings');
+      if (bookingsJson) {
+        const allBookings: Booking[] = JSON.parse(bookingsJson);
+        allBookings.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setBookings(allBookings);
+      }
+    } catch (error) {
+      console.error('Error loading bookings:', error);
+    }
+  };
+
+  const filterBookings = () => {
+    let filtered = [...bookings];
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (b) =>
+          b.customerName?.toLowerCase().includes(query) ||
+          b.customerPhone?.includes(query) ||
+          b.tvBrand?.toLowerCase().includes(query) ||
+          b.tvModel?.toLowerCase().includes(query)
+      );
+    }
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter((b) => b.status === statusFilter);
+    }
+
+    setFilteredBookings(filtered);
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadBookings();
+    setRefreshing(false);
+  };
+
+  const updateBookingStatus = async (bookingId: string, newStatus: string) => {
+    try {
+      const updatedBookings = bookings.map((b) => {
+        if (b.id === bookingId) {
+          return {
+            ...b,
+            status: newStatus,
+            updatedAt: new Date().toISOString(),
+          };
+        }
+        return b;
+      });
+
+      await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
+      setBookings(updatedBookings);
+
+      if (selectedBooking?.id === bookingId) {
+        setSelectedBooking({ ...selectedBooking, status: newStatus });
+      }
+
+      Alert.alert('Success', 'Booking status updated and synced to customer view');
+    } catch (error) {
+      console.error('Error updating booking status:', error);
+      Alert.alert('Error', 'Failed to update booking status');
+    }
+  };
+
+  const saveAdminNote = async () => {
+    if (!selectedBooking) return;
+
+    try {
+      const updatedBookings = bookings.map((b) => {
+        if (b.id === selectedBooking.id) {
+          return {
+            ...b,
+            adminNote: editingAdminNote,
+            updatedAt: new Date().toISOString(),
+          };
+        }
+        return b;
+      });
+
+      await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
+      setBookings(updatedBookings);
+      setSelectedBooking({ ...selectedBooking, adminNote: editingAdminNote });
+
+      Alert.alert('Success', 'Admin note saved');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save note');
+    }
+  };
+
+  const deleteBooking = async (bookingId: string) => {
+    Alert.alert(
+      'Delete Booking',
+      'Permanently delete this booking?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const updatedBookings = bookings.filter((b) => b.id !== bookingId);
+              await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
+              setBookings(updatedBookings);
+              setShowDetailModal(false);
+              Alert.alert('Success', 'Booking deleted');
+            } catch (error) {
+              Alert.alert('Error', 'Failed to delete');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const openDetailModal = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setEditingAdminNote(booking.adminNote || '');
+    setShowDetailModal(true);
+  };
+
+  const getStatusColor = (status: string) => {
+    const statusOption = STATUS_OPTIONS.find((s) => s.value === status);
+    return statusOption?.color || Colors.textLight;
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <Ionicons name="construct" size={40} color={Colors.primary} />
-          <Text style={styles.title}>Bookings Management</Text>
-          <Text style={styles.subtitle}>Manage all customer repair bookings</Text>
-        </View>
+      <View style={styles.header}>
+        <Text style={styles.title}>Bookings Management</Text>
+        <Text style={styles.subtitle}>{filteredBookings.length} bookings</Text>
+      </View>
 
-        <View style={styles.placeholder}>
-          <Ionicons name="document-text-outline" size={64} color={Colors.textLight} />
-          <Text style={styles.placeholderTitle}>Coming Soon</Text>
-          <Text style={styles.placeholderText}>
-            View and manage all bookings, update statuses,{' '}n            and track repair progress in real-time.
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color={Colors.textLight} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search name, phone, model..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholderTextColor={Colors.textLight}
+        />
+        {searchQuery ? (
+          <TouchableOpacity onPress={() => setSearchQuery('')}>
+            <Ionicons name="close-circle" size={20} color={Colors.textLight} />
+          </TouchableOpacity>
+        ) : null}
+      </View>
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
+        <TouchableOpacity
+          style={[styles.filterChip, statusFilter === 'all' && styles.filterChipActive]}
+          onPress={() => setStatusFilter('all')}
+        >
+          <Text style={[styles.filterText, statusFilter === 'all' && styles.filterTextActive]}>
+            All ({bookings.length})
           </Text>
-          <View style={styles.featuresList}>
-            <Text style={styles.featureItem}>✓ View all bookings</Text>
-            <Text style={styles.featureItem}>✓ Update repair status</Text>
-            <Text style={styles.featureItem}>✓ Filter by status/date</Text>
-            <Text style={styles.featureItem}>✓ Customer details</Text>
-            <Text style={styles.featureItem}>✓ Delete/Archive</Text>
+        </TouchableOpacity>
+        {STATUS_OPTIONS.map((status) => {
+          const count = bookings.filter((b) => b.status === status.value).length;
+          return (
+            <TouchableOpacity
+              key={status.value}
+              style={[
+                styles.filterChip,
+                statusFilter === status.value && { ...styles.filterChipActive, backgroundColor: status.color },
+              ]}
+              onPress={() => setStatusFilter(status.value)}
+            >
+              <Text style={[styles.filterText, statusFilter === status.value && styles.filterTextActive]}>
+                {status.label} ({count})
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+      <ScrollView
+        style={styles.listContainer}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        {filteredBookings.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Ionicons name="document-text-outline" size={64} color={Colors.textLight} />
+            <Text style={styles.emptyTitle}>No bookings found</Text>
+          </View>
+        ) : (
+          filteredBookings.map((booking) => (
+            <TouchableOpacity
+              key={booking.id}
+              style={styles.bookingCard}
+              onPress={() => openDetailModal(booking)}
+            >
+              <View style={styles.bookingHeader}>
+                <View style={styles.bookingInfo}>
+                  <Text style={styles.customerName}>{booking.customerName}</Text>
+                  <Text style={styles.phone}>{booking.customerPhone}</Text>
+                </View>
+                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(booking.status) + '20' }]}>
+                  <Text style={[styles.statusText, { color: getStatusColor(booking.status) }]}>
+                    {STATUS_OPTIONS.find((s) => s.value === booking.status)?.label}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.bookingDetails}>
+                <Text style={styles.detailText}>
+                  📺 {booking.tvBrand} {booking.tvModel}
+                </Text>
+                <Text style={styles.detailText}>⚠️ {booking.issueType}</Text>
+                <Text style={styles.detailText}>📅 {formatDate(booking.createdAt)}</Text>
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
+
+      <Modal visible={showDetailModal} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Booking Details</Text>
+              <TouchableOpacity onPress={() => setShowDetailModal(false)}>
+                <Ionicons name="close" size={24} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalBody}>
+              {selectedBooking && (
+                <>
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Customer</Text>
+                    <Text style={styles.infoText}>Name: {selectedBooking.customerName}</Text>
+                    <Text style={styles.infoText}>Phone: {selectedBooking.customerPhone}</Text>
+                    <Text style={styles.infoText}>Address: {selectedBooking.address}</Text>
+                  </View>
+
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Device</Text>
+                    <Text style={styles.infoText}>Brand: {selectedBooking.tvBrand}</Text>
+                    <Text style={styles.infoText}>Model: {selectedBooking.tvModel}</Text>
+                    <Text style={styles.infoText}>Issue: {selected Booking.issueType}</Text>
+                    <Text style={styles.infoText}>Description: {selectedBooking.issueDescription}</Text>
+                  </View>
+
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Status</Text>
+                    <TouchableOpacity
+                      style={styles.statusSelector}
+                      onPress={() => setShowStatusPicker(true)}
+                    >
+                      <Text>{STATUS_OPTIONS.find((s) => s.value === selectedBooking.status)?.label}</Text>
+                      <Ionicons name="chevron-down" size={20} color={Colors.textLight} />
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Admin Note</Text>
+                    <TextInput
+                      style={styles.noteInput}
+                      placeholder="Internal notes..."
+                      value={editingAdminNote}
+                      onChangeText={setEditingAdminNote}
+                      multiline
+                    />
+                    <TouchableOpacity style={styles.saveBtn} onPress={saveAdminNote}>
+                      <Text style={styles.saveBtnText}>Save Note</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.deleteBtn}
+                    onPress={() => deleteBooking(selectedBooking.id)}
+                  >
+                    <Text style={styles.deleteBtnText}>Delete Booking</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </ScrollView>
           </View>
         </View>
-      </ScrollView>
+      </Modal>
+
+      <Modal visible={showStatusPicker} animationType="slide" transparent>
+        <View style={styles.pickerOverlay}>
+          <View style={styles.pickerContent}>
+            <Text style={styles.pickerTitle}>Update Status</Text>
+            <ScrollView>
+              {STATUS_OPTIONS.map((status) => (
+                <TouchableOpacity
+                  key={status.value}
+                  style={styles.statusOption}
+                  onPress={() => {
+                    if (selectedBooking) {
+                      updateBookingStatus(selectedBooking.id, status.value);
+                      setShowStatusPicker(false);
+                    }
+                  }}
+                >
+                  <Text>{status.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.backgroundGray },
-  content: { padding: 16 },
-  header: { alignItems: 'center', marginBottom: 32, marginTop: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', color: Colors.text, marginTop: 12 },
+  header: { padding: 16 },
+  title: { fontSize: 24, fontWeight: 'bold', color: Colors.text },
   subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4 },
-  placeholder: { alignItems: 'center', padding: 24, backgroundColor: Colors.background, borderRadius: 16 },
-  placeholderTitle: { fontSize: 20, fontWeight: '600', color: Colors.text, marginTop: 16 },
-  placeholderText: { fontSize: 14, color: Colors.textLight, textAlign: 'center', marginTop: 8, lineHeight: 20 },
-  featuresList: { marginTop: 24, alignSelf: 'stretch' },
-  featureItem: { fontSize: 14, color: Colors.text, marginVertical: 4, paddingLeft: 20 },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.background, borderRadius: 12, paddingHorizontal: 16, marginHorizontal: 16, marginBottom: 12, gap: 8 },
+  searchInput: { flex: 1, height: 44, color: Colors.text },
+  filterContainer: { paddingHorizontal: 16, marginBottom: 12 },
+  filterChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: Colors.background, marginRight: 8 },
+  filterChipActive: { backgroundColor: Colors.primary },
+  filterText: { fontSize: 14, color: Colors.text },
+  filterTextActive: { color: Colors.textWhite, fontWeight: '600' },
+  listContainer: { flex: 1, padding: 16 },
+  bookingCard: { backgroundColor: Colors.background, borderRadius: 12, padding: 16, marginBottom: 12 },
+  bookingHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  bookingInfo: { flex: 1 },
+  customerName: { fontSize: 18, fontWeight: '600', color: Colors.text },
+  phone: { fontSize: 14, color: Colors.textLight },
+  statusBadge: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
+  statusText: { fontSize: 12, fontWeight: '600' },
+  bookingDetails: { gap: 4 },
+  detailText: { fontSize: 14, color: Colors.text },
+  emptyState: { alignItems: 'center', paddingVertical: 60 },
+  emptyTitle: { fontSize: 18, color: Colors.textLight, marginTop: 16 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalContent: { backgroundColor: Colors.background, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '90%' },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', padding: 20, borderBottomWidth: 1, borderBottomColor: Colors.border },
+  modalTitle: { fontSize: 20, fontWeight: 'bold' },
+  modalBody: { padding: 20 },
+  section: { marginBottom: 20 },
+  sectionTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8 },
+  infoText: { fontSize: 14, marginBottom: 4 },
+  statusSelector: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: Colors.backgroundGray, borderRadius: 12, padding: 16 },
+  noteInput: { backgroundColor: Colors.backgroundGray, borderRadius: 12, padding: 16, minHeight: 100 },
+  saveBtn: { backgroundColor: Colors.primary, borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 12 },
+  saveBtnText: { color: Colors.textWhite, fontWeight: '600' },
+  deleteBtn: { backgroundColor: Colors.error, borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 20 },
+  deleteBtnText: { color: Colors.textWhite, fontWeight: '600' },
+  pickerOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  pickerContent: { backgroundColor: Colors.background, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '60%', padding: 20 },
+  pickerTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
+  statusOption: { padding: 16, borderBottomWidth: 1, borderBottomColor: Colors.border },
 });

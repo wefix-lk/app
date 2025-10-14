@@ -199,17 +199,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     try {
+      console.log('🔐 Starting sign out process...', { isDemoMode });
+      
       if (isDemoMode) {
+        console.log('📱 Demo mode: Clearing local storage');
         await AsyncStorage.removeItem('local_user');
         await AsyncStorage.removeItem('userToken');
         setUser(null);
         setUserProfile(null);
+        console.log('✅ Demo mode sign out complete');
       } else {
+        console.log('🔥 Firebase mode: Signing out from Firebase');
         await firebaseSignOut(auth);
         await AsyncStorage.removeItem('userToken');
+        setUser(null);
         setUserProfile(null);
+        console.log('✅ Firebase sign out complete');
       }
     } catch (error: any) {
+      console.error('❌ Sign out error:', error);
       throw new Error(error.message || 'Failed to sign out');
     }
   };

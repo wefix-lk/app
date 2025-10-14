@@ -1,0 +1,48 @@
+diff --git a/frontend/app/(tabs)/profile.tsx b/frontend/app/(tabs)/profile.tsx
+index 55c374b..e6b8ae6 100644
+--- a/frontend/app/(tabs)/profile.tsx
++++ b/frontend/app/(tabs)/profile.tsx
+@@ -40,37 +40,37 @@ export default function ProfileScreen() {
+       id: '1',
+       title: 'Edit Profile',
+       icon: 'person-outline',
+-      onPress: () => Alert.alert('Coming Soon', 'Profile editing will be available soon'),
++      onPress: () => router.push('/profile/edit'),
+     },
+     {
+       id: '2',
+       title: 'My Orders',
+       icon: 'receipt-outline',
+-      onPress: () => Alert.alert('Coming Soon', 'Order history will be available soon'),
++      onPress: () => router.push('/profile/orders'),
+     },
+     {
+       id: '3',
+       title: 'Saved Addresses',
+       icon: 'location-outline',
+-      onPress: () => Alert.alert('Coming Soon', 'Address management will be available soon'),
++      onPress: () => router.push('/profile/addresses'),
+     },
+     {
+       id: '4',
+       title: 'Notifications',
+       icon: 'notifications-outline',
+-      onPress: () => Alert.alert('Coming Soon', 'Notification settings will be available soon'),
++      onPress: () => router.push('/profile/notifications'),
+     },
+     {
+       id: '5',
+       title: 'Help & Support',
+       icon: 'help-circle-outline',
+-      onPress: () => Alert.alert('Support', 'Contact us at:\nPhone: +94 77 123 4567\nEmail: info@wefix.lk'),
++      onPress: () => router.push('/profile/help'),
+     },
+     {
+       id: '6',
+       title: 'About WeFix.lk',
+       icon: 'information-circle-outline',
+-      onPress: () => Alert.alert('WeFix.lk', 'Version 1.0.0\n\nProfessional TV repair and parts service in Sri Lanka'),
++      onPress: () => router.push('/profile/about'),
+     },
+   ];
+ 

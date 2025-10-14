@@ -256,6 +256,7 @@ metadata:
 test_plan:
   current_focus:
     - "Bookings Management Screen with Cancel & Delete"
+    - "Forgot Password Screen Fix"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -265,3 +266,5 @@ agent_communication:
     message: "✅ Phase 1 MVP Complete: Authentication, home dashboard, booking system, warranty check, product shop, and user profile all implemented with Firebase integration. Using mock product data. App is fully functional with beautiful UI in WeFix.lk blue/white/green color scheme."
   - agent: "main"
     message: "🆕 Implemented Cancel & Delete Booking Buttons: Added action buttons to My Bookings screen. Cancel button appears for cancellable bookings (Pending, Booking Received, Under Inspection) with red outline style. Delete button appears only for cancelled bookings with solid red style. Both use ConfirmationModal for confirmation. Ready for user testing."
+  - agent: "main"
+    message: "🔧 Fixed Forgot Password Screen: Resolved non-working 'Send Reset Link' button. Added proper email validation (format check), validates email exists in demo mode (local storage) or Firebase. Shows error messages for invalid/non-existent emails. Success screen displays with green checkmark icon and auto-redirects to login after 4 seconds. Replaced Alert.alert with inline error/success UI."

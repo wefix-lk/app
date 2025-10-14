@@ -221,10 +221,72 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 16,
   },
+  loadingText: {
+    fontSize: 16,
+    color: Colors.textLight,
+    marginTop: 16,
+  },
   bookingCard: {
     backgroundColor: Colors.background,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  bookingHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  bookingInfo: {
+    flex: 1,
+  },
+  tvName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 4,
+  },
+  issueText: {
+    fontSize: 14,
+    color: Colors.textLight,
+    textTransform: 'capitalize',
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  },
+  bookingDetails: {
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  detailText: {
+    fontSize: 14,
+    color: Colors.text,
+    marginLeft: 8,
+  },
+  bookingFooter: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  viewDetails: {
+    fontSize: 14,
+    color: Colors.primary,
+    fontWeight: '500',
   },
 });

@@ -19,6 +19,7 @@ export const Colors = {
 
 export const StatusColors = {
   pending: '#FF9800',
+  'booking-received': '#2196F3',
   'under-inspection': '#2196F3',
   'parts-ordered': '#9C27B0',
   'repair-in-progress': '#FF5722',

@@ -47,7 +47,7 @@ export default function RegisterScreen() {
     try {
       await signUp(email, password, name);
       Alert.alert('Success', 'Account created successfully!', [
-        { text: 'OK', onPress: () => router.replace('/(tabs)') }
+        { text: 'OK', onPress: () => router.replace('/(tabs)/home') }
       ]);
     } catch (error: any) {
       Alert.alert('Registration Failed', error.message || 'Please try again');

@@ -1,21 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Colors } from '../../constants/Colors';
+import { useAuth } from '../../contexts/AuthContext';
+import { Colors, StatusColors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { format } from 'date-fns';
 
 export default function BookingsScreen() {
   const router = useRouter();
+  const { user } = useAuth();
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // Placeholder for now - will connect to Firebase later
-  const bookings: any[] = [];
+  useEffect(() => {
+    loadBookings();
+  }, [user]);
+
+  const loadBookings = async () => {
+    try {
+      console.log('📥 Loading bookings for user:', user?.uid);
+      const bookingsJson = await AsyncStorage.getItem('local_bookings');
+      if (bookingsJson) {
+        const allBookings = JSON.parse(bookingsJson);
+        // Filter bookings for current user
+        const userBookings = allBookings.filter(
+          (b: any) => b.userId === user?.uid
+        );
+        // Sort by most recent first
+        userBookings.sort((a: any, b: any) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        console.log('✅ Loaded', userBookings.length, 'bookings');
+        setBookings(userBookings);
+      } else {
+        console.log('ℹ️ No bookings found in storage');
+        setBookings([]);
+      }
+    } catch (error) {
+      console.error('❌ Error loading bookings:', error);
+      setBookings([]);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadBookings();
+  };
 
   return (
     <SafeAreaView style={styles.container}>

@@ -162,13 +162,37 @@ export default function ServiceRequestModal({
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {/* Error Message */}
-            {errorMessage ? (
-              <View style={styles.errorContainer}>
-                <Ionicons name="alert-circle" size={20} color={Colors.error} />
-                <Text style={styles.errorText}>{errorMessage}</Text>
+            {showSuccess ? (
+              /* Success Confirmation View */
+              <View style={styles.successView}>
+                <View style={[styles.successIconCircle, { backgroundColor: borderColor + '20' }]}>
+                  <Ionicons name="checkmark-circle" size={80} color={borderColor} />
+                </View>
+                <Text style={styles.successTitle}>Application Received!</Text>
+                <Text style={styles.successMessage}>
+                  Thank you for submitting your request. Our WeFix.lk team has noted your
+                  application and will contact you soon via WhatsApp or phone.
+                </Text>
+                <View style={styles.autoCloseNotice}>
+                  <Ionicons name="time-outline" size={16} color={Colors.textLight} />
+                  <Text style={styles.autoCloseText}>Closing automatically...</Text>
+                </View>
               </View>
-            ) : null}
+            ) : (
+              <>
+                {/* Service Description */}
+                <View style={styles.descriptionBox}>
+                  <Ionicons name="information-circle" size={20} color={borderColor} />
+                  <Text style={styles.descriptionText}>{getServiceDescription()}</Text>
+                </View>
+
+                {/* Error Message */}
+                {errorMessage ? (
+                  <View style={styles.errorContainer}>
+                    <Ionicons name="alert-circle" size={20} color={Colors.error} />
+                    <Text style={styles.errorText}>{errorMessage}</Text>
+                  </View>
+                ) : null}
 
             {/* Name Input */}
             <View style={styles.inputGroup}>

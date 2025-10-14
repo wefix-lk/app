@@ -285,6 +285,8 @@ export default function ServiceRequestModal({
                 Chat on WhatsApp: +94 77 330 0905
               </Text>
             </TouchableOpacity>
+            </>
+            )}
           </ScrollView>
         </Pressable>
       </Pressable>

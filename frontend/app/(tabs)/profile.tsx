@@ -116,9 +116,15 @@ export default function ProfileScreen() {
         </View>
 
         {/* Sign Out Button */}
-        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+        <TouchableOpacity 
+          style={[styles.signOutButton, isSigningOut && styles.signOutButtonDisabled]} 
+          onPress={handleSignOut}
+          disabled={isSigningOut}
+        >
           <Ionicons name="log-out-outline" size={20} color={Colors.error} />
-          <Text style={styles.signOutText}>Sign Out</Text>
+          <Text style={styles.signOutText}>
+            {isSigningOut ? 'Signing Out...' : 'Sign Out'}
+          </Text>
         </TouchableOpacity>
 
         <Text style={styles.versionText}>WeFix.lk v1.0.0</Text>

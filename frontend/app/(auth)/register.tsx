@@ -23,34 +23,61 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [hasError, setHasError] = useState(false);
   const { signUp } = useAuth();
   const router = useRouter();
 
+  // Email validation regex
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleRegister = async () => {
-    if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all fields');
+    // Clear previous errors
+    setErrorMessage('');
+    setHasError(false);
+
+    // Validate all fields are filled
+    if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+      setErrorMessage('Please fill in all fields');
+      setHasError(true);
       return;
     }
 
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+    // Validate email format
+    if (!validateEmail(email.trim())) {
+      setErrorMessage('Please enter a valid email address');
+      setHasError(true);
       return;
     }
 
+    // Validate password length
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      setErrorMessage('Password must be at least 6 characters');
+      setHasError(true);
+      return;
+    }
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match');
+      setHasError(true);
       return;
     }
 
     setLoading(true);
     try {
-      await signUp(email, password, name);
-      Alert.alert('Success', 'Account created successfully!', [
-        { text: 'OK', onPress: () => router.replace('/(tabs)/home') }
-      ]);
+      await signUp(email.trim().toLowerCase(), password, name.trim());
+      // Successfully registered, navigate to home
+      router.replace('/(tabs)/home');
     } catch (error: any) {
-      Alert.alert('Registration Failed', error.message || 'Please try again');
+      console.error('Registration error:', error);
+      setErrorMessage(error.message || 'Registration failed. Please try again.');
+      setHasError(true);
     } finally {
       setLoading(false);
     }

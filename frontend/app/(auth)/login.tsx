@@ -22,7 +22,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, isDemoMode } = useAuth();
   const router = useRouter();
 
   const handleLogin = async () => {

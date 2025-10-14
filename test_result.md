@@ -123,15 +123,18 @@ backend:
 frontend:
   - task: "Authentication Screens (Login/Register/Forgot Password)"
     implemented: true
-    working: true
+    working: "NA"
     file: "frontend/app/(auth)/"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
         comment: "All auth screens created with Firebase integration. Email/password auth working. Forms have proper validation."
+      - working: "NA"
+        agent: "main"
+        comment: "Fixed Forgot Password screen - added email validation (format check), proper error handling for non-existent emails, success screen with checkmark icon, auto-redirect to login after 4 seconds. In demo mode, validates email exists in local storage. Firebase mode uses sendPasswordResetEmail. No more Alert.alert usage."
   
   - task: "Home Dashboard Screen"
     implemented: true

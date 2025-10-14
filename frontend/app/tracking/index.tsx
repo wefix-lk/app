@@ -333,7 +333,7 @@ export default function TrackingScreen() {
         )}
       </ScrollView>
 
-      {/* Confirmation Modal */}
+      {/* Cancel Confirmation Modal */}
       <ConfirmationModal
         visible={showCancelModal}
         title="Cancel Booking"
@@ -347,6 +347,22 @@ export default function TrackingScreen() {
         }}
         confirmColor={Colors.error}
         icon="alert-circle"
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        visible={showDeleteModal}
+        title="Delete Booking"
+        message="Are you sure you want to permanently delete this cancelled booking? This action cannot be undone."
+        confirmText="Yes, Delete"
+        cancelText="No, Keep Record"
+        onConfirm={confirmDeleteBooking}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setBookingToDelete(null);
+        }}
+        confirmColor={Colors.error}
+        icon="trash"
       />
     </SafeAreaView>
   );

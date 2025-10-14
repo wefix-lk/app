@@ -239,15 +239,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('📱 Demo mode: Clearing local storage');
         await AsyncStorage.removeItem('local_user');
         await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('isAdmin');
         setUser(null);
         setUserProfile(null);
+        setIsAdmin(false);
         console.log('✅ Demo mode sign out complete');
       } else {
         console.log('🔥 Firebase mode: Signing out from Firebase');
         await firebaseSignOut(auth);
         await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('isAdmin');
         setUser(null);
         setUserProfile(null);
+        setIsAdmin(false);
         console.log('✅ Firebase sign out complete');
       }
     } catch (error: any) {

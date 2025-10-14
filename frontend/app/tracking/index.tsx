@@ -453,4 +453,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginRight: 4,
   },
+  cancelButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderWidth: 2,
+    borderColor: Colors.error,
+    borderRadius: 8,
+    marginTop: 12,
+    backgroundColor: Colors.background,
+  },
+  cancelButtonText: {
+    fontSize: 15,
+    color: Colors.error,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
 });

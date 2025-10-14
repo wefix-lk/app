@@ -279,6 +279,37 @@ export default function BookingsScreen() {
               <View style={styles.bookingFooter}>
                 <Text style={styles.viewDetails}>View Tracking →</Text>
               </View>
+
+              {/* Action Buttons */}
+              <View style={styles.actionButtonsContainer}>
+                {/* Cancel Button - Only for cancellable statuses and not already cancelled */}
+                {canCancelBooking(item.status) && item.status !== 'cancelled' && (
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleCancelBooking(item);
+                    }}
+                  >
+                    <Ionicons name="close-circle-outline" size={18} color={Colors.error} />
+                    <Text style={styles.cancelButtonText}>Cancel Booking</Text>
+                  </TouchableOpacity>
+                )}
+
+                {/* Delete Button - Only for cancelled bookings */}
+                {item.status === 'cancelled' && (
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleDeleteBooking(item);
+                    }}
+                  >
+                    <Ionicons name="trash" size={18} color={Colors.textWhite} />
+                    <Text style={styles.deleteButtonText}>Delete Booking</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </TouchableOpacity>
           )}
         />

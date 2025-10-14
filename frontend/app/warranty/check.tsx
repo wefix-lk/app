@@ -34,16 +34,23 @@ export default function WarrantyCheckScreen() {
     setLoading(true);
     try {
       const warrantyRef = collection(db, 'warranties');
-      const field = searchType === 'serial' ? 'serialNumber' : 'billNumber';
+      let field = 'serialNumber';
+      if (searchType === 'bill') field = 'billNumber';
+      if (searchType === 'phone') field = 'phoneNumber';
+      
       const q = query(warrantyRef, where(field, '==', searchValue));
       
       const snapshot = await getDocs(q);
       
       if (snapshot.empty) {
         setWarrantyResult(null);
+        let searchLabel = 'serial number';
+        if (searchType === 'bill') searchLabel = 'bill number';
+        if (searchType === 'phone') searchLabel = 'phone number';
+        
         Alert.alert(
           'Not Found',
-          'No warranty information found for this ' + (searchType === 'serial' ? 'serial number' : 'bill number')
+          `No warranty information found for this ${searchLabel}`
         );
       } else {
         const data = snapshot.docs[0].data();

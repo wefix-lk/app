@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   },
   filterChipActive: { backgroundColor: Colors.primary },
   filterText: { 
-    fontSize: 13, 
+    fontSize: 12, 
     color: Colors.text,
     textAlign: 'center',
   },

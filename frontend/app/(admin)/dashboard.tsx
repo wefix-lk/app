@@ -45,6 +45,26 @@ export default function AdminDashboard() {
   });
   const [refreshing, setRefreshing] = useState(false);
 
+  // Quick Actions Modals
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  // Add Product Form
+  const [productName, setProductName] = useState('');
+  const [modelNumber, setModelNumber] = useState('');
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
+  const [productImages, setProductImages] = useState<string[]>([]);
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
+
+  // Notification Form
+  const [notificationTitle, setNotificationTitle] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [isSendingNotification, setIsSendingNotification] = useState(false);
+
   const navigateToBookings = (filter?: string) => {
     if (filter) {
       router.push({

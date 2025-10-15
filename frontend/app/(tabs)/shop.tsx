@@ -100,7 +100,11 @@ export default function ShopScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Shop Parts</Text>
-        <TouchableOpacity style={styles.cartButton}>
+        <TouchableOpacity 
+          style={styles.cartButton}
+          onPress={() => router.push('/cart')}
+          activeOpacity={0.7}
+        >
           <Ionicons name="cart" size={24} color={Colors.text} />
           <View style={styles.cartBadge}>
             <Text style={styles.cartBadgeText}>0</Text>
@@ -109,36 +113,35 @@ export default function ShopScreen() {
       </View>
 
       {/* Categories */}
-      <View style={styles.categoriesWrapper}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesContainer}
-          bounces={true}
-          scrollEventThrottle={16}
-          decelerationRate="fast"
-        >
-          {categories.map((item) => (
-            <TouchableOpacity
-              key={item.id}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.categoriesWrapper}
+        contentContainerStyle={styles.categoriesContainer}
+        bounces={true}
+        scrollEventThrottle={16}
+        decelerationRate="fast"
+      >
+        {categories.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[
+              styles.categoryChip,
+              selectedCategory === item.id && styles.categoryChipActive,
+            ]}
+            onPress={() => setSelectedCategory(item.id)}
+          >
+            <Text
               style={[
-                styles.categoryChip,
-                selectedCategory === item.id && styles.categoryChipActive,
+                styles.categoryText,
+                selectedCategory === item.id && styles.categoryTextActive,
               ]}
-              onPress={() => setSelectedCategory(item.id)}
             >
-              <Text
-                style={[
-                  styles.categoryText,
-                  selectedCategory === item.id && styles.categoryTextActive,
-                ]}
-              >
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+              {item.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
       {/* Products Grid */}
       <FlatList

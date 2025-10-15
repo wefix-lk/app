@@ -220,6 +220,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: Colors.backgroundGray,
     marginRight: 8,
+    minWidth: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   categoryChipActive: {
     backgroundColor: Colors.primary,
@@ -231,6 +234,7 @@ const styles = StyleSheet.create({
   },
   categoryTextActive: {
     color: Colors.textWhite,
+    fontWeight: '500',
   },
   productsContainer: {
     padding: 16,

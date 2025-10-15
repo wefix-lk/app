@@ -51,6 +51,11 @@ export default function ManageProductsScreen() {
   const [editImages, setEditImages] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Delete Modal States
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   useEffect(() => {
     loadProducts();
   }, []);

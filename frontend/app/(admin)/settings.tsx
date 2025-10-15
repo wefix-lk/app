@@ -92,13 +92,13 @@ export default function AdminSettings() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account</Text>
           
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleAdminProfile}>
             <Ionicons name="person-outline" size={24} color={Colors.text} />
             <Text style={styles.menuText}>Admin Profile</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleChangePassword}>
             <Ionicons name="key-outline" size={24} color={Colors.text} />
             <Text style={styles.menuText}>Change Password</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
@@ -108,13 +108,13 @@ export default function AdminSettings() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Data Management</Text>
           
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleExportData}>
             <Ionicons name="download-outline" size={24} color={Colors.info} />
             <Text style={styles.menuText}>Export All Data</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleBackupData}>
             <Ionicons name="cloud-upload-outline" size={24} color={Colors.success} />
             <Text style={styles.menuText}>Backup Data</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />

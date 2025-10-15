@@ -28,6 +28,7 @@ export default function ShopScreen() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [allProducts, setAllProducts] = useState(mockProducts);
   const [refreshing, setRefreshing] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   const categories = [
     { id: 'all', label: 'All' },

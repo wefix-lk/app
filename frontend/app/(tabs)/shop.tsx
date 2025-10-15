@@ -221,13 +221,10 @@ const styles = StyleSheet.create({
   },
   categoriesWrapper: {
     backgroundColor: Colors.background,
-    maxWidth: '100%',
   },
   categoriesContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   categoryChip: {
     paddingHorizontal: 16,

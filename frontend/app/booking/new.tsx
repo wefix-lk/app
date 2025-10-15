@@ -21,7 +21,7 @@ import { db, isFirebaseConfigured } from '../../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function NewBookingScreen() {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const router = useRouter();
   
   const [tvBrand, setTvBrand] = useState('');

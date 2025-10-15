@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   },
   categoriesContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 6,
+    paddingVertical: 4,
   },
   categoryChip: {
     paddingHorizontal: 16,
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   },
   productsContainer: {
     padding: 16,
-    paddingTop: 12,
+    paddingTop: 8,
     flexGrow: 1,
   },
   productRow: {

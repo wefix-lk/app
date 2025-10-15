@@ -528,7 +528,15 @@ export default function BookingsManagement() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.backgroundGray },
-  header: { padding: 16 },
+  header: { 
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerContent: {
+    flex: 1,
+  },
   title: { fontSize: 24, fontWeight: 'bold', color: Colors.text },
   subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4 },
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.background, borderRadius: 12, paddingHorizontal: 16, marginHorizontal: 16, marginBottom: 12, gap: 8 },

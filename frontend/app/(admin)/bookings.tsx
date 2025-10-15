@@ -310,13 +310,26 @@ export default function BookingsManagement() {
         ) : null}
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterContainer}>
+      <ScrollView 
+        ref={filterScrollRef}
+        horizontal 
+        showsHorizontalScrollIndicator={false} 
+        style={styles.filterContainer}
+        contentContainerStyle={styles.filterContentContainer}
+      >
         <TouchableOpacity
           style={[styles.filterChip, statusFilter === 'all' && styles.filterChipActive]}
-          onPress={() => setStatusFilter('all')}
+          onPress={() => handleStatusFilterChange('all')}
+          onLayout={(e) => {
+            const { x, width } = e.nativeEvent.layout;
+            setTabLayouts(prev => ({ ...prev, all: { x, width } }));
+          }}
         >
           <Text style={[styles.filterText, statusFilter === 'all' && styles.filterTextActive]}>
-            All ({bookings.length})
+            All
+          </Text>
+          <Text style={[styles.filterCount, statusFilter === 'all' && styles.filterCountActive]}>
+            {bookings.length}
           </Text>
         </TouchableOpacity>
         {STATUS_OPTIONS.map((status) => {
@@ -328,10 +341,17 @@ export default function BookingsManagement() {
                 styles.filterChip,
                 statusFilter === status.value && { ...styles.filterChipActive, backgroundColor: status.color },
               ]}
-              onPress={() => setStatusFilter(status.value)}
+              onPress={() => handleStatusFilterChange(status.value)}
+              onLayout={(e) => {
+                const { x, width } = e.nativeEvent.layout;
+                setTabLayouts(prev => ({ ...prev, [status.value]: { x, width } }));
+              }}
             >
               <Text style={[styles.filterText, statusFilter === status.value && styles.filterTextActive]}>
-                {status.label} ({count})
+                {status.label}
+              </Text>
+              <Text style={[styles.filterCount, statusFilter === status.value && styles.filterCountActive]}>
+                {count}
               </Text>
             </TouchableOpacity>
           );

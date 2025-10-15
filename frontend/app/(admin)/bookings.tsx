@@ -65,16 +65,26 @@ export default function BookingsManagement() {
 
   const loadBookings = async () => {
     try {
-      const bookingsJson = await AsyncStorage.getItem('bookings');
+      // Try both storage keys for compatibility
+      let bookingsJson = await AsyncStorage.getItem('local_bookings');
+      if (!bookingsJson) {
+        bookingsJson = await AsyncStorage.getItem('bookings');
+      }
+      
       if (bookingsJson) {
         const allBookings: Booking[] = JSON.parse(bookingsJson);
+        console.log('📋 Admin loaded bookings:', allBookings.length);
         allBookings.sort((a, b) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         setBookings(allBookings);
+      } else {
+        console.log('⚠️ No bookings found in storage');
+        setBookings([]);
       }
     } catch (error) {
-      console.error('Error loading bookings:', error);
+      console.error('❌ Error loading bookings:', error);
+      setBookings([]);
     }
   };
 

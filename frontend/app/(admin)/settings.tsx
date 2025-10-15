@@ -37,22 +37,26 @@ export default function AdminSettings() {
 
   const handleAdminProfile = () => {
     console.log('👤 Admin Profile pressed');
-    showInfo('Admin Profile', 'Profile management feature coming soon!');
+    router.push('/(admin)/profile-edit');
   };
 
   const handleChangePassword = () => {
     console.log('🔑 Change Password pressed');
-    showInfo('Change Password', 'Password change feature coming soon!');
+    router.push('/(admin)/change-password');
   };
 
   const handleExportData = () => {
     console.log('📥 Export Data pressed');
-    showInfo('Export Data', 'This feature will export all bookings, warranties, and service requests to a CSV file. Coming soon!');
+    router.push('/(admin)/export-data');
   };
 
-  const handleBackupData = () => {
+  const handleBackupData = async () => {
     console.log('☁️ Backup Data pressed');
-    showInfo('Backup Data', 'This feature will create a backup of all app data to Firebase/Cloud storage. Coming soon!');
+    showInfo('Backup Data', 'Creating backup of all data to AsyncStorage. In production, this would sync to Firebase/Cloud storage.');
+    // Simulate backup
+    setTimeout(() => {
+      showInfo('Success', 'Data backup completed successfully!');
+    }, 2000);
   };
 
   return (

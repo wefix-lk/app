@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4 },
   searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.background, borderRadius: 12, paddingHorizontal: 16, marginHorizontal: 16, marginBottom: 12, gap: 8 },
   searchInput: { flex: 1, height: 44, color: Colors.text },
-  filterContainer: { paddingHorizontal: 16, marginBottom: 12 },
+  filterContainer: { paddingHorizontal: 12, marginBottom: 12, paddingVertical: 4 },
   filterChip: { 
     paddingHorizontal: 10, 
     paddingVertical: 7, 

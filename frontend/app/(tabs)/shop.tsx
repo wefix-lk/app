@@ -199,6 +199,56 @@ export default function ShopScreen() {
           </TouchableOpacity>
         )}
       />
+
+      {/* Category Selection Modal */}
+      <Modal
+        visible={showSearchModal}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowSearchModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Category</Text>
+              <TouchableOpacity onPress={() => setShowSearchModal(false)}>
+                <Ionicons name="close" size={24} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.modalBody}>
+              {categories.map((category) => (
+                <TouchableOpacity
+                  key={category.id}
+                  style={[
+                    styles.categoryOption,
+                    selectedCategory === category.id && styles.categoryOptionActive
+                  ]}
+                  onPress={() => {
+                    setSelectedCategory(category.id);
+                    setShowSearchModal(false);
+                  }}
+                >
+                  <Ionicons 
+                    name={category.id === 'all' ? 'grid' : 'cube'} 
+                    size={20} 
+                    color={selectedCategory === category.id ? Colors.primary : Colors.textLight} 
+                  />
+                  <Text style={[
+                    styles.categoryOptionText,
+                    selectedCategory === category.id && styles.categoryOptionTextActive
+                  ]}>
+                    {category.label}
+                  </Text>
+                  {selectedCategory === category.id && (
+                    <Ionicons name="checkmark" size={20} color={Colors.primary} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

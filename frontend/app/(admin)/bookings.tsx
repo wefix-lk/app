@@ -128,6 +128,8 @@ export default function BookingsManagement() {
         return b;
       });
 
+      // Update in both storage locations for compatibility
+      await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
       await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
       setBookings(updatedBookings);
 
@@ -136,8 +138,9 @@ export default function BookingsManagement() {
       }
 
       Alert.alert('Success', 'Booking status updated and synced to customer view');
+      console.log(`✅ Updated booking ${bookingId} to ${newStatus}`);
     } catch (error) {
-      console.error('Error updating booking status:', error);
+      console.error('❌ Error updating booking status:', error);
       Alert.alert('Error', 'Failed to update booking status');
     }
   };

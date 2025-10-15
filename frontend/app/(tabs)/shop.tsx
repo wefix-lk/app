@@ -33,10 +33,57 @@ export default function ShopScreen() {
     { id: 'Main Boards', label: 'Boards' },
   ];
 
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    try {
+      // Load admin-added products
+      const adminProductsJson = await AsyncStorage.getItem('admin_products');
+      const adminProducts = adminProductsJson ? JSON.parse(adminProductsJson) : [];
+      
+      // Filter only active/visible products
+      const visibleAdminProducts = adminProducts.filter((p: any) => p.isActive !== false);
+      
+      // Transform admin products to match the expected format
+      const transformedAdminProducts = visibleAdminProducts.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        price: p.price,
+        images: p.images && p.images.length > 0 ? p.images : ['https://via.placeholder.com/300'],
+        isInStock: (p.stock || 0) > 0,
+        stock: p.stock || 0,
+        description: p.description || '',
+        modelNumber: p.modelNumber || '',
+      }));
+
+      // Combine mock products with admin products
+      const combined = [...mockProducts, ...transformedAdminProducts];
+      setAllProducts(combined);
+      
+      console.log('📦 Loaded products:', {
+        mock: mockProducts.length,
+        admin: transformedAdminProducts.length,
+        total: combined.length
+      });
+    } catch (error) {
+      console.error('❌ Error loading products:', error);
+      setAllProducts(mockProducts); // Fallback to mock products
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadProducts();
+    setRefreshing(false);
+  };
+
   const filteredProducts =
     selectedCategory === 'all'
-      ? mockProducts
-      : mockProducts.filter((p) => p.category === selectedCategory);
+      ? allProducts
+      : allProducts.filter((p) => p.category === selectedCategory);
 
   return (
     <SafeAreaView style={styles.container}>

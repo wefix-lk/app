@@ -121,6 +121,18 @@ export default function ShopScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Search Bar */}
+      <TouchableOpacity 
+        style={styles.searchBar}
+        onPress={() => setShowSearchModal(true)}
+        activeOpacity={0.7}
+      >
+        <Ionicons name="search" size={20} color={Colors.textLight} />
+        <Text style={styles.searchPlaceholder}>
+          {selectedCategory === 'all' ? 'Search products...' : categories.find(c => c.id === selectedCategory)?.label || 'Search products...'}
+        </Text>
+      </TouchableOpacity>
+
       {/* Categories */}
       <ScrollView
         horizontal

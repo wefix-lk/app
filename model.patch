@@ -1,185 +1,204 @@
 diff --git a/frontend/app/(tabs)/shop.tsx b/frontend/app/(tabs)/shop.tsx
-index 18d07ce..e0c0e49 100644
+index e0c0e49..f98ad49 100644
 --- a/frontend/app/(tabs)/shop.tsx
 +++ b/frontend/app/(tabs)/shop.tsx
-@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
-   },
-   categoriesContainer: {
-     paddingHorizontal: 16,
--    paddingVertical: 8,
-+    paddingVertical: 6,
-   },
-   categoryChip: {
-     paddingHorizontal: 16,
-@@ -351,6 +351,7 @@ const styles = StyleSheet.create({
-   },
-   productsContainer: {
-     padding: 16,
-+    paddingTop: 12,
-     flexGrow: 1,
-   },
-   productRow: {
+@@ -262,7 +262,8 @@ const styles = StyleSheet.create({
+     flexDirection: 'row',
+     justifyContent: 'space-between',
+     alignItems: 'center',
+-    padding: 16,
++    paddingHorizontal: 16,
++    paddingVertical: 10,
+     backgroundColor: Colors.background,
+     borderBottomWidth: 1,
+     borderBottomColor: Colors.border,
 diff --git a/model.patch b/model.patch
-index 96a5ac8..e69de29 100644
+index d641f98..e69de29 100644
 --- a/model.patch
 +++ b/model.patch
-@@ -1,159 +0,0 @@
+@@ -1,185 +0,0 @@
+-diff --git a/frontend/app/(tabs)/shop.tsx b/frontend/app/(tabs)/shop.tsx
+-index 18d07ce..e0c0e49 100644
+---- a/frontend/app/(tabs)/shop.tsx
+-+++ b/frontend/app/(tabs)/shop.tsx
+-@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
+-   },
+-   categoriesContainer: {
+-     paddingHorizontal: 16,
+--    paddingVertical: 8,
+-+    paddingVertical: 6,
+-   },
+-   categoryChip: {
+-     paddingHorizontal: 16,
+-@@ -351,6 +351,7 @@ const styles = StyleSheet.create({
+-   },
+-   productsContainer: {
+-     padding: 16,
+-+    paddingTop: 12,
+-     flexGrow: 1,
+-   },
+-   productRow: {
 -diff --git a/model.patch b/model.patch
--index a052df2..e69de29 100644
+-index 96a5ac8..e69de29 100644
 ---- a/model.patch
 -+++ b/model.patch
--@@ -1,154 +0,0 @@
---diff --git a/frontend/app/(tabs)/shop.tsx b/frontend/app/(tabs)/shop.tsx
---index 2b329c3..309f5be 100644
------ a/frontend/app/(tabs)/shop.tsx
---+++ b/frontend/app/(tabs)/shop.tsx
---@@ -272,6 +272,24 @@ const styles = StyleSheet.create({
---     fontWeight: 'bold',
---     color: Colors.text,
---   },
---+  searchBar: {
---+    flexDirection: 'row',
---+    alignItems: 'center',
---+    backgroundColor: Colors.background,
---+    borderRadius: 12,
---+    padding: 12,
---+    marginHorizontal: 16,
---+    marginTop: 8,
---+    marginBottom: 8,
---+    gap: 10,
---+    borderWidth: 1,
---+    borderColor: Colors.border,
---+  },
---+  searchPlaceholder: {
---+    flex: 1,
---+    fontSize: 15,
---+    color: Colors.textLight,
---+  },
---   cartButton: {
---     position: 'relative',
---   },
---@@ -379,4 +397,49 @@ const styles = StyleSheet.create({
---     color: Colors.error,
---     fontWeight: '500',
---   },
---+  modalOverlay: {
---+    flex: 1,
---+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
---+    justifyContent: 'flex-end',
---+  },
---+  modalContent: {
---+    backgroundColor: Colors.background,
---+    borderTopLeftRadius: 20,
---+    borderTopRightRadius: 20,
---+    maxHeight: '80%',
---+  },
---+  modalHeader: {
---+    flexDirection: 'row',
---+    justifyContent: 'space-between',
---+    alignItems: 'center',
---+    padding: 20,
---+    borderBottomWidth: 1,
---+    borderBottomColor: Colors.border,
---+  },
---+  modalTitle: {
---+    fontSize: 18,
---+    fontWeight: 'bold',
---+    color: Colors.text,
---+  },
---+  modalBody: {
---+    maxHeight: 400,
---+  },
---+  categoryOption: {
---+    flexDirection: 'row',
---+    alignItems: 'center',
---+    padding: 16,
---+    gap: 12,
---+  },
---+  categoryOptionActive: {
---+    backgroundColor: Colors.backgroundGray,
---+  },
---+  categoryOptionText: {
---+    flex: 1,
---+    fontSize: 16,
---+    color: Colors.text,
---+  },
---+  categoryOptionTextActive: {
---+    color: Colors.primary,
---+    fontWeight: '600',
---+  },
--- });
+-@@ -1,159 +0,0 @@
 --diff --git a/model.patch b/model.patch
---index 85605bd..e69de29 100644
+--index a052df2..e69de29 100644
 ----- a/model.patch
 --+++ b/model.patch
---@@ -1,70 +0,0 @@
+--@@ -1,154 +0,0 @@
 ---diff --git a/frontend/app/(tabs)/shop.tsx b/frontend/app/(tabs)/shop.tsx
----index f03955e..67241cf 100644
+---index 2b329c3..309f5be 100644
 ------ a/frontend/app/(tabs)/shop.tsx
 ---+++ b/frontend/app/(tabs)/shop.tsx
----@@ -264,8 +264,12 @@ const styles = StyleSheet.create({
----     fontSize: 14,
----     lineHeight: 18,
+---@@ -272,6 +272,24 @@ const styles = StyleSheet.create({
+---     fontWeight: 'bold',
+---     color: Colors.text,
 ---   },
----+  productsList: {
----+    flex: 1,
+---+  searchBar: {
+---+    flexDirection: 'row',
+---+    alignItems: 'center',
+---+    backgroundColor: Colors.background,
+---+    borderRadius: 12,
+---+    padding: 12,
+---+    marginHorizontal: 16,
+---+    marginTop: 8,
+---+    marginBottom: 8,
+---+    gap: 10,
+---+    borderWidth: 1,
+---+    borderColor: Colors.border,
 ---+  },
----   productsContainer: {
----     padding: 16,
----+    flexGrow: 1,
+---+  searchPlaceholder: {
+---+    flex: 1,
+---+    fontSize: 15,
+---+    color: Colors.textLight,
+---+  },
+---   cartButton: {
+---     position: 'relative',
 ---   },
----   productRow: {
----     justifyContent: 'space-between',
+---@@ -379,4 +397,49 @@ const styles = StyleSheet.create({
+---     color: Colors.error,
+---     fontWeight: '500',
+---   },
+---+  modalOverlay: {
+---+    flex: 1,
+---+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+---+    justifyContent: 'flex-end',
+---+  },
+---+  modalContent: {
+---+    backgroundColor: Colors.background,
+---+    borderTopLeftRadius: 20,
+---+    borderTopRightRadius: 20,
+---+    maxHeight: '80%',
+---+  },
+---+  modalHeader: {
+---+    flexDirection: 'row',
+---+    justifyContent: 'space-between',
+---+    alignItems: 'center',
+---+    padding: 20,
+---+    borderBottomWidth: 1,
+---+    borderBottomColor: Colors.border,
+---+  },
+---+  modalTitle: {
+---+    fontSize: 18,
+---+    fontWeight: 'bold',
+---+    color: Colors.text,
+---+  },
+---+  modalBody: {
+---+    maxHeight: 400,
+---+  },
+---+  categoryOption: {
+---+    flexDirection: 'row',
+---+    alignItems: 'center',
+---+    padding: 16,
+---+    gap: 12,
+---+  },
+---+  categoryOptionActive: {
+---+    backgroundColor: Colors.backgroundGray,
+---+  },
+---+  categoryOptionText: {
+---+    flex: 1,
+---+    fontSize: 16,
+---+    color: Colors.text,
+---+  },
+---+  categoryOptionTextActive: {
+---+    color: Colors.primary,
+---+    fontWeight: '600',
+---+  },
+--- });
 ---diff --git a/model.patch b/model.patch
----index 7cbb45d..e69de29 100644
+---index 85605bd..e69de29 100644
 ------ a/model.patch
 ---+++ b/model.patch
----@@ -1,48 +0,0 @@
-----diff --git a/frontend/app/(tabs)/profile.tsx b/frontend/app/(tabs)/profile.tsx
-----index 55c374b..e6b8ae6 100644
-------- a/frontend/app/(tabs)/profile.tsx
-----+++ b/frontend/app/(tabs)/profile.tsx
-----@@ -40,37 +40,37 @@ export default function ProfileScreen() {
-----       id: '1',
-----       title: 'Edit Profile',
-----       icon: 'person-outline',
------      onPress: () => Alert.alert('Coming Soon', 'Profile editing will be available soon'),
-----+      onPress: () => router.push('/profile/edit'),
-----     },
-----     {
-----       id: '2',
-----       title: 'My Orders',
-----       icon: 'receipt-outline',
------      onPress: () => Alert.alert('Coming Soon', 'Order history will be available soon'),
-----+      onPress: () => router.push('/profile/orders'),
-----     },
-----     {
-----       id: '3',
-----       title: 'Saved Addresses',
-----       icon: 'location-outline',
------      onPress: () => Alert.alert('Coming Soon', 'Address management will be available soon'),
-----+      onPress: () => router.push('/profile/addresses'),
-----     },
-----     {
-----       id: '4',
-----       title: 'Notifications',
-----       icon: 'notifications-outline',
------      onPress: () => Alert.alert('Coming Soon', 'Notification settings will be available soon'),
-----+      onPress: () => router.push('/profile/notifications'),
-----     },
-----     {
-----       id: '5',
-----       title: 'Help & Support',
-----       icon: 'help-circle-outline',
------      onPress: () => Alert.alert('Support', 'Contact us at:\nPhone: +94 77 123 4567\nEmail: info@wefix.lk'),
-----+      onPress: () => router.push('/profile/help'),
-----     },
-----     {
-----       id: '6',
-----       title: 'About WeFix.lk',
-----       icon: 'information-circle-outline',
------      onPress: () => Alert.alert('WeFix.lk', 'Version 1.0.0\n\nProfessional TV repair and parts service in Sri Lanka'),
-----+      onPress: () => router.push('/profile/about'),
-----     },
-----   ];
----- 
+---@@ -1,70 +0,0 @@
+----diff --git a/frontend/app/(tabs)/shop.tsx b/frontend/app/(tabs)/shop.tsx
+----index f03955e..67241cf 100644
+------- a/frontend/app/(tabs)/shop.tsx
+----+++ b/frontend/app/(tabs)/shop.tsx
+----@@ -264,8 +264,12 @@ const styles = StyleSheet.create({
+----     fontSize: 14,
+----     lineHeight: 18,
+----   },
+----+  productsList: {
+----+    flex: 1,
+----+  },
+----   productsContainer: {
+----     padding: 16,
+----+    flexGrow: 1,
+----   },
+----   productRow: {
+----     justifyContent: 'space-between',
+----diff --git a/model.patch b/model.patch
+----index 7cbb45d..e69de29 100644
+------- a/model.patch
+----+++ b/model.patch
+----@@ -1,48 +0,0 @@
+-----diff --git a/frontend/app/(tabs)/profile.tsx b/frontend/app/(tabs)/profile.tsx
+-----index 55c374b..e6b8ae6 100644
+-------- a/frontend/app/(tabs)/profile.tsx
+-----+++ b/frontend/app/(tabs)/profile.tsx
+-----@@ -40,37 +40,37 @@ export default function ProfileScreen() {
+-----       id: '1',
+-----       title: 'Edit Profile',
+-----       icon: 'person-outline',
+------      onPress: () => Alert.alert('Coming Soon', 'Profile editing will be available soon'),
+-----+      onPress: () => router.push('/profile/edit'),
+-----     },
+-----     {
+-----       id: '2',
+-----       title: 'My Orders',
+-----       icon: 'receipt-outline',
+------      onPress: () => Alert.alert('Coming Soon', 'Order history will be available soon'),
+-----+      onPress: () => router.push('/profile/orders'),
+-----     },
+-----     {
+-----       id: '3',
+-----       title: 'Saved Addresses',
+-----       icon: 'location-outline',
+------      onPress: () => Alert.alert('Coming Soon', 'Address management will be available soon'),
+-----+      onPress: () => router.push('/profile/addresses'),
+-----     },
+-----     {
+-----       id: '4',
+-----       title: 'Notifications',
+-----       icon: 'notifications-outline',
+------      onPress: () => Alert.alert('Coming Soon', 'Notification settings will be available soon'),
+-----+      onPress: () => router.push('/profile/notifications'),
+-----     },
+-----     {
+-----       id: '5',
+-----       title: 'Help & Support',
+-----       icon: 'help-circle-outline',
+------      onPress: () => Alert.alert('Support', 'Contact us at:\nPhone: +94 77 123 4567\nEmail: info@wefix.lk'),
+-----+      onPress: () => router.push('/profile/help'),
+-----     },
+-----     {
+-----       id: '6',
+-----       title: 'About WeFix.lk',
+-----       icon: 'information-circle-outline',
+------      onPress: () => Alert.alert('WeFix.lk', 'Version 1.0.0\n\nProfessional TV repair and parts service in Sri Lanka'),
+-----+      onPress: () => router.push('/profile/about'),
+-----     },
+-----   ];
+----- 

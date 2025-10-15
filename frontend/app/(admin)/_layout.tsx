@@ -67,6 +67,12 @@ export default function AdminLayout() {
       
       {/* Hide these screens from tab bar - they're accessed via navigation */}
       <Tabs.Screen
+        name="products"
+        options={{
+          href: null, // This hides it from tabs
+        }}
+      />
+      <Tabs.Screen
         name="profile-edit"
         options={{
           href: null, // This hides it from tabs
@@ -88,6 +94,12 @@ export default function AdminLayout() {
         name="settings-test"
         options={{
           href: null, // This hides the test page from tabs
+        }}
+      />
+      <Tabs.Screen
+        name="settings_old"
+        options={{
+          href: null, // This hides the old settings backup from tabs
         }}
       />
     </Tabs>

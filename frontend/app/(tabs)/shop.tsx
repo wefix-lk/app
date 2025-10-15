@@ -108,31 +108,35 @@ export default function ShopScreen() {
       </View>
 
       {/* Categories */}
-      <FlatList
-        horizontal
-        data={categories}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.categoriesContainer}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.categoryChip,
-              selectedCategory === item.id && styles.categoryChipActive,
-            ]}
-            onPress={() => setSelectedCategory(item.id)}
-          >
-            <Text
+      <View style={styles.categoriesWrapper}>
+        <FlatList
+          horizontal
+          data={categories}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.categoriesContainer}
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled={true}
+          nestedScrollEnabled={true}
+          renderItem={({ item }) => (
+            <TouchableOpacity
               style={[
-                styles.categoryText,
-                selectedCategory === item.id && styles.categoryTextActive,
+                styles.categoryChip,
+                selectedCategory === item.id && styles.categoryChipActive,
               ]}
+              onPress={() => setSelectedCategory(item.id)}
             >
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
+              <Text
+                style={[
+                  styles.categoryText,
+                  selectedCategory === item.id && styles.categoryTextActive,
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
 
       {/* Products Grid */}
       <FlatList

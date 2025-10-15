@@ -271,6 +271,22 @@ export default function BookingsManagement() {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const scrollToTab = (statusValue: string) => {
+    const layout = tabLayouts[statusValue];
+    if (layout && filterScrollRef.current) {
+      // Scroll to center the selected tab
+      filterScrollRef.current.scrollTo({
+        x: layout.x - 50, // Offset to center the tab
+        animated: true,
+      });
+    }
+  };
+
+  const handleStatusFilterChange = (statusValue: string) => {
+    setStatusFilter(statusValue);
+    scrollToTab(statusValue);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

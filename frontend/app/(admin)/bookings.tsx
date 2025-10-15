@@ -119,6 +119,8 @@ export default function BookingsManagement() {
 
   const updateBookingStatus = async (bookingId: string, newStatus: string) => {
     try {
+      const booking = bookings.find(b => b.id === bookingId);
+      
       const updatedBookings = bookings.map((b) => {
         if (b.id === bookingId) {
           return {
@@ -139,11 +141,23 @@ export default function BookingsManagement() {
         setSelectedBooking({ ...selectedBooking, status: newStatus });
       }
 
-      Alert.alert('Success', 'Booking status updated and synced to customer view');
+      // Send notification to customer
+      if (booking) {
+        await sendCustomerNotification(booking.customerName, newStatus);
+      }
+
+      setSuccessMessage('✅ Status updated and customer notified');
       console.log(`✅ Updated booking ${bookingId} to ${newStatus}`);
+      
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
     } catch (error) {
       console.error('❌ Error updating booking status:', error);
-      Alert.alert('Error', 'Failed to update booking status');
+      setSuccessMessage('❌ Failed to update status');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
     }
   };
 

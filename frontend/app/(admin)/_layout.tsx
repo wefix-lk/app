@@ -64,6 +64,32 @@ export default function AdminLayout() {
           ),
         }}
       />
+      
+      {/* Hide these screens from tab bar - they're accessed via navigation */}
+      <Tabs.Screen
+        name="profile-edit"
+        options={{
+          href: null, // This hides it from tabs
+        }}
+      />
+      <Tabs.Screen
+        name="change-password"
+        options={{
+          href: null, // This hides it from tabs
+        }}
+      />
+      <Tabs.Screen
+        name="export-data"
+        options={{
+          href: null, // This hides it from tabs
+        }}
+      />
+      <Tabs.Screen
+        name="settings-test"
+        options={{
+          href: null, // This hides the test page from tabs
+        }}
+      />
     </Tabs>
   );
 }

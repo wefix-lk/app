@@ -46,6 +46,7 @@ const STATUS_OPTIONS = [
 ];
 
 export default function BookingsManagement() {
+  const params = useLocalSearchParams();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,6 +60,17 @@ export default function BookingsManagement() {
   const [noteSaving, setNoteSaving] = useState(false);
   const filterScrollRef = useRef<ScrollView>(null);
   const [tabLayouts, setTabLayouts] = useState<{ [key: string]: { x: number; width: number } }>({});
+
+  // Handle navigation filter parameter
+  useEffect(() => {
+    if (params.filter && typeof params.filter === 'string') {
+      setStatusFilter(params.filter);
+      // Scroll to the filtered tab after a short delay to ensure layouts are calculated
+      setTimeout(() => {
+        scrollToTab(params.filter as string);
+      }, 300);
+    }
+  }, [params.filter]);
 
   useEffect(() => {
     loadBookings();

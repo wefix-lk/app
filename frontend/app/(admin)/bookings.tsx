@@ -415,8 +415,16 @@ export default function BookingsManagement() {
                       onChangeText={setEditingAdminNote}
                       multiline
                     />
-                    <TouchableOpacity style={styles.saveBtn} onPress={saveAdminNote}>
-                      <Text style={styles.saveBtnText}>Save Note</Text>
+                    <TouchableOpacity 
+                      style={[styles.saveBtn, noteSaving && styles.saveBtnDisabled]} 
+                      onPress={saveAdminNote}
+                      disabled={noteSaving}
+                    >
+                      {noteSaving ? (
+                        <ActivityIndicator color={Colors.textWhite} />
+                      ) : (
+                        <Text style={styles.saveBtnText}>Save Note & Notify Customer</Text>
+                      )}
                     </TouchableOpacity>
                   </View>
 

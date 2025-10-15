@@ -36,8 +36,19 @@ export default function AdminDashboard() {
   });
   const [refreshing, setRefreshing] = useState(false);
 
-  const navigateToBookings = () => {
-    router.push('/(admin)/bookings');
+  const navigateToBookings = (filter?: string) => {
+    if (filter) {
+      router.push({
+        pathname: '/(admin)/bookings',
+        params: { filter },
+      });
+    } else {
+      router.push('/(admin)/bookings');
+    }
+  };
+
+  const navigateToServiceRequests = () => {
+    router.push('/(admin)/requests');
   };
 
   useEffect(() => {

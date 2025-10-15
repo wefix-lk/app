@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginHorizontal: 16,
     marginTop: 6,
-    marginBottom: 2,
+    marginBottom: 0,
     gap: 10,
     borderWidth: 1,
     borderColor: Colors.border,

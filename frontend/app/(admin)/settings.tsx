@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -9,75 +9,50 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function AdminSettings() {
   const { signOut, userProfile } = useAuth();
   const router = useRouter();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoModalContent, setInfoModalContent] = useState({ title: '', message: '' });
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout from admin panel?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await signOut();
-              router.replace('/(auth)/login');
-            } catch (error) {
-              Alert.alert('Error', 'Failed to logout');
-            }
-          },
-        },
-      ]
-    );
+  const handleLogout = async () => {
+    console.log('🔐 Logout button pressed');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    console.log('✅ Confirming logout');
+    try {
+      await signOut();
+      setShowLogoutModal(false);
+      router.replace('/(auth)/login');
+    } catch (error) {
+      console.error('❌ Logout error:', error);
+      showInfo('Error', 'Failed to logout. Please try again.');
+    }
+  };
+
+  const showInfo = (title: string, message: string) => {
+    setInfoModalContent({ title, message });
+    setShowInfoModal(true);
   };
 
   const handleAdminProfile = () => {
-    Alert.alert(
-      'Admin Profile',
-      'Profile management feature coming soon!',
-      [{ text: 'OK' }]
-    );
+    console.log('👤 Admin Profile pressed');
+    showInfo('Admin Profile', 'Profile management feature coming soon!');
   };
 
   const handleChangePassword = () => {
-    Alert.alert(
-      'Change Password',
-      'Password change feature coming soon!',
-      [{ text: 'OK' }]
-    );
+    console.log('🔑 Change Password pressed');
+    showInfo('Change Password', 'Password change feature coming soon!');
   };
 
   const handleExportData = () => {
-    Alert.alert(
-      'Export Data',
-      'This will export all bookings, warranties, and service requests to a CSV file.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Export',
-          onPress: () => {
-            Alert.alert('Success', 'Data export feature coming soon!');
-          },
-        },
-      ]
-    );
+    console.log('📥 Export Data pressed');
+    showInfo('Export Data', 'This feature will export all bookings, warranties, and service requests to a CSV file. Coming soon!');
   };
 
   const handleBackupData = () => {
-    Alert.alert(
-      'Backup Data',
-      'This will create a backup of all app data to Firebase/Cloud storage.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Backup',
-          onPress: () => {
-            Alert.alert('Success', 'Data backup feature coming soon!');
-          },
-        },
-      ]
-    );
+    console.log('☁️ Backup Data pressed');
+    showInfo('Backup Data', 'This feature will create a backup of all app data to Firebase/Cloud storage. Coming soon!');
   };
 
   return (
@@ -92,13 +67,13 @@ export default function AdminSettings() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account</Text>
           
-          <TouchableOpacity style={styles.menuItem} onPress={handleAdminProfile}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleAdminProfile} activeOpacity={0.7}>
             <Ionicons name="person-outline" size={24} color={Colors.text} />
             <Text style={styles.menuText}>Admin Profile</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={handleChangePassword}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleChangePassword} activeOpacity={0.7}>
             <Ionicons name="key-outline" size={24} color={Colors.text} />
             <Text style={styles.menuText}>Change Password</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
@@ -108,13 +83,13 @@ export default function AdminSettings() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Data Management</Text>
           
-          <TouchableOpacity style={styles.menuItem} onPress={handleExportData}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleExportData} activeOpacity={0.7}>
             <Ionicons name="download-outline" size={24} color={Colors.info} />
             <Text style={styles.menuText}>Export All Data</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={handleBackupData}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleBackupData} activeOpacity={0.7}>
             <Ionicons name="cloud-upload-outline" size={24} color={Colors.success} />
             <Text style={styles.menuText}>Backup Data</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
@@ -135,28 +110,214 @@ export default function AdminSettings() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.8}>
           <Ionicons name="log-out-outline" size={24} color={Colors.textWhite} />
           <Text style={styles.logoutButtonText}>Logout from Admin Panel</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Logout Confirmation Modal */}
+      <Modal visible={showLogoutModal} transparent animationType="fade">
+        <Pressable style={styles.modalOverlay} onPress={() => setShowLogoutModal(false)}>
+          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.modalHeader}>
+              <Ionicons name="log-out" size={48} color={Colors.error} />
+            </View>
+            <Text style={styles.modalTitle}>Logout</Text>
+            <Text style={styles.modalMessage}>Are you sure you want to logout from admin panel?</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={styles.modalButtonCancel} 
+                onPress={() => setShowLogoutModal(false)}
+              >
+                <Text style={styles.modalButtonCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.modalButtonConfirm} 
+                onPress={confirmLogout}
+              >
+                <Text style={styles.modalButtonConfirmText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Info Modal */}
+      <Modal visible={showInfoModal} transparent animationType="fade">
+        <Pressable style={styles.modalOverlay} onPress={() => setShowInfoModal(false)}>
+          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.modalHeader}>
+              <Ionicons name="information-circle" size={48} color={Colors.primary} />
+            </View>
+            <Text style={styles.modalTitle}>{infoModalContent.title}</Text>
+            <Text style={styles.modalMessage}>{infoModalContent.message}</Text>
+            <TouchableOpacity 
+              style={styles.modalButtonSingle} 
+              onPress={() => setShowInfoModal(false)}
+            >
+              <Text style={styles.modalButtonSingleText}>OK</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.backgroundGray },
-  content: { padding: 16, paddingBottom: 40 },
-  header: { alignItems: 'center', marginBottom: 32, marginTop: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', color: Colors.text, marginTop: 12 },
-  subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4 },
-  section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', color: Colors.text, marginBottom: 12, paddingLeft: 4 },
-  menuItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.background, borderRadius: 12, padding: 16, marginBottom: 8, gap: 12 },
-  menuText: { flex: 1, fontSize: 16, color: Colors.text },
-  infoItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Colors.background, borderRadius: 12, padding: 16, marginBottom: 8 },
-  infoLabel: { fontSize: 14, color: Colors.textLight },
-  infoValue: { fontSize: 14, fontWeight: '500', color: Colors.text },
-  logoutButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.error, borderRadius: 12, padding: 16, marginTop: 16, gap: 8 },
-  logoutButtonText: { fontSize: 16, fontWeight: '600', color: Colors.textWhite },
+  container: { 
+    flex: 1, 
+    backgroundColor: Colors.backgroundGray 
+  },
+  content: { 
+    padding: 16, 
+    paddingBottom: 40 
+  },
+  header: { 
+    alignItems: 'center', 
+    marginBottom: 32, 
+    marginTop: 20 
+  },
+  title: { 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    color: Colors.text, 
+    marginTop: 12 
+  },
+  subtitle: { 
+    fontSize: 14, 
+    color: Colors.textLight, 
+    marginTop: 4 
+  },
+  section: { 
+    marginBottom: 24 
+  },
+  sectionTitle: { 
+    fontSize: 16, 
+    fontWeight: '600', 
+    color: Colors.text, 
+    marginBottom: 12, 
+    paddingLeft: 4 
+  },
+  menuItem: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: Colors.background, 
+    borderRadius: 12, 
+    padding: 16, 
+    marginBottom: 8, 
+    gap: 12 
+  },
+  menuText: { 
+    flex: 1, 
+    fontSize: 16, 
+    color: Colors.text 
+  },
+  infoItem: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    backgroundColor: Colors.background, 
+    borderRadius: 12, 
+    padding: 16, 
+    marginBottom: 8 
+  },
+  infoLabel: { 
+    fontSize: 14, 
+    color: Colors.textLight 
+  },
+  infoValue: { 
+    fontSize: 14, 
+    fontWeight: '500', 
+    color: Colors.text 
+  },
+  logoutButton: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    backgroundColor: Colors.error, 
+    borderRadius: 12, 
+    padding: 16, 
+    marginTop: 16, 
+    gap: 8 
+  },
+  logoutButtonText: { 
+    fontSize: 16, 
+    fontWeight: '600', 
+    color: Colors.textWhite 
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: Colors.background,
+    borderRadius: 16,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
+  },
+  modalHeader: {
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: Colors.textLight,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    width: '100%',
+  },
+  modalButtonCancel: {
+    flex: 1,
+    backgroundColor: Colors.backgroundGray,
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+  },
+  modalButtonCancelText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  modalButtonConfirm: {
+    flex: 1,
+    backgroundColor: Colors.error,
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+  },
+  modalButtonConfirmText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.textWhite,
+  },
+  modalButtonSingle: {
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    padding: 14,
+    width: '100%',
+    alignItems: 'center',
+  },
+  modalButtonSingleText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.textWhite,
+  },
 });

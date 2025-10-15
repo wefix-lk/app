@@ -39,6 +39,13 @@ export default function ShopScreen() {
     loadProducts();
   }, []);
 
+  // Auto-refresh when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadProducts();
+    }, [])
+  );
+
   const loadProducts = async () => {
     try {
       // Load admin-added products

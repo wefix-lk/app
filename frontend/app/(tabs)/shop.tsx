@@ -264,8 +264,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
   },
+  productsList: {
+    flex: 1,
+  },
   productsContainer: {
     padding: 16,
+    flexGrow: 1,
   },
   productRow: {
     justifyContent: 'space-between',

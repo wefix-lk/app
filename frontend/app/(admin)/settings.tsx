@@ -32,6 +32,54 @@ export default function AdminSettings() {
     );
   };
 
+  const handleAdminProfile = () => {
+    Alert.alert(
+      'Admin Profile',
+      'Profile management feature coming soon!',
+      [{ text: 'OK' }]
+    );
+  };
+
+  const handleChangePassword = () => {
+    Alert.alert(
+      'Change Password',
+      'Password change feature coming soon!',
+      [{ text: 'OK' }]
+    );
+  };
+
+  const handleExportData = () => {
+    Alert.alert(
+      'Export Data',
+      'This will export all bookings, warranties, and service requests to a CSV file.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Export',
+          onPress: () => {
+            Alert.alert('Success', 'Data export feature coming soon!');
+          },
+        },
+      ]
+    );
+  };
+
+  const handleBackupData = () => {
+    Alert.alert(
+      'Backup Data',
+      'This will create a backup of all app data to Firebase/Cloud storage.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Backup',
+          onPress: () => {
+            Alert.alert('Success', 'Data backup feature coming soon!');
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>

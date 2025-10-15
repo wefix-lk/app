@@ -315,7 +315,8 @@ const styles = StyleSheet.create({
   },
   categoriesContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 4,
+    paddingTop: 2,
+    paddingBottom: 4,
   },
   categoryChip: {
     paddingHorizontal: 16,

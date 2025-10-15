@@ -214,10 +214,13 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
+  categoriesWrapper: {
+    backgroundColor: Colors.background,
+  },
   categoriesContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: Colors.background,
+    paddingRight: 32,
   },
   categoryChip: {
     paddingHorizontal: 16,

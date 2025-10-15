@@ -411,6 +411,16 @@ export default function AdminDashboard() {
 
           <TouchableOpacity 
             style={styles.actionButton}
+            onPress={() => router.push('/(admin)/products')}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="list" size={24} color="#6F42C1" />
+            <Text style={styles.actionButtonText}>Manage Products</Text>
+            <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
             onPress={() => setShowNotificationModal(true)}
             activeOpacity={0.7}
           >

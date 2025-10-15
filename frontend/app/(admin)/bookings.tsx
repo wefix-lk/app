@@ -306,8 +306,13 @@ export default function BookingsManagement() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Bookings Management</Text>
-        <Text style={styles.subtitle}>{filteredBookings.length} bookings</Text>
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>Bookings Management</Text>
+          <Text style={styles.subtitle}>{filteredBookings.length} bookings</Text>
+        </View>
+        {isNavigating && (
+          <ActivityIndicator size="small" color={Colors.primary} />
+        )}
       </View>
 
       <View style={styles.searchContainer}>

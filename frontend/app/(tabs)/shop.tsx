@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginHorizontal: 16,
     marginTop: 8,
-    marginBottom: 8,
+    marginBottom: 4,
     gap: 10,
     borderWidth: 1,
     borderColor: Colors.border,

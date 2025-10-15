@@ -46,9 +46,13 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     try {
-      // Load all bookings
-      const bookingsJson = await AsyncStorage.getItem('bookings');
+      // Load all bookings - try both storage keys
+      let bookingsJson = await AsyncStorage.getItem('local_bookings');
+      if (!bookingsJson) {
+        bookingsJson = await AsyncStorage.getItem('bookings');
+      }
       const bookings = bookingsJson ? JSON.parse(bookingsJson) : [];
+      console.log('📊 Dashboard loaded bookings:', bookings.length);
 
       // Load service requests
       const requestsJson = await AsyncStorage.getItem('service_requests');

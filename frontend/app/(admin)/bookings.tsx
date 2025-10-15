@@ -373,6 +373,12 @@ export default function BookingsManagement() {
             <ScrollView style={styles.modalBody}>
               {selectedBooking && (
                 <>
+                  {successMessage ? (
+                    <View style={styles.successBanner}>
+                      <Text style={styles.successText}>{successMessage}</Text>
+                    </View>
+                  ) : null}
+
                   <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Customer</Text>
                     <Text style={styles.infoText}>Name: {selectedBooking.customerName}</Text>

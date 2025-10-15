@@ -184,29 +184,40 @@ export default function ManageProductsScreen() {
   };
 
   const handleDelete = (product: Product) => {
-    Alert.alert(
-      'Delete Product',
-      `Are you sure you want to delete "${product.name}"? This action cannot be undone.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const updatedProducts = products.filter(p => p.id !== product.id);
-              await AsyncStorage.setItem('admin_products', JSON.stringify(updatedProducts));
-              setProducts(updatedProducts);
-              Alert.alert('Success', '✅ Product deleted successfully!');
-              console.log('✅ Product deleted:', product.id);
-            } catch (error) {
-              console.error('❌ Error deleting product:', error);
-              Alert.alert('Error', 'Failed to delete product. Please try again.');
-            }
-          },
-        },
-      ]
-    );
+    setProductToDelete(product);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!productToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      console.log('🗑️ Deleting product:', productToDelete.id);
+      
+      // Remove product from list
+      const updatedProducts = products.filter(p => p.id !== productToDelete.id);
+      
+      // Update AsyncStorage
+      await AsyncStorage.setItem('admin_products', JSON.stringify(updatedProducts));
+      
+      // Update local state
+      setProducts(updatedProducts);
+      
+      // Close modal
+      setShowDeleteModal(false);
+      setProductToDelete(null);
+      
+      // Show success message
+      Alert.alert('Success', '✅ Product deleted successfully and removed from customer panel!');
+      
+      console.log('✅ Product deleted successfully:', productToDelete.id);
+    } catch (error) {
+      console.error('❌ Error deleting product:', error);
+      Alert.alert('Error', '❌ Failed to delete product. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (

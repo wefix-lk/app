@@ -109,16 +109,17 @@ export default function ShopScreen() {
 
       {/* Categories */}
       <View style={styles.categoriesWrapper}>
-        <FlatList
+        <ScrollView
           horizontal
-          data={categories}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.categoriesContainer}
           showsHorizontalScrollIndicator={false}
-          scrollEnabled={true}
-          nestedScrollEnabled={true}
-          renderItem={({ item }) => (
+          contentContainerStyle={styles.categoriesContainer}
+          bounces={true}
+          scrollEventThrottle={16}
+          decelerationRate="fast"
+        >
+          {categories.map((item) => (
             <TouchableOpacity
+              key={item.id}
               style={[
                 styles.categoryChip,
                 selectedCategory === item.id && styles.categoryChipActive,
@@ -134,8 +135,8 @@ export default function ShopScreen() {
                 {item.label}
               </Text>
             </TouchableOpacity>
-          )}
-        />
+          ))}
+        </ScrollView>
       </View>
 
       {/* Products Grid */}

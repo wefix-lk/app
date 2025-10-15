@@ -123,6 +123,186 @@ export default function AdminDashboard() {
     setRefreshing(false);
   };
 
+  // Image picker for products
+  const pickImage = async () => {
+    if (productImages.length >= 4) {
+      Alert.alert('Limit Reached', 'You can only upload up to 4 images per product.');
+      return;
+    }
+
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Required', 'Please allow access to your photo library.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+      base64: true,
+    });
+
+    if (!result.canceled && result.assets[0].base64) {
+      setProductImages([...productImages, `data:image/jpeg;base64,${result.assets[0].base64}`]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setProductImages(productImages.filter((_, i) => i !== index));
+  };
+
+  // Add Product Handler
+  const handleAddProduct = async () => {
+    if (!productName || !modelNumber || !category || !price || !stock) {
+      Alert.alert('Missing Information', 'Please fill in all required fields.');
+      return;
+    }
+
+    setIsSavingProduct(true);
+    try {
+      const productId = `product_${Date.now()}`;
+      const newProduct = {
+        id: productId,
+        name: productName,
+        modelNumber,
+        category,
+        description,
+        price: parseFloat(price),
+        stock: parseInt(stock, 10),
+        images: productImages,
+        createdAt: new Date().toISOString(),
+        isActive: true,
+      };
+
+      // Save to local storage
+      const productsJson = await AsyncStorage.getItem('admin_products');
+      const products = productsJson ? JSON.parse(productsJson) : [];
+      products.push(newProduct);
+      await AsyncStorage.setItem('admin_products', JSON.stringify(products));
+
+      console.log('✅ Product added successfully:', newProduct.name);
+
+      // Reset form
+      setProductName('');
+      setModelNumber('');
+      setCategory('');
+      setDescription('');
+      setPrice('');
+      setStock('');
+      setProductImages([]);
+      setShowAddProductModal(false);
+
+      Alert.alert('Success', '✅ Product added successfully and published!');
+      await loadStats(); // Refresh stats
+    } catch (error) {
+      console.error('Error adding product:', error);
+      Alert.alert('Error', 'Failed to add product. Please try again.');
+    } finally {
+      setIsSavingProduct(false);
+    }
+  };
+
+  // Send Notification Handler
+  const handleSendNotification = async () => {
+    if (!notificationTitle || !notificationMessage) {
+      Alert.alert('Missing Information', 'Please provide both title and message.');
+      return;
+    }
+
+    setIsSendingNotification(true);
+    try {
+      const notification = {
+        id: `notif_${Date.now()}`,
+        title: notificationTitle,
+        message: notificationMessage,
+        timestamp: new Date().toISOString(),
+        read: false,
+        type: 'admin_broadcast',
+      };
+
+      // Load existing notifications
+      const notificationsJson = await AsyncStorage.getItem('customer_notifications');
+      const notifications = notificationsJson ? JSON.parse(notificationsJson) : [];
+      notifications.push(notification);
+      await AsyncStorage.setItem('customer_notifications', JSON.stringify(notifications));
+
+      console.log('📢 Notification sent to all users');
+
+      // Reset form
+      setNotificationTitle('');
+      setNotificationMessage('');
+      setShowNotificationModal(false);
+
+      Alert.alert('Success', '✅ Notification sent to all users!');
+    } catch (error) {
+      console.error('Error sending notification:', error);
+      Alert.alert('Error', 'Failed to send notification. Please try again.');
+    } finally {
+      setIsSendingNotification(false);
+    }
+  };
+
+  // Export Reports Handler
+  const handleExportReports = async () => {
+    setIsExporting(true);
+    try {
+      // Load bookings
+      let bookingsJson = await AsyncStorage.getItem('local_bookings');
+      if (!bookingsJson) {
+        bookingsJson = await AsyncStorage.getItem('bookings');
+      }
+      const bookings = bookingsJson ? JSON.parse(bookingsJson) : [];
+
+      // Load products
+      const productsJson = await AsyncStorage.getItem('admin_products');
+      const products = productsJson ? JSON.parse(productsJson) : [];
+
+      // Create CSV content
+      let csvContent = 'BOOKINGS REPORT\n\n';
+      csvContent += 'ID,Customer Name,Phone,TV Brand,Model,Issue,Status,Service Type,Address,Created At\n';
+      
+      bookings.forEach((b: any) => {
+        csvContent += `"${b.id}","${b.customerName || 'N/A'}","${b.customerPhone || b.phone || 'N/A'}","${b.tvBrand}","${b.tvModel}","${b.issueType}","${b.status}","${b.serviceType || b.pickupOption || 'N/A'}","${b.address}","${b.createdAt}"\n`;
+      });
+
+      csvContent += '\n\nPRODUCTS REPORT\n\n';
+      csvContent += 'ID,Name,Model Number,Category,Price,Stock,Created At\n';
+      
+      products.forEach((p: any) => {
+        csvContent += `"${p.id}","${p.name}","${p.modelNumber}","${p.category}","${p.price}","${p.stock}","${p.createdAt}"\n`;
+      });
+
+      // Save file
+      const fileName = `WeFix_Report_${new Date().toISOString().split('T')[0]}.csv`;
+      const fileUri = `${FileSystem.documentDirectory}${fileName}`;
+      
+      await FileSystem.writeAsStringAsync(fileUri, csvContent, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
+
+      console.log('📊 Report exported to:', fileUri);
+
+      // Share the file
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri, {
+          mimeType: 'text/csv',
+          dialogTitle: 'Export WeFix Reports',
+          UTI: 'public.comma-separated-values-text',
+        });
+        Alert.alert('Success', '✅ Report exported and ready to share!');
+      } else {
+        Alert.alert('Success', `✅ Report saved to: ${fileUri}`);
+      }
+    } catch (error) {
+      console.error('Error exporting reports:', error);
+      Alert.alert('Error', 'Failed to export reports. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const StatCard = ({ title, value, icon, color, onPress }: any) => (
     <TouchableOpacity 
       style={[styles.statCard, { borderLeftColor: color }]}

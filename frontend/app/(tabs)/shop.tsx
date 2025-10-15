@@ -105,13 +105,7 @@ export default function ShopScreen() {
         <Text style={styles.title}>Shop Parts</Text>
         <TouchableOpacity 
           style={styles.cartButton}
-          onPress={() => {
-            Alert.alert(
-              'Cart Coming Soon',
-              'Shopping cart feature will be available in the next update!',
-              [{ text: 'OK' }]
-            );
-          }}
+          onPress={() => router.push('/tabs/cart')}
           activeOpacity={0.7}
         >
           <Ionicons name="cart" size={24} color={Colors.text} />

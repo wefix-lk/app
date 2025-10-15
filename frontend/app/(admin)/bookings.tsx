@@ -60,14 +60,17 @@ export default function BookingsManagement() {
   const [noteSaving, setNoteSaving] = useState(false);
   const filterScrollRef = useRef<ScrollView>(null);
   const [tabLayouts, setTabLayouts] = useState<{ [key: string]: { x: number; width: number } }>({});
+  const [isNavigating, setIsNavigating] = useState(false);
 
   // Handle navigation filter parameter
   useEffect(() => {
     if (params.filter && typeof params.filter === 'string') {
+      setIsNavigating(true);
       setStatusFilter(params.filter);
       // Scroll to the filtered tab after a short delay to ensure layouts are calculated
       setTimeout(() => {
         scrollToTab(params.filter as string);
+        setIsNavigating(false);
       }, 300);
     }
   }, [params.filter]);

@@ -131,6 +131,9 @@ export default function ShopScreen() {
         numColumns={2}
         contentContainerStyle={styles.productsContainer}
         columnWrapperStyle={styles.productRow}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.productCard}

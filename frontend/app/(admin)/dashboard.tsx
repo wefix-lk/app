@@ -69,11 +69,9 @@ export default function AdminDashboard() {
       const requestsJson = await AsyncStorage.getItem('service_requests');
       const requests = requestsJson ? JSON.parse(requestsJson) : [];
 
-      // Calculate stats
+      // Calculate stats - updated to match the 7 status options
       const pending = bookings.filter((b: any) => b.status === 'pending').length;
-      const inProgress = bookings.filter((b: any) => 
-        ['under-inspection', 'parts-ordered', 'repair-in-progress'].includes(b.status)
-      ).length;
+      const inProgress = bookings.filter((b: any) => b.status === 'in-progress').length;
       const completed = bookings.filter((b: any) => b.status === 'completed').length;
       const cancelled = bookings.filter((b: any) => b.status === 'cancelled').length;
 

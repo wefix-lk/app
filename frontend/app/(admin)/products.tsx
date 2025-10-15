@@ -434,6 +434,53 @@ export default function ManageProductsScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal visible={showDeleteModal} animationType="fade" transparent>
+        <View style={styles.deleteModalOverlay}>
+          <View style={styles.deleteModalContent}>
+            <View style={styles.deleteIconContainer}>
+              <Ionicons name="warning" size={48} color={Colors.error} />
+            </View>
+            
+            <Text style={styles.deleteModalTitle}>Delete Product?</Text>
+            
+            <Text style={styles.deleteModalMessage}>
+              Are you sure you want to delete "{productToDelete?.name}"?
+              {'\n\n'}
+              This action cannot be undone and will remove the product from both admin and customer panels.
+            </Text>
+
+            <View style={styles.deleteModalActions}>
+              <TouchableOpacity
+                style={[styles.deleteModalButton, styles.cancelButton]}
+                onPress={() => {
+                  setShowDeleteModal(false);
+                  setProductToDelete(null);
+                }}
+                disabled={isDeleting}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.deleteModalButton, styles.confirmDeleteButton, isDeleting && styles.submitButtonDisabled]}
+                onPress={confirmDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <ActivityIndicator color={Colors.textWhite} size="small" />
+                ) : (
+                  <>
+                    <Ionicons name="trash" size={18} color={Colors.textWhite} />
+                    <Text style={styles.confirmDeleteButtonText}>Yes, Delete</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

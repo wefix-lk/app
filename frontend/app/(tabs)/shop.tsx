@@ -29,10 +29,11 @@ export default function ShopScreen() {
 
   const categories = [
     { id: 'all', label: 'All' },
-    { id: 'TV Panels', label: 'Panels' },
-    { id: 'T-CON Boards', label: 'T-CON' },
+    { id: 'TV Panels', label: 'TV Panels' },
     { id: 'Backlights', label: 'Backlights' },
-    { id: 'Main Boards', label: 'Boards' },
+    { id: 'T-CON Boards', label: 'T-CON Boards' },
+    { id: 'TV Main Boards', label: 'TV Main Boards' },
+    { id: 'Multi Products', label: 'Multi Products' },
   ];
 
   useEffect(() => {

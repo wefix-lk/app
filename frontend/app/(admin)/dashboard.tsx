@@ -445,6 +445,187 @@ export default function AdminDashboard() {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Add Product Modal */}
+      <Modal visible={showAddProductModal} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Add New Product</Text>
+              <TouchableOpacity onPress={() => setShowAddProductModal(false)}>
+                <Ionicons name="close" size={24} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalBody}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Product Name *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter product name"
+                  value={productName}
+                  onChangeText={setProductName}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Model Number *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter model number"
+                  value={modelNumber}
+                  onChangeText={setModelNumber}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Category *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="e.g., TV Parts, Accessories"
+                  value={category}
+                  onChangeText={setCategory}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Description</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="Product description"
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                  numberOfLines={4}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <View style={styles.formRow}>
+                <View style={[styles.formGroup, { flex: 1, marginRight: 8 }]}>
+                  <Text style={styles.label}>Price (LKR) *</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="0.00"
+                    value={price}
+                    onChangeText={setPrice}
+                    keyboardType="decimal-pad"
+                    placeholderTextColor={Colors.textLight}
+                  />
+                </View>
+
+                <View style={[styles.formGroup, { flex: 1, marginLeft: 8 }]}>
+                  <Text style={styles.label}>Stock *</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="0"
+                    value={stock}
+                    onChangeText={setStock}
+                    keyboardType="number-pad"
+                    placeholderTextColor={Colors.textLight}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Product Images (up to 4)</Text>
+                <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
+                  <Ionicons name="images" size={24} color={Colors.primary} />
+                  <Text style={styles.imagePickerText}>Upload Image</Text>
+                </TouchableOpacity>
+
+                <View style={styles.imageGrid}>
+                  {productImages.map((image, index) => (
+                    <View key={index} style={styles.imagePreview}>
+                      <Image source={{ uri: image }} style={styles.previewImage} />
+                      <TouchableOpacity
+                        style={styles.removeImageButton}
+                        onPress={() => removeImage(index)}
+                      >
+                        <Ionicons name="close-circle" size={24} color={Colors.error} />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.submitButton, isSavingProduct && styles.submitButtonDisabled]}
+                onPress={handleAddProduct}
+                disabled={isSavingProduct}
+              >
+                {isSavingProduct ? (
+                  <ActivityIndicator color={Colors.textWhite} />
+                ) : (
+                  <Text style={styles.submitButtonText}>Add Product</Text>
+                )}
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Send Notification Modal */}
+      <Modal visible={showNotificationModal} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Send Notification</Text>
+              <TouchableOpacity onPress={() => setShowNotificationModal(false)}>
+                <Ionicons name="close" size={24} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalBody}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Title *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Notification title"
+                  value={notificationTitle}
+                  onChangeText={setNotificationTitle}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Message *</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="Notification message"
+                  value={notificationMessage}
+                  onChangeText={setNotificationMessage}
+                  multiline
+                  numberOfLines={6}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <View style={styles.infoBox}>
+                <Ionicons name="information-circle" size={20} color={Colors.info} />
+                <Text style={styles.infoBoxText}>
+                  This notification will be sent to all registered users.
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.submitButton, isSendingNotification && styles.submitButtonDisabled]}
+                onPress={handleSendNotification}
+                disabled={isSendingNotification}
+              >
+                {isSendingNotification ? (
+                  <ActivityIndicator color={Colors.textWhite} />
+                ) : (
+                  <Text style={styles.submitButtonText}>Send to All Users</Text>
+                )}
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

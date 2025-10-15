@@ -160,6 +160,7 @@ export default function BookingsManagement() {
         return b;
       });
 
+      await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
       await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
       setBookings(updatedBookings);
       setSelectedBooking({ ...selectedBooking, adminNote: editingAdminNote });
@@ -182,10 +183,12 @@ export default function BookingsManagement() {
           onPress: async () => {
             try {
               const updatedBookings = bookings.filter((b) => b.id !== bookingId);
+              await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
               await AsyncStorage.setItem('bookings', JSON.stringify(updatedBookings));
               setBookings(updatedBookings);
               setShowDetailModal(false);
               Alert.alert('Success', 'Booking deleted');
+              console.log(`✅ Deleted booking ${bookingId}`);
             } catch (error) {
               Alert.alert('Error', 'Failed to delete');
             }

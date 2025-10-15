@@ -399,21 +399,40 @@ export default function AdminDashboard() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>⚡ Quick Actions</Text>
           
-          <TouchableOpacity style={styles.actionButton}>
-            <Ionicons name="add-circle" size={24} color={Colors.primary} />
-            <Text style={styles.actionButtonText}>Create New Booking</Text>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => setShowAddProductModal(true)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="cube" size={24} color={Colors.primary} />
+            <Text style={styles.actionButtonText}>Add Product</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => setShowNotificationModal(true)}
+            activeOpacity={0.7}
+          >
             <Ionicons name="notifications" size={24} color={Colors.secondary} />
             <Text style={styles.actionButtonText}>Send Notifications</Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
-            <Ionicons name="download" size={24} color={Colors.info} />
-            <Text style={styles.actionButtonText}>Export Reports</Text>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={handleExportReports}
+            activeOpacity={0.7}
+            disabled={isExporting}
+          >
+            {isExporting ? (
+              <ActivityIndicator size="small" color={Colors.info} />
+            ) : (
+              <Ionicons name="download" size={24} color={Colors.info} />
+            )}
+            <Text style={styles.actionButtonText}>
+              {isExporting ? 'Exporting...' : 'Export Reports'}
+            </Text>
             <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
           </TouchableOpacity>
         </View>

@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -15,6 +16,7 @@ import { Colors } from '../../constants/Colors';
 import { mockProducts } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;

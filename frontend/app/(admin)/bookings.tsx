@@ -56,6 +56,8 @@ export default function BookingsManagement() {
   const [editingAdminNote, setEditingAdminNote] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [noteSaving, setNoteSaving] = useState(false);
+  const filterScrollRef = useRef<ScrollView>(null);
+  const [tabLayouts, setTabLayouts] = useState<{ [key: string]: { x: number; width: number } }>({});
 
   useEffect(() => {
     loadBookings();

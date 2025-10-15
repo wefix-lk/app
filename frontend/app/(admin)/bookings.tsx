@@ -42,7 +42,6 @@ const STATUS_OPTIONS = [
   { label: 'Testing', value: 'testing', color: '#FF9800' },
   { label: 'Ready', value: 'ready-for-delivery', color: Colors.success },
   { label: 'Completed', value: 'completed', color: Colors.success },
-  { label: 'Cancelled', value: 'cancelled', color: Colors.error },
 ];
 
 export default function BookingsManagement() {

@@ -221,20 +221,28 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundGray,
     marginRight: 8,
     minWidth: 70,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   categoryChipActive: {
     backgroundColor: Colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    height: 36,
   },
   categoryText: {
     fontSize: 14,
     color: Colors.text,
     fontWeight: '500',
+    lineHeight: 18,
   },
   categoryTextActive: {
     color: Colors.textWhite,
     fontWeight: '500',
+    fontSize: 14,
+    lineHeight: 18,
   },
   productsContainer: {
     padding: 16,

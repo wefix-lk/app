@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
 import { mockProducts } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;
@@ -20,6 +22,8 @@ const cardWidth = (width - 48) / 2;
 export default function ShopScreen() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [allProducts, setAllProducts] = useState(mockProducts);
+  const [refreshing, setRefreshing] = useState(false);
 
   const categories = [
     { id: 'all', label: 'All' },

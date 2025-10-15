@@ -51,15 +51,19 @@ export default function NewBookingScreen() {
     
     try {
       const bookingId = `booking_${Date.now()}`;
+      const customerName = userProfile?.name || user?.email?.split('@')[0] || 'Unknown Customer';
       const bookingData = {
         id: bookingId,
         userId: user?.uid,
+        customerName,
+        customerPhone: phone,
         tvBrand,
         tvModel,
         issueType,
         issueDescription,
         address,
-        phone,
+        phone, // Keep for backward compatibility
+        serviceType: pickupOption,
         pickupOption,
         status: 'pending',
         timeline: [

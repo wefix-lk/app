@@ -397,4 +397,49 @@ const styles = StyleSheet.create({
     color: Colors.error,
     fontWeight: '500',
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: Colors.background,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  modalBody: {
+    maxHeight: 400,
+  },
+  categoryOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  categoryOptionActive: {
+    backgroundColor: Colors.backgroundGray,
+  },
+  categoryOptionText: {
+    flex: 1,
+    fontSize: 16,
+    color: Colors.text,
+  },
+  categoryOptionTextActive: {
+    color: Colors.primary,
+    fontWeight: '600',
+  },
 });

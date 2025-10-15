@@ -147,9 +147,34 @@ export default function BookingsManagement() {
     }
   };
 
+  const sendCustomerNotification = async (customerName: string, status: string) => {
+    // Simulate sending notification (in production, use Firebase Cloud Messaging)
+    console.log(`📢 Sending notification to ${customerName}: Status updated to ${status}`);
+    
+    // Store notification in local storage for customer to see
+    try {
+      const notificationsJson = await AsyncStorage.getItem('customer_notifications');
+      const notifications = notificationsJson ? JSON.parse(notificationsJson) : [];
+      
+      notifications.push({
+        id: `notif_${Date.now()}`,
+        title: 'Booking Status Updated',
+        message: `Your repair status has been updated to: ${STATUS_OPTIONS.find(s => s.value === status)?.label}`,
+        timestamp: new Date().toISOString(),
+        read: false,
+      });
+      
+      await AsyncStorage.setItem('customer_notifications', JSON.stringify(notifications));
+      console.log('✅ Customer notification saved');
+    } catch (error) {
+      console.error('❌ Failed to save notification:', error);
+    }
+  };
+
   const saveAdminNote = async () => {
     if (!selectedBooking) return;
 
+    setNoteSaving(true);
     try {
       const updatedBookings = bookings.map((b) => {
         if (b.id === selectedBooking.id) {
@@ -167,9 +192,23 @@ export default function BookingsManagement() {
       setBookings(updatedBookings);
       setSelectedBooking({ ...selectedBooking, adminNote: editingAdminNote });
 
-      Alert.alert('Success', 'Admin note saved');
+      // Send notification to customer about the update
+      await sendCustomerNotification(selectedBooking.customerName, selectedBooking.status);
+
+      setSuccessMessage('✅ Note and status updated successfully');
+      console.log('✅ Admin note saved for booking:', selectedBooking.id);
+      
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
     } catch (error) {
-      Alert.alert('Error', 'Failed to save note');
+      console.error('❌ Failed to save note:', error);
+      setSuccessMessage('❌ Failed to save note. Please try again.');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+    } finally {
+      setNoteSaving(false);
     }
   };
 

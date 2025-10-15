@@ -142,7 +142,7 @@ export default function AdminDashboard() {
             value={stats.totalBookings}
             icon="construct"
             color={Colors.primary}
-            onPress={navigateToBookings}
+            onPress={() => navigateToBookings()}
           />
 
           <StatCard
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
             value={stats.pendingBookings}
             icon="time"
             color={Colors.warning}
-            onPress={navigateToBookings}
+            onPress={() => navigateToBookings('pending')}
           />
 
           <StatCard
@@ -158,6 +158,7 @@ export default function AdminDashboard() {
             value={stats.inProgressBookings}
             icon="hammer"
             color={Colors.info}
+            onPress={() => navigateToBookings('in-progress')}
           />
 
           <StatCard
@@ -165,6 +166,7 @@ export default function AdminDashboard() {
             value={stats.completedBookings}
             icon="checkmark-circle"
             color={Colors.success}
+            onPress={() => navigateToBookings('completed')}
           />
 
           <StatCard
@@ -172,6 +174,7 @@ export default function AdminDashboard() {
             value={stats.cancelledBookings}
             icon="close-circle"
             color={Colors.error}
+            onPress={() => navigateToBookings('cancelled')}
           />
 
           <StatCard
@@ -179,6 +182,7 @@ export default function AdminDashboard() {
             value={stats.serviceRequests}
             icon="layers"
             color="#6F42C1"
+            onPress={navigateToServiceRequests}
           />
         </View>
 

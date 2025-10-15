@@ -54,6 +54,8 @@ export default function BookingsManagement() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showStatusPicker, setShowStatusPicker] = useState(false);
   const [editingAdminNote, setEditingAdminNote] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [noteSaving, setNoteSaving] = useState(false);
 
   useEffect(() => {
     loadBookings();

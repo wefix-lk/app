@@ -94,10 +94,20 @@ export default function BookingsManagement() {
       if (bookingsJson) {
         const allBookings: Booking[] = JSON.parse(bookingsJson);
         console.log('📋 Admin loaded bookings:', allBookings.length);
-        allBookings.sort((a, b) => 
+        
+        // Normalize booking data for backward compatibility
+        const normalizedBookings = allBookings.map((booking: any) => ({
+          ...booking,
+          // If customerName is missing, try to derive it from other fields
+          customerName: booking.customerName || booking.name || 'Customer',
+          // If customerPhone is missing, use phone field
+          customerPhone: booking.customerPhone || booking.phone || 'N/A',
+        }));
+        
+        normalizedBookings.sort((a, b) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-        setBookings(allBookings);
+        setBookings(normalizedBookings);
       } else {
         console.log('⚠️ No bookings found in storage');
         setBookings([]);

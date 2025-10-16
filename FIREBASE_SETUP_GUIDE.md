@@ -103,8 +103,8 @@ service cloud.firestore {
 ```env
 # Existing variables (DO NOT MODIFY)
 EXPO_TUNNEL_SUBDOMAIN=fixapp
-EXPO_PACKAGER_HOSTNAME=https://admin-dashboard-308.preview.emergentagent.com
-EXPO_PUBLIC_BACKEND_URL=https://admin-dashboard-308.preview.emergentagent.com
+EXPO_PACKAGER_HOSTNAME=https://wefix-cart-system.preview.emergentagent.com
+EXPO_PUBLIC_BACKEND_URL=https://wefix-cart-system.preview.emergentagent.com
 EXPO_USE_FAST_RESOLVER="1"
 METRO_CACHE_ROOT=/app/frontend/.metro-cache
 

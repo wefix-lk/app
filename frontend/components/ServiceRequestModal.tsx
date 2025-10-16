@@ -33,6 +33,8 @@ export default function ServiceRequestModal({
 }: ServiceRequestModalProps) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -41,6 +43,8 @@ export default function ServiceRequestModal({
   const resetForm = () => {
     setName('');
     setPhone('');
+    setEmail('');
+    setAddress('');
     setDescription('');
     setErrorMessage('');
   };
@@ -60,10 +64,40 @@ export default function ServiceRequestModal({
     }
   };
 
+  const getServiceTypeKey = () => {
+    switch (serviceType) {
+      case 'Web Designing':
+        return 'web-design';
+      case 'Web SEO Management':
+        return 'web-seo';
+      case 'POS System':
+        return 'pos-system';
+      case 'Mobile Application':
+        return 'mobile-app';
+      default:
+        return 'web-design';
+    }
+  };
+
   const validatePhone = (phone: string) => {
-    // Sri Lankan phone number validation (10 digits, starts with 0)
-    const phoneRegex = /^0\d{9}$/;
-    return phoneRegex.test(phone);
+    // Sri Lankan phone number validation with +94 format or 0 format
+    const phoneRegex1 = /^0\d{9}$/; // 0771234567
+    const phoneRegex2 = /^\+94\d{9}$/; // +94771234567
+    return phoneRegex1.test(phone) || phoneRegex2.test(phone);
+  };
+
+  const validateEmail = (email: string) => {
+    if (!email) return true; // Email is optional
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const formatPhone = (phone: string) => {
+    // Convert 0771234567 to +94771234567
+    if (phone.startsWith('0')) {
+      return '+94' + phone.substring(1);
+    }
+    return phone;
   };
 
   const handleSubmit = async () => {
@@ -81,32 +115,48 @@ export default function ServiceRequestModal({
     }
 
     if (!validatePhone(phone.trim())) {
-      setErrorMessage('Please enter a valid phone number (e.g., 0771234567)');
+      setErrorMessage('Please enter a valid phone number (e.g., 0771234567 or +94771234567)');
+      return;
+    }
+
+    if (email.trim() && !validateEmail(email.trim())) {
+      setErrorMessage('Please enter a valid email address');
+      return;
+    }
+
+    if (!address.trim()) {
+      setErrorMessage('Please enter your address');
       return;
     }
 
     if (!description.trim()) {
-      setErrorMessage('Please describe your requirements');
+      setErrorMessage('Please describe your project requirements');
       return;
     }
 
     setLoading(true);
     try {
+      const formattedPhone = formatPhone(phone.trim());
+      const serviceTypeKey = getServiceTypeKey();
+      
       const requestData = {
-        id: `request_${Date.now()}`,
-        serviceType,
-        name: name.trim(),
-        phone: phone.trim(),
-        description: description.trim(),
-        createdAt: new Date().toISOString(),
-        status: 'pending',
+        id: `${serviceTypeKey}_${Date.now()}`,
+        customerName: name.trim(),
+        phone: formattedPhone,
+        email: email.trim() || undefined,
+        address: address.trim(),
+        dateRequested: new Date().toISOString(),
+        status: 'Pending',
+        serviceType: serviceTypeKey,
+        notes: description.trim(),
       };
 
-      // Store in local storage (in production, send to backend)
-      const requestsJson = await AsyncStorage.getItem('service_requests');
+      // Store in service-specific storage for admin panel
+      const storageKey = `service_requests_${serviceTypeKey}`;
+      const requestsJson = await AsyncStorage.getItem(storageKey);
       const requests = requestsJson ? JSON.parse(requestsJson) : [];
       requests.push(requestData);
-      await AsyncStorage.setItem('service_requests', JSON.stringify(requests));
+      await AsyncStorage.setItem(storageKey, JSON.stringify(requests));
 
       console.log('✅ Service request submitted:', requestData);
 

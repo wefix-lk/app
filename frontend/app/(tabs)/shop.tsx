@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   productsContainer: {
     padding: 16,
-    paddingTop: 8,
+    paddingTop: 4,
     flexGrow: 1,
   },
   productRow: {

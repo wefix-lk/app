@@ -104,9 +104,11 @@ export default function HomeScreen() {
   ];
 
   const handleServicePress = (service: any) => {
+    console.log('🔘 Service button pressed:', service.title, 'Type:', service.type);
     if (service.type === 'route') {
       router.push(service.route as any);
     } else if (service.type === 'modal') {
+      console.log('📋 Opening service request modal for:', service.serviceType);
       setSelectedService(service);
       setShowRequestModal(true);
     }

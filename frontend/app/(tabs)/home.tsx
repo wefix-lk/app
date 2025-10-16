@@ -148,6 +148,8 @@ export default function HomeScreen() {
                 key={service.id}
                 style={[styles.serviceCard, { borderColor: service.color }]}
                 onPress={() => handleServicePress(service)}
+                activeOpacity={0.7}
+                delayPressIn={0}
               >
                 <View style={[styles.iconCircle, { backgroundColor: service.color + '20' }]}>
                   <Ionicons name={service.icon as any} size={32} color={service.color} />

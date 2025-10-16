@@ -162,27 +162,61 @@ export default function ShopScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.productCard}
-            onPress={() => router.push(`/product/${item.id}`)}
-          >
-            <Image source={{ uri: item.images[0] }} style={styles.productImage} />
-            <View style={styles.productInfo}>
-              <Text style={styles.productName} numberOfLines={2}>
-                {item.name}
-              </Text>
-              <Text style={styles.productPrice}>
-                LKR {item.price.toLocaleString()}
-              </Text>
-              <View style={styles.stockBadge}>
-                {item.isInStock ? (
-                  <Text style={styles.inStockText}>In Stock</Text>
-                ) : (
-                  <Text style={styles.outOfStockText}>Out of Stock</Text>
-                )}
+          <View style={styles.productCard}>
+            <TouchableOpacity
+              onPress={() => router.push(`/product/${item.id}`)}
+              activeOpacity={0.7}
+            >
+              <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+              <View style={styles.productInfo}>
+                <Text style={styles.productName} numberOfLines={2}>
+                  {item.name}
+                </Text>
+                <Text style={styles.productPrice}>
+                  LKR {item.price.toLocaleString()}
+                </Text>
+                <View style={styles.stockBadge}>
+                  {item.isInStock ? (
+                    <Text style={styles.inStockText}>In Stock</Text>
+                  ) : (
+                    <Text style={styles.outOfStockText}>Out of Stock</Text>
+                  )}
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            
+            {/* Add to Cart Button */}
+            <TouchableOpacity
+              style={[
+                styles.addToCartButton,
+                !item.isInStock && styles.addToCartButtonDisabled
+              ]}
+              onPress={() => {
+                if (item.isInStock) {
+                  addToCart({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    image: item.images[0],
+                    category: item.category,
+                  });
+                }
+              }}
+              disabled={!item.isInStock}
+            >
+              <Ionicons 
+                name="cart" 
+                size={16} 
+                color={item.isInStock ? Colors.textWhite : Colors.textLight} 
+              />
+              <Text style={[
+                styles.addToCartText,
+                !item.isInStock && styles.addToCartTextDisabled
+              ]}>
+                {item.isInStock ? 'Add to Cart' : 'Out of Stock'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
       />
 

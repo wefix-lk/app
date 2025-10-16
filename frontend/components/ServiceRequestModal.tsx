@@ -246,7 +246,7 @@ export default function ServiceRequestModal({
 
             {/* Name Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Your Name *</Text>
+              <Text style={styles.label}>Full Name *</Text>
               <View style={styles.inputContainer}>
                 <Ionicons name="person-outline" size={20} color={Colors.textLight} />
                 <TextInput
@@ -265,19 +265,66 @@ export default function ServiceRequestModal({
 
             {/* Phone Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Phone Number *</Text>
+              <Text style={styles.label}>Contact Number *</Text>
               <View style={styles.inputContainer}>
                 <Ionicons name="call-outline" size={20} color={Colors.textLight} />
                 <TextInput
                   style={styles.input}
-                  placeholder="0771234567"
+                  placeholder="+94771234567 or 0771234567"
                   value={phone}
                   onChangeText={(text) => {
                     setPhone(text);
                     setErrorMessage('');
                   }}
                   keyboardType="phone-pad"
-                  maxLength={10}
+                  placeholderTextColor={Colors.textLight}
+                  editable={!loading}
+                />
+              </View>
+            </View>
+
+            {/* Email Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email Address (Optional)</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons name="mail-outline" size={20} color={Colors.textLight} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="your.email@example.com"
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setErrorMessage('');
+                  }}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor={Colors.textLight}
+                  editable={!loading}
+                />
+              </View>
+            </View>
+
+            {/* Address Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Address *</Text>
+              <View style={[styles.inputContainer, styles.textAreaContainer]}>
+                <Ionicons 
+                  name="location-outline" 
+                  size={20} 
+                  color={Colors.textLight} 
+                  style={styles.textAreaIcon}
+                />
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="Enter your full address"
+                  value={address}
+                  onChangeText={(text) => {
+                    setAddress(text);
+                    setErrorMessage('');
+                  }}
+                  multiline
+                  numberOfLines={3}
+                  textAlignVertical="top"
                   placeholderTextColor={Colors.textLight}
                   editable={!loading}
                 />
@@ -286,11 +333,17 @@ export default function ServiceRequestModal({
 
             {/* Description Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Description *</Text>
+              <Text style={styles.label}>Project Description *</Text>
               <View style={[styles.inputContainer, styles.textAreaContainer]}>
+                <Ionicons 
+                  name="document-text-outline" 
+                  size={20} 
+                  color={Colors.textLight}
+                  style={styles.textAreaIcon}
+                />
                 <TextInput
                   style={[styles.input, styles.textArea]}
-                  placeholder={`Describe what you need for ${serviceType}...`}
+                  placeholder={`Describe your ${serviceType} requirements in detail...`}
                   value={description}
                   onChangeText={(text) => {
                     setDescription(text);

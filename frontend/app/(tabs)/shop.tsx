@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
   },
   categoriesWrapper: {
     backgroundColor: Colors.background,
+    marginTop: 4,
   },
   categoriesContainer: {
     paddingHorizontal: 16,

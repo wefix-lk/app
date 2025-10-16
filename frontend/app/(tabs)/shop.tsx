@@ -20,6 +20,7 @@ import { mockProducts } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useCart } from '../../contexts/CartContext';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;

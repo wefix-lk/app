@@ -29,11 +29,11 @@ interface ServiceRequest {
   serviceType: string;
 }
 
-const SERVICE_TYPE = 'web-design';
-const SERVICE_NAME = 'Web Designing';
+const SERVICE_TYPE = 'mobile-app';
+const SERVICE_NAME = 'Mobile App Development';
 const STORAGE_KEY = `service_requests_${SERVICE_TYPE}`;
 
-export default function WebDesignRequests() {
+export default function MobileAppRequests() {
   const router = useRouter();
   const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<ServiceRequest[]>([]);

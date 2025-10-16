@@ -105,22 +105,6 @@ export default function ShopScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Shop Parts</Text>
-        <TouchableOpacity 
-          style={styles.cartButton}
-          onPress={() => {
-            Alert.alert(
-              'Cart Coming Soon',
-              'Shopping cart feature will be available in the next update!',
-              [{ text: 'OK' }]
-            );
-          }}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="cart" size={24} color={Colors.text} />
-          <View style={styles.cartBadge}>
-            <Text style={styles.cartBadgeText}>0</Text>
-          </View>
-        </TouchableOpacity>
       </View>
 
       {/* Search Bar */}

@@ -40,6 +40,11 @@ export default function ServiceRequestModal({
   const [errorMessage, setErrorMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
+  // Debug log when modal visibility changes
+  React.useEffect(() => {
+    console.log('📋 ServiceRequestModal visibility changed:', visible, 'Service:', serviceType);
+  }, [visible, serviceType]);
+
   const resetForm = () => {
     setName('');
     setPhone('');

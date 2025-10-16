@@ -273,8 +273,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Bookings Management Screen with Cancel & Delete"
-    - "Forgot Password Screen Fix"
+    - "Shopping Cart Screen with Cart Management"
+    - "Shop Products Screen"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

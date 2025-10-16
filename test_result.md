@@ -172,11 +172,14 @@ frontend:
     file: "frontend/app/(tabs)/shop.tsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
         comment: "Product listing with category filters, 2-column grid, mock products (5 items: panels, T-CON boards, backlights, main boards, power supply)"
+      - working: "NA"
+        agent: "main"
+        comment: "Added 'Add to Cart' button to product cards. Each product card now has a blue button at the bottom with cart icon. Button is disabled for out-of-stock items. Calls addToCart() from CartContext with product details (id, name, price, image, category). Shows Alert.alert on success."
   
   - task: "Profile Screen"
     implemented: true

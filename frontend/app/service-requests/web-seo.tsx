@@ -29,11 +29,11 @@ interface ServiceRequest {
   serviceType: string;
 }
 
-const SERVICE_TYPE = 'web-design';
-const SERVICE_NAME = 'Web Designing';
+const SERVICE_TYPE = 'web-seo';
+const SERVICE_NAME = 'Web SEO';
 const STORAGE_KEY = `service_requests_${SERVICE_TYPE}`;
 
-export default function WebDesignRequests() {
+export default function WebSEORequests() {
   const router = useRouter();
   const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [filteredRequests, setFilteredRequests] = useState<ServiceRequest[]>([]);

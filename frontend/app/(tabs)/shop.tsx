@@ -420,6 +420,27 @@ const styles = StyleSheet.create({
     color: Colors.error,
     fontWeight: '500',
   },
+  addToCartButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary,
+    padding: 10,
+    gap: 6,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  addToCartButtonDisabled: {
+    backgroundColor: Colors.backgroundGray,
+  },
+  addToCartText: {
+    color: Colors.textWhite,
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  addToCartTextDisabled: {
+    color: Colors.textLight,
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

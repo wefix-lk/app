@@ -181,6 +181,18 @@ frontend:
         agent: "main"
         comment: "Added 'Add to Cart' button to product cards. Each product card now has a blue button at the bottom with cart icon. Button is disabled for out-of-stock items. Calls addToCart() from CartContext with product details (id, name, price, image, category). Shows Alert.alert on success."
   
+  - task: "Shopping Cart Screen with Cart Management"
+    implemented: true
+    working: "NA"
+    file: "frontend/app/(tabs)/cart.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Cart screen displays items from CartContext. Shows product image, name, category, price. Has quantity +/- controls and remove button. Footer shows total items count and grand total. Has 'Proceed to Checkout' button (placeholder). Empty state shows cart icon with 'Continue Shopping' button. Cart data persists via AsyncStorage."
+  
   - task: "Profile Screen"
     implemented: true
     working: true

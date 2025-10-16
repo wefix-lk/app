@@ -541,6 +541,9 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
   },
+  textAreaIcon: {
+    marginTop: 4,
+  },
   input: {
     flex: 1,
     height: 50,

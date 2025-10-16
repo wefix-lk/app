@@ -109,14 +109,74 @@ export default function ServiceRequests() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.backgroundGray },
-  content: { padding: 16 },
-  header: { alignItems: 'center', marginBottom: 32, marginTop: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', color: Colors.text, marginTop: 12 },
-  subtitle: { fontSize: 14, color: Colors.textLight, marginTop: 4 },
-  placeholder: { alignItems: 'center', padding: 24, backgroundColor: Colors.background, borderRadius: 16 },
-  placeholderTitle: { fontSize: 20, fontWeight: '600', color: Colors.text, marginTop: 16 },
-  placeholderText: { fontSize: 14, color: Colors.textLight, textAlign: 'center', marginTop: 8, lineHeight: 20 },
-  featuresList: { marginTop: 24, alignSelf: 'stretch' },
-  featureItem: { fontSize: 14, color: Colors.text, marginVertical: 4, paddingLeft: 20 },
+  container: { 
+    flex: 1, 
+    backgroundColor: Colors.backgroundGray 
+  },
+  content: { 
+    padding: 16 
+  },
+  header: { 
+    alignItems: 'center', 
+    marginBottom: 24, 
+    marginTop: 8 
+  },
+  title: { 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    color: Colors.text 
+  },
+  subtitle: { 
+    fontSize: 14, 
+    color: Colors.textLight, 
+    marginTop: 4 
+  },
+  cardsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 16,
+  },
+  serviceCard: {
+    width: cardWidth,
+    backgroundColor: Colors.background,
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  iconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  serviceName: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: Colors.text,
+    textAlign: 'center',
+    marginBottom: 8,
+    minHeight: 40,
+  },
+  requestCount: {
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  countNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.primary,
+  },
+  countLabel: {
+    fontSize: 12,
+    color: Colors.textLight,
+    marginTop: 2,
+  },
 });

@@ -27,6 +27,7 @@ const cardWidth = (width - 48) / 2;
 
 export default function ShopScreen() {
   const router = useRouter();
+  const { addToCart } = useCart();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [allProducts, setAllProducts] = useState(mockProducts);
   const [refreshing, setRefreshing] = useState(false);

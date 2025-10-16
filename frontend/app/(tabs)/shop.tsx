@@ -368,24 +368,24 @@ const styles = StyleSheet.create({
   },
   productImage: {
     width: '100%',
-    height: 150,
+    height: 120,
     backgroundColor: Colors.backgroundGray,
   },
   productInfo: {
-    padding: 12,
+    padding: 10,
   },
   productName: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: Colors.text,
     marginBottom: 4,
-    height: 40,
+    height: 36,
   },
   productPrice: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     color: Colors.primary,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   stockBadge: {
     alignSelf: 'flex-start',

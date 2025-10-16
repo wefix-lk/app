@@ -218,10 +218,9 @@ export default function ServiceRequestModal({
                 <View style={[styles.successIconCircle, { backgroundColor: borderColor + '20' }]}>
                   <Ionicons name="checkmark-circle" size={80} color={borderColor} />
                 </View>
-                <Text style={styles.successTitle}>Application Received!</Text>
+                <Text style={styles.successTitle}>Request Submitted Successfully!</Text>
                 <Text style={styles.successMessage}>
-                  Thank you for submitting your request. Our WeFix.lk team has noted your
-                  application and will contact you soon via WhatsApp or phone.
+                  Thank you for your service request! Our WeFix.lk team will review your {serviceType} requirements and contact you within 24 hours via phone or WhatsApp to discuss further details.
                 </Text>
                 <View style={styles.autoCloseNotice}>
                   <Ionicons name="time-outline" size={16} color={Colors.textLight} />

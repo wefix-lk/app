@@ -19,6 +19,12 @@ interface UserProfile {
   phoneVerified?: boolean;
   address?: string;
   createdAt: string;
+  notificationPreferences?: {
+    repairUpdates: boolean;
+    promotions: boolean;
+    newProducts: boolean;
+    warrantyExpiry: boolean;
+  };
 }
 
 interface AuthContextType {

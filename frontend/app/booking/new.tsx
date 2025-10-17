@@ -120,7 +120,7 @@ export default function NewBookingScreen() {
           tvBrand: tvBrand,
           tvModel: tvModel,
           issueType: issueTypes.find(i => i.value === issueType)?.label || issueType,
-          phone: phone,
+          phone: verifiedPhone,
         }
       });
     } catch (error: any) {

@@ -229,3 +229,182 @@ export default function EditProfileScreen() {
   );
 }
 
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.backgroundGray,
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: Colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  scrollContent: {
+    padding: 16,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  avatarText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: Colors.textWhite,
+  },
+  changePhotoButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  changePhotoText: {
+    fontSize: 14,
+    color: Colors.primary,
+    marginLeft: 4,
+    fontWeight: '500',
+  },
+  form: {
+    flex: 1,
+  },
+  inputGroup: {
+    marginBottom: 20,
+  },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  verifiedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.success + '15',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  verifiedText: {
+    fontSize: 12,
+    color: Colors.success,
+    fontWeight: '600',
+  },
+  input: {
+    backgroundColor: Colors.background,
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 16,
+    color: Colors.text,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  inputDisabled: {
+    backgroundColor: Colors.backgroundGray,
+    color: Colors.textLight,
+  },
+  verifiedPhoneContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  verifiedPhoneText: {
+    fontSize: 16,
+    color: Colors.textLight,
+  },
+  changePhoneButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: Colors.backgroundGray,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  changePhoneText: {
+    fontSize: 14,
+    color: Colors.primary,
+    fontWeight: '600',
+  },
+  phoneInputRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  phoneInput: {
+    flex: 1,
+  },
+  verifyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 6,
+  },
+  verifyButtonText: {
+    fontSize: 14,
+    color: Colors.textWhite,
+    fontWeight: '600',
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  helperText: {
+    fontSize: 12,
+    color: Colors.textLight,
+    marginTop: 4,
+  },
+  footer: {
+    padding: 16,
+    backgroundColor: Colors.background,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+  saveButton: {
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  saveButtonText: {
+    color: Colors.textWhite,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

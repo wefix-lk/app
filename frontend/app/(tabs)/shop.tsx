@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
   },
   productsContainer: {
     padding: 16,
-    paddingTop: 8,
+    paddingTop: 0,
     flexGrow: 1,
   },
   productRow: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,6 +28,16 @@ export default function EditProfileScreen() {
   const [loading, setLoading] = useState(false);
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [isPhoneVerified, setIsPhoneVerified] = useState(userProfile?.phoneVerified || false);
+
+  // Sync state with userProfile when it changes
+  useEffect(() => {
+    if (userProfile) {
+      setName(userProfile.name || '');
+      setPhone(userProfile.phone || '');
+      setAddress(userProfile.address || '');
+      setIsPhoneVerified(userProfile.phoneVerified || false);
+    }
+  }, [userProfile]);
 
   const handlePhoneVerification = () => {
     if (!newPhone.trim()) {

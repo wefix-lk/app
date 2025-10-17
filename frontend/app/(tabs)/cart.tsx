@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Linking,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -17,6 +19,49 @@ import { useCart } from '../../contexts/CartContext';
 export default function CartScreen() {
   const router = useRouter();
   const { cartItems, removeFromCart, updateQuantity, clearCart, getCartTotal, getCartCount } = useCart();
+
+  const handleWhatsAppCheckout = async () => {
+    const whatsappNumber = '94773300905'; // +94 77 330 0905
+    
+    // Build the message with cart items
+    let message = 'Hello WeFix.lk, I would like to purchase the following item(s):\n\n';
+    
+    cartItems.forEach((item, index) => {
+      message += `${index + 1}. ${item.name}`;
+      if (item.quantity > 1) {
+        message += ` (x${item.quantity})`;
+      }
+      message += ` – LKR ${(item.price * item.quantity).toLocaleString()}\n`;
+    });
+    
+    message += `\nTotal: LKR ${getCartTotal().toLocaleString()}`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    console.log('📱 Opening WhatsApp checkout:', whatsappUrl);
+
+    try {
+      const canOpen = await Linking.canOpenURL(whatsappUrl);
+      
+      if (canOpen) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        Alert.alert(
+          'WhatsApp Not Available',
+          'WhatsApp is not installed on this device. Please install WhatsApp to continue.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('❌ Error opening WhatsApp:', error);
+      Alert.alert(
+        'Error',
+        'Could not open WhatsApp. Please make sure WhatsApp is installed.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
 
   const renderCartItem = ({ item }: { item: any }) => (
     <View style={styles.cartItem}>

@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   },
   categoriesWrapper: {
     backgroundColor: Colors.background,
-    marginTop: 4,
+    marginTop: 0,
     marginBottom: 0,
   },
   categoriesContainer: {

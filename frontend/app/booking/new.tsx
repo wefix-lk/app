@@ -669,6 +669,40 @@ const styles = StyleSheet.create({
     color: Colors.textLight,
     marginTop: 4,
   },
+  addressOptionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  addressOptionContent: {
+    flex: 1,
+  },
+  addressOptionLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 2,
+  },
+  addressOptionText: {
+    fontSize: 13,
+    color: Colors.textLight,
+  },
+  shopAddressHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  shopAddressLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.primary,
+  },
+  shopAddressText: {
+    fontSize: 15,
+    color: Colors.text,
+    lineHeight: 22,
+  },
   submitButton: {
     backgroundColor: Colors.primary,
     borderRadius: 12,

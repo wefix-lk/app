@@ -238,17 +238,43 @@ export default function NewBookingScreen() {
             />
           </View>
 
-          {/* Phone */}
+          {/* Phone Number - Verified from Profile */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Phone Number *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="+94 77 123 4567"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              placeholderTextColor={Colors.textLight}
-            />
+            <View style={styles.labelRow}>
+              <Text style={styles.label}>Phone Number *</Text>
+              {isPhoneVerified && (
+                <View style={styles.verifiedBadge}>
+                  <Ionicons name="checkmark-circle" size={16} color={Colors.success} />
+                  <Text style={styles.verifiedText}>Verified</Text>
+                </View>
+              )}
+            </View>
+            
+            {isPhoneVerified ? (
+              <View style={[styles.input, styles.inputDisabled]}>
+                <Text style={styles.verifiedPhoneText}>{verifiedPhone}</Text>
+              </View>
+            ) : (
+              <View style={styles.verificationRequired}>
+                <View style={styles.verificationMessage}>
+                  <Ionicons name="shield-checkmark-outline" size={24} color={Colors.primary} />
+                  <View style={styles.messageTextContainer}>
+                    <Text style={styles.verificationTitle}>Phone Verification Required</Text>
+                    <Text style={styles.verificationText}>
+                      Please verify your phone number in your profile before booking.
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  style={styles.verifyNowButton}
+                  onPress={() => router.push('/profile/edit')}
+                >
+                  <Ionicons name="shield-checkmark" size={18} color={Colors.textWhite} />
+                  <Text style={styles.verifyNowText}>Verify Now</Text>
+                  <Ionicons name="arrow-forward" size={16} color={Colors.textWhite} />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
 
           {/* Address */}

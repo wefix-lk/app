@@ -19,11 +19,11 @@ export const Colors = {
 
 export const StatusColors = {
   pending: '#FF9800',
-  'booking-received': '#2196F3',
-  'under-inspection': '#2196F3',
+  confirmed: '#2196F3',
   'parts-ordered': '#9C27B0',
-  'repair-in-progress': '#FF5722',
-  'ready-for-delivery': '#4CAF50',
+  'in-progress': '#FF5722',
+  testing: '#FF9800',
+  ready: '#4CAF50',
   completed: '#4CAF50',
   cancelled: '#F44336',
 };

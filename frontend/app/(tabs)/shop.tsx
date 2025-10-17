@@ -135,7 +135,7 @@ export default function ShopScreen() {
       : allProducts.filter((p) => p.category === selectedCategory);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { paddingTop: 0, backgroundColor: Colors.backgroundGray }]}>
       <View style={styles.header}>
         <Text style={styles.title}>Shop Parts</Text>
       </View>

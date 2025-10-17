@@ -41,7 +41,7 @@ const STATUS_OPTIONS = [
   { label: 'Parts Ordered', value: 'parts-ordered', color: '#9C27B0' },
   { label: 'In Progress', value: 'in-progress', color: Colors.info },
   { label: 'Testing', value: 'testing', color: '#FF9800' },
-  { label: 'Ready', value: 'ready-for-delivery', color: Colors.success },
+  { label: 'Ready', value: 'ready', color: Colors.success },
   { label: 'Completed', value: 'completed', color: Colors.success },
 ];
 

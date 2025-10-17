@@ -118,7 +118,10 @@ export default function AddressesScreen() {
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Saved Addresses</Text>
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={() => setShowAddModal(true)}
+        >
           <Ionicons name="add" size={24} color={Colors.primary} />
         </TouchableOpacity>
       </View>
@@ -131,7 +134,10 @@ export default function AddressesScreen() {
             <Text style={styles.emptyText}>
               Add your delivery addresses for faster checkout
             </Text>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity 
+              style={styles.button}
+              onPress={() => setShowAddModal(true)}
+            >
               <Text style={styles.buttonText}>Add Address</Text>
             </TouchableOpacity>
           </View>
@@ -148,20 +154,20 @@ export default function AddressesScreen() {
                     </View>
                   )}
                 </View>
-                <TouchableOpacity>
-                  <Ionicons name="create-outline" size={20} color={Colors.textLight} />
-                </TouchableOpacity>
               </View>
               <Text style={styles.addressText}>{addr.address}</Text>
               <View style={styles.addressActions}>
                 {!addr.isDefault && (
-                  <TouchableOpacity style={styles.actionButton}>
+                  <TouchableOpacity 
+                    style={styles.actionButton}
+                    onPress={() => handleSetDefault(addr.id)}
+                  >
                     <Text style={styles.actionButtonText}>Set as Default</Text>
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   style={styles.deleteButton}
-                  onPress={() => Alert.alert('Delete', 'Delete this address?')}
+                  onPress={() => handleDeleteAddress(addr.id)}
                 >
                   <Ionicons name="trash-outline" size={16} color={Colors.error} />
                   <Text style={styles.deleteText}>Delete</Text>
@@ -171,6 +177,62 @@ export default function AddressesScreen() {
           ))
         )}
       </ScrollView>
+
+      {/* Add Address Modal */}
+      <Modal
+        visible={showAddModal}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowAddModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Add New Address</Text>
+              <TouchableOpacity onPress={() => {
+                setShowAddModal(false);
+                setNewAddressLabel('');
+                setNewAddressText('');
+              }}>
+                <Ionicons name="close" size={24} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.modalBody}>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Address Label *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="e.g., Home, Office, etc."
+                  value={newAddressLabel}
+                  onChangeText={setNewAddressLabel}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Full Address *</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="Enter complete address"
+                  value={newAddressText}
+                  onChangeText={setNewAddressText}
+                  multiline
+                  numberOfLines={4}
+                  placeholderTextColor={Colors.textLight}
+                />
+              </View>
+
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={handleAddAddress}
+              >
+                <Text style={styles.saveButtonText}>Save Address</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

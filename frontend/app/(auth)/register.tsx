@@ -119,6 +119,25 @@ export default function RegisterScreen() {
             <Text style={styles.subtitle}>Join WeFix.lk today!</Text>
           </View>
 
+          {/* Error Message */}
+          {hasError && errorMessage && (
+            <View style={styles.errorContainer}>
+              <View style={styles.errorHeader}>
+                <Ionicons name="alert-circle" size={20} color={Colors.error} />
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              </View>
+              {isDuplicateEmailError && (
+                <TouchableOpacity
+                  style={styles.goToLoginButton}
+                  onPress={handleGoToLogin}
+                >
+                  <Text style={styles.goToLoginText}>Go to Login</Text>
+                  <Ionicons name="arrow-forward" size={16} color={Colors.primary} />
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+
           {/* Register Form */}
           <View style={styles.form}>
             <View style={styles.inputContainer}>

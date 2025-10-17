@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,22 +7,106 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddressesScreen() {
   const router = useRouter();
-  const [addresses] = useState([
-    {
-      id: '1',
-      label: 'Home',
-      address: '123 Main Street, Colombo 03, Sri Lanka',
-      isDefault: true,
-    },
-  ]);
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<any>(null);
+  const [newAddressLabel, setNewAddressLabel] = useState('');
+  const [newAddressText, setNewAddressText] = useState('');
+
+  useEffect(() => {
+    loadAddresses();
+  }, []);
+
+  const loadAddresses = async () => {
+    try {
+      const addressesJson = await AsyncStorage.getItem('saved_addresses');
+      if (addressesJson) {
+        const savedAddresses = JSON.parse(addressesJson);
+        setAddresses(savedAddresses);
+      } else {
+        // Set default home address if none exists
+        const defaultAddresses = [
+          {
+            id: '1',
+            label: 'Home',
+            address: '123 Main Street, Colombo 03, Sri Lanka',
+            isDefault: true,
+          },
+        ];
+        await AsyncStorage.setItem('saved_addresses', JSON.stringify(defaultAddresses));
+        setAddresses(defaultAddresses);
+      }
+    } catch (error) {
+      console.error('Error loading addresses:', error);
+    }
+  };
+
+  const saveAddresses = async (newAddresses: any[]) => {
+    try {
+      await AsyncStorage.setItem('saved_addresses', JSON.stringify(newAddresses));
+      setAddresses(newAddresses);
+    } catch (error) {
+      console.error('Error saving addresses:', error);
+      Alert.alert('Error', 'Failed to save address');
+    }
+  };
+
+  const handleAddAddress = async () => {
+    if (!newAddressLabel.trim() || !newAddressText.trim()) {
+      Alert.alert('Missing Information', 'Please fill in both label and address');
+      return;
+    }
+
+    const newAddress = {
+      id: Date.now().toString(),
+      label: newAddressLabel,
+      address: newAddressText,
+      isDefault: addresses.length === 0,
+    };
+
+    const updatedAddresses = [...addresses, newAddress];
+    await saveAddresses(updatedAddresses);
+    
+    setShowAddModal(false);
+    setNewAddressLabel('');
+    setNewAddressText('');
+  };
+
+  const handleSetDefault = async (id: string) => {
+    const updatedAddresses = addresses.map(addr => ({
+      ...addr,
+      isDefault: addr.id === id,
+    }));
+    await saveAddresses(updatedAddresses);
+  };
+
+  const handleDeleteAddress = async (id: string) => {
+    Alert.alert(
+      'Delete Address',
+      'Are you sure you want to delete this address?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            const updatedAddresses = addresses.filter(addr => addr.id !== id);
+            await saveAddresses(updatedAddresses);
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>

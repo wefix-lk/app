@@ -378,9 +378,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   categoriesWrapper: {
-    backgroundColor: Colors.background,
-    marginTop: 0,
-    marginBottom: 0,
+  backgroundColor: Colors.background,
+  marginTop: 0,          // FIX: remove top gap
+  marginBottom: 0,
+  paddingBottom: 0,
   },
   categoriesContainer: {
     paddingHorizontal: 16,

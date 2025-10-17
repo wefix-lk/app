@@ -218,37 +218,51 @@ export default function ShopScreen() {
               </View>
             </TouchableOpacity>
             
-            {/* Add to Cart Button */}
-            <TouchableOpacity
-              style={[
-                styles.addToCartButton,
-                !item.isInStock && styles.addToCartButtonDisabled
-              ]}
-              onPress={() => {
-                if (item.isInStock) {
-                  addToCart({
-                    id: item.id,
-                    name: item.name,
-                    price: item.price,
-                    image: item.images[0],
-                    category: item.category,
-                  });
-                }
-              }}
-              disabled={!item.isInStock}
-            >
-              <Ionicons 
-                name="cart" 
-                size={16} 
-                color={item.isInStock ? Colors.textWhite : Colors.textLight} 
-              />
-              <Text style={[
-                styles.addToCartText,
-                !item.isInStock && styles.addToCartTextDisabled
-              ]}>
-                {item.isInStock ? 'Add to Cart' : 'Out of Stock'}
-              </Text>
-            </TouchableOpacity>
+            {/* Action Buttons Row */}
+            <View style={styles.actionButtonsRow}>
+              {/* Add to Cart Button */}
+              <TouchableOpacity
+                style={[
+                  styles.addToCartButton,
+                  !item.isInStock && styles.addToCartButtonDisabled
+                ]}
+                onPress={() => {
+                  if (item.isInStock) {
+                    addToCart({
+                      id: item.id,
+                      name: item.name,
+                      price: item.price,
+                      image: item.images[0],
+                      category: item.category,
+                    });
+                  }
+                }}
+                disabled={!item.isInStock}
+              >
+                <Ionicons 
+                  name="cart" 
+                  size={16} 
+                  color={item.isInStock ? Colors.textWhite : Colors.textLight} 
+                />
+                <Text style={[
+                  styles.addToCartText,
+                  !item.isInStock && styles.addToCartTextDisabled
+                ]}>
+                  {item.isInStock ? 'Add to Cart' : 'Out of Stock'}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Buy Now Button */}
+              {item.isInStock && (
+                <TouchableOpacity
+                  style={styles.buyNowButton}
+                  onPress={() => handleBuyNow(item)}
+                >
+                  <Ionicons name="logo-whatsapp" size={16} color={Colors.textWhite} />
+                  <Text style={styles.buyNowText}>Buy Now</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         )}
       />

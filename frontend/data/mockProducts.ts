@@ -70,6 +70,76 @@ export const mockProducts: Product[] = [
     stock: 12,
     isInStock: true,
     createdAt: '2025-01-19T10:00:00Z'
+  },
+  {
+    id: 'prod-6',
+    name: 'LED Backlight Strip (43")',
+    description: 'High-quality LED backlight replacement for 43-inch LED TVs. Bright, energy-efficient LEDs. Complete kit with all mounting accessories.',
+    price: 5800,
+    currency: 'LKR',
+    images: [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop',
+    ],
+    category: 'Backlights',
+    stock: 18,
+    isInStock: true,
+    createdAt: '2025-01-20T10:00:00Z'
+  },
+  {
+    id: 'prod-7',
+    name: 'Panasonic 50" LED TV Panel',
+    description: 'Original Panasonic 50-inch LED display panel. Full HD resolution, excellent viewing angles. Compatible with TH-50* series models.',
+    price: 95000,
+    currency: 'LKR',
+    images: [
+      'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=800&auto=format&fit=crop',
+    ],
+    category: 'TV Panels',
+    stock: 4,
+    isInStock: true,
+    createdAt: '2025-01-21T10:00:00Z'
+  },
+  {
+    id: 'prod-8',
+    name: 'Samsung T-CON Board (55")',
+    description: 'Genuine Samsung T-CON board for 55-inch 4K LED TVs. Perfect image quality, plug-and-play installation. 6-month warranty.',
+    price: 12500,
+    currency: 'LKR',
+    images: [
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop',
+    ],
+    category: 'T-CON Boards',
+    stock: 9,
+    isInStock: true,
+    createdAt: '2025-01-22T10:00:00Z'
+  },
+  {
+    id: 'prod-9',
+    name: 'TCL Main Board (43")',
+    description: 'Original TCL main board for 43-inch smart TVs. Android OS support, WiFi ready, all ports functional. Easy replacement.',
+    price: 14500,
+    currency: 'LKR',
+    images: [
+      'https://images.unsplash.com/photo-1585504198199-20277593b94f?w=800&auto=format&fit=crop',
+    ],
+    category: 'Main Boards',
+    stock: 7,
+    isInStock: true,
+    createdAt: '2025-01-23T10:00:00Z'
+  },
+  {
+    id: 'prod-10',
+    name: 'Power Supply Board (55"-65")',
+    description: 'Heavy-duty power supply for large screen TVs 55"-65". Multiple voltage outputs, high efficiency. Compatible with Samsung, LG, Sony.',
+    price: 8900,
+    currency: 'LKR',
+    images: [
+      'https://images.unsplash.com/photo-1593510987459-92d19971b61c?w=800&auto=format&fit=crop',
+    ],
+    category: 'Power Supply',
+    stock: 11,
+    isInStock: true,
+    createdAt: '2025-01-24T10:00:00Z'
   }
 ];
 

@@ -82,6 +82,16 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadStats();
+    
+    // Reload stats when screen comes into focus
+    const unsubscribe = router.addListener?.('focus', () => {
+      console.log('📊 Dashboard focused, reloading stats...');
+      loadStats();
+    });
+    
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   const loadStats = async () => {

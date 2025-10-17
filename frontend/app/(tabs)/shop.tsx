@@ -380,11 +380,12 @@ const styles = StyleSheet.create({
   categoriesWrapper: {
     backgroundColor: Colors.background,
     marginTop: 4,
+    marginBottom: 0,
   },
   categoriesContainer: {
     paddingHorizontal: 16,
     paddingTop: 2,
-    paddingBottom: 0,
+    paddingBottom: 8,
   },
   categoryChip: {
     paddingHorizontal: 16,

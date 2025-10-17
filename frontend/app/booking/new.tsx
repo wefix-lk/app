@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,9 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '../../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Shop address constant
+const SHOP_ADDRESS = 'No. 12, Keyzer Street, Colombo 11, Pettah';
+
 export default function NewBookingScreen() {
   const { user, userProfile } = useAuth();
   const router = useRouter();
@@ -29,11 +32,51 @@ export default function NewBookingScreen() {
   const [issueType, setIssueType] = useState('');
   const [issueDescription, setIssueDescription] = useState('');
   const [address, setAddress] = useState('');
-  const [pickupOption, setPickupOption] = useState<'pickup' | 'delivery'>('pickup');
+  const [pickupOption, setPickupOption] = useState<'pickup' | 'visit'>('pickup');
   const [loading, setLoading] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>('new');
 
   const [showBrandPicker, setShowBrandPicker] = useState(false);
   const [showIssuePicker, setShowIssuePicker] = useState(false);
+  const [showAddressPicker, setShowAddressPicker] = useState(false);
+
+  // Load saved addresses
+  useEffect(() => {
+    loadSavedAddresses();
+  }, []);
+
+  // Auto-fill address based on service option and address selection
+  useEffect(() => {
+    if (pickupOption === 'visit') {
+      // Auto-fill shop address for "Visit to Our Shop"
+      setAddress(SHOP_ADDRESS);
+      setSelectedAddressId('shop');
+    } else if (selectedAddressId !== 'new' && selectedAddressId !== 'shop') {
+      // Load selected saved address
+      const selected = savedAddresses.find(addr => addr.id === selectedAddressId);
+      if (selected) {
+        setAddress(selected.address);
+      }
+    } else if (selectedAddressId === 'new') {
+      // Clear for manual entry (only if not visit option)
+      if (pickupOption !== 'visit') {
+        setAddress('');
+      }
+    }
+  }, [pickupOption, selectedAddressId, savedAddresses]);
+
+  const loadSavedAddresses = async () => {
+    try {
+      const addressesJson = await AsyncStorage.getItem('saved_addresses');
+      if (addressesJson) {
+        const addresses = JSON.parse(addressesJson);
+        setSavedAddresses(addresses);
+      }
+    } catch (error) {
+      console.error('Error loading saved addresses:', error);
+    }
+  };
 
   // Check if phone is verified
   const isPhoneVerified = userProfile?.phoneVerified && userProfile?.phone;

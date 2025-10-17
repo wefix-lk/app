@@ -97,6 +97,38 @@ export default function ShopScreen() {
     setRefreshing(false);
   };
 
+  const handleBuyNow = async (product: any) => {
+    const whatsappNumber = '94773300905'; // +94 77 330 0905
+    
+    const message = `Hello WeFix.lk, I would like to purchase the following item(s):\n\n1. ${product.name} – LKR ${product.price.toLocaleString()}\n\nTotal: LKR ${product.price.toLocaleString()}`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    console.log('📱 Buy Now - Opening WhatsApp:', whatsappUrl);
+
+    try {
+      const canOpen = await Linking.canOpenURL(whatsappUrl);
+      
+      if (canOpen) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        Alert.alert(
+          'WhatsApp Not Available',
+          'WhatsApp is not installed on this device. Please install WhatsApp to continue.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('❌ Error opening WhatsApp:', error);
+      Alert.alert(
+        'Error',
+        'Could not open WhatsApp. Please make sure WhatsApp is installed.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
   const filteredProducts =
     selectedCategory === 'all'
       ? allProducts

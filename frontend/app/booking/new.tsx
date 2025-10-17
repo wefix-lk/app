@@ -323,15 +323,87 @@ export default function NewBookingScreen() {
           {/* Address */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Service Address *</Text>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Enter your full address"
-              value={address}
-              onChangeText={setAddress}
-              multiline
-              numberOfLines={3}
-              placeholderTextColor={Colors.textLight}
-            />
+            
+            {/* Address Selection - Only show for pickup option */}
+            {pickupOption === 'pickup' && (
+              <>
+                <TouchableOpacity
+                  style={styles.picker}
+                  onPress={() => setShowAddressPicker(!showAddressPicker)}
+                >
+                  <Text style={[styles.pickerText, selectedAddressId === 'new' && styles.placeholder]}>
+                    {selectedAddressId === 'new' 
+                      ? 'Enter New Address' 
+                      : savedAddresses.find(addr => addr.id === selectedAddressId)?.label || 'Select Address'}
+                  </Text>
+                  <Ionicons name="chevron-down" size={20} color={Colors.textLight} />
+                </TouchableOpacity>
+                
+                {showAddressPicker && (
+                  <View style={styles.pickerOptions}>
+                    <TouchableOpacity
+                      style={styles.pickerOption}
+                      onPress={() => {
+                        setSelectedAddressId('new');
+                        setAddress('');
+                        setShowAddressPicker(false);
+                      }}
+                    >
+                      <View style={styles.addressOptionRow}>
+                        <Ionicons name="create-outline" size={20} color={Colors.primary} />
+                        <Text style={styles.pickerOptionText}>Enter New Address</Text>
+                      </View>
+                    </TouchableOpacity>
+                    
+                    {savedAddresses.map((addr) => (
+                      <TouchableOpacity
+                        key={addr.id}
+                        style={styles.pickerOption}
+                        onPress={() => {
+                          setSelectedAddressId(addr.id);
+                          setAddress(addr.address);
+                          setShowAddressPicker(false);
+                        }}
+                      >
+                        <View style={styles.addressOptionRow}>
+                          <Ionicons name="location" size={20} color={Colors.primary} />
+                          <View style={styles.addressOptionContent}>
+                            <Text style={styles.addressOptionLabel}>{addr.label}</Text>
+                            <Text style={styles.addressOptionText} numberOfLines={1}>
+                              {addr.address}
+                            </Text>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+              </>
+            )}
+            
+            {/* Address Display/Input */}
+            {pickupOption === 'visit' ? (
+              // Shop address - read only
+              <View style={[styles.input, styles.inputDisabled, styles.textArea]}>
+                <View style={styles.shopAddressHeader}>
+                  <Ionicons name="storefront" size={18} color={Colors.primary} />
+                  <Text style={styles.shopAddressLabel}>WeFix.lk Service Center</Text>
+                </View>
+                <Text style={styles.shopAddressText}>{SHOP_ADDRESS}</Text>
+              </View>
+            ) : (
+              // Customer address - editable for new address or read-only for saved
+              <TextInput
+                style={[styles.input, styles.textArea, selectedAddressId !== 'new' && styles.inputDisabled]}
+                placeholder="Enter your full address"
+                value={address}
+                onChangeText={setAddress}
+                multiline
+                numberOfLines={3}
+                placeholderTextColor={Colors.textLight}
+                editable={selectedAddressId === 'new'}
+              />
+            )}
           </View>
 
           {/* Pickup/Delivery Option */}
@@ -343,7 +415,11 @@ export default function NewBookingScreen() {
                   styles.optionCard,
                   pickupOption === 'pickup' && styles.optionCardActive,
                 ]}
-                onPress={() => setPickupOption('pickup')}
+                onPress={() => {
+                  setPickupOption('pickup');
+                  setSelectedAddressId('new');
+                  setAddress('');
+                }}
               >
                 <Ionicons
                   name="car"
@@ -356,7 +432,7 @@ export default function NewBookingScreen() {
                     pickupOption === 'pickup' && styles.optionTextActive,
                   ]}
                 >
-                  Free Pickup
+                  Pick Up
                 </Text>
                 <Text style={styles.optionSubtext}>We'll collect your TV</Text>
               </TouchableOpacity>
@@ -364,24 +440,28 @@ export default function NewBookingScreen() {
               <TouchableOpacity
                 style={[
                   styles.optionCard,
-                  pickupOption === 'delivery' && styles.optionCardActive,
+                  pickupOption === 'visit' && styles.optionCardActive,
                 ]}
-                onPress={() => setPickupOption('delivery')}
+                onPress={() => {
+                  setPickupOption('visit');
+                  setSelectedAddressId('shop');
+                  setAddress(SHOP_ADDRESS);
+                }}
               >
                 <Ionicons
-                  name="home"
+                  name="storefront"
                   size={32}
-                  color={pickupOption === 'delivery' ? Colors.primary : Colors.textLight}
+                  color={pickupOption === 'visit' ? Colors.primary : Colors.textLight}
                 />
                 <Text
                   style={[
                     styles.optionText,
-                    pickupOption === 'delivery' && styles.optionTextActive,
+                    pickupOption === 'visit' && styles.optionTextActive,
                   ]}
                 >
-                  Home Service
+                  Visit to Our Shop
                 </Text>
-                <Text style={styles.optionSubtext}>We'll come to you</Text>
+                <Text style={styles.optionSubtext}>Bring your TV to us</Text>
               </TouchableOpacity>
             </View>
           </View>

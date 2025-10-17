@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   Alert,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -52,10 +53,42 @@ export default function ProductDetailScreen() {
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Proceed',
-          onPress: () => Alert.alert('Coming Soon', 'Checkout will be available soon'),
+          onPress: () => openWhatsApp(),
         },
       ]
     );
+  };
+
+  const openWhatsApp = async () => {
+    const whatsappNumber = '94773300905'; // +94 77 330 0905
+    
+    const message = `Hello WeFix.lk 👋,\n\nI'd like to buy the following product:\n\n- Product Name: ${product.name}\n- Quantity: ${quantity}\n- Total: LKR ${(product.price * quantity).toLocaleString()}\n\nPlease confirm availability.`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    console.log('📱 Buy Now - Opening WhatsApp:', whatsappUrl);
+
+    try {
+      const canOpen = await Linking.canOpenURL(whatsappUrl);
+      
+      if (canOpen) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        Alert.alert(
+          'WhatsApp Not Available',
+          'WhatsApp is not installed on this device. Please install WhatsApp to continue.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('❌ Error opening WhatsApp:', error);
+      Alert.alert(
+        'Error',
+        'Could not open WhatsApp. Please make sure WhatsApp is installed.',
+        [{ text: 'OK' }]
+      );
+    }
   };
 
   return (

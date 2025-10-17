@@ -29,20 +29,37 @@ export default function NewBookingScreen() {
   const [issueType, setIssueType] = useState('');
   const [issueDescription, setIssueDescription] = useState('');
   const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
   const [pickupOption, setPickupOption] = useState<'pickup' | 'delivery'>('pickup');
   const [loading, setLoading] = useState(false);
 
   const [showBrandPicker, setShowBrandPicker] = useState(false);
   const [showIssuePicker, setShowIssuePicker] = useState(false);
 
+  // Check if phone is verified
+  const isPhoneVerified = userProfile?.phoneVerified && userProfile?.phone;
+  const verifiedPhone = userProfile?.phone || '';
+
   const handleSubmit = async () => {
     console.log('🔘 Submit button clicked');
-    console.log('Form data:', { tvBrand, tvModel, issueType, address, phone });
     
-    if (!tvBrand || !tvModel || !issueType || !address || !phone) {
+    // Check phone verification first
+    if (!isPhoneVerified) {
+      Alert.alert(
+        'Phone Verification Required',
+        'Please verify your phone number before booking a repair service.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Verify Now', onPress: () => router.push('/profile/edit') }
+        ]
+      );
+      return;
+    }
+    
+    console.log('Form data:', { tvBrand, tvModel, issueType, address, phone: verifiedPhone });
+    
+    if (!tvBrand || !tvModel || !issueType || !address) {
       console.log('❌ Validation failed - missing required fields');
-      Alert.alert('Missing Information', 'Please fill in all required fields:\n• TV Brand\n• TV Model\n• Issue Type\n• Address\n• Phone Number');
+      Alert.alert('Missing Information', 'Please fill in all required fields:\n• TV Brand\n• TV Model\n• Issue Type\n• Address');
       return;
     }
 
@@ -56,13 +73,13 @@ export default function NewBookingScreen() {
         id: bookingId,
         userId: user?.uid,
         customerName,
-        customerPhone: phone,
+        customerPhone: verifiedPhone,
         tvBrand,
         tvModel,
         issueType,
         issueDescription,
         address,
-        phone, // Keep for backward compatibility
+        phone: verifiedPhone, // Keep for backward compatibility
         serviceType: pickupOption,
         pickupOption,
         status: 'pending',

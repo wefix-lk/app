@@ -58,6 +58,18 @@ export default function EditProfileScreen() {
     setNewPhone('');
     
     console.log('✅ Phone verified and updated:', formattedPhone);
+    
+    // Immediately save to profile
+    try {
+      await updateProfile({ 
+        phone: formattedPhone,
+        phoneVerified: true,
+      });
+      console.log('✅ Phone verification saved to profile');
+    } catch (error: any) {
+      console.error('❌ Error saving verification:', error);
+      Alert.alert('Error', 'Failed to save verification status. Please try again.');
+    }
   };
 
   const handleSave = async () => {

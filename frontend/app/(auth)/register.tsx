@@ -76,12 +76,27 @@ export default function RegisterScreen() {
       router.replace('/(tabs)/home');
     } catch (error: any) {
       console.error('Registration error:', error);
-      setErrorMessage(error.message || 'Registration failed. Please try again.');
+      const errorMsg = error.message || 'Registration failed. Please try again.';
+      setErrorMessage(errorMsg);
       setHasError(true);
+      
+      // If it's a duplicate email error, we'll show the "Go to Login" button
+      // Check if error message contains "already registered" or "already exists"
+      if (errorMsg.toLowerCase().includes('already registered') || 
+          errorMsg.toLowerCase().includes('already exists')) {
+        // Error handling for duplicate email - button will be shown
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  const handleGoToLogin = () => {
+    router.replace('/(auth)/login');
+  };
+
+  const isDuplicateEmailError = errorMessage.toLowerCase().includes('already registered') || 
+                                 errorMessage.toLowerCase().includes('already exists');
 
   return (
     <SafeAreaView style={styles.container}>

@@ -96,13 +96,24 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     try {
+      console.log('📊 Loading dashboard stats...');
+      
       // Load all bookings - try both storage keys
       let bookingsJson = await AsyncStorage.getItem('local_bookings');
+      console.log('📦 local_bookings raw:', bookingsJson ? `${bookingsJson.substring(0, 100)}...` : 'null');
+      
       if (!bookingsJson) {
         bookingsJson = await AsyncStorage.getItem('bookings');
+        console.log('📦 bookings raw:', bookingsJson ? `${bookingsJson.substring(0, 100)}...` : 'null');
       }
+      
       const bookings = bookingsJson ? JSON.parse(bookingsJson) : [];
-      console.log('📊 Dashboard loaded bookings:', bookings.length);
+      console.log('📊 Dashboard loaded bookings:', bookings.length, 'bookings');
+      
+      if (bookings.length > 0) {
+        console.log('📋 Sample booking:', bookings[0]);
+        console.log('📊 Booking statuses:', bookings.map((b: any) => b.status));
+      }
 
       // Load service requests
       const requestsJson = await AsyncStorage.getItem('service_requests');
@@ -114,6 +125,15 @@ export default function AdminDashboard() {
       const completed = bookings.filter((b: any) => b.status === 'completed').length;
       const cancelled = bookings.filter((b: any) => b.status === 'cancelled').length;
 
+      console.log('📊 Stats calculated:', {
+        total: bookings.length,
+        pending,
+        inProgress,
+        completed,
+        cancelled,
+        requests: requests.length
+      });
+
       setStats({
         totalBookings: bookings.length,
         pendingBookings: pending,
@@ -123,7 +143,7 @@ export default function AdminDashboard() {
         serviceRequests: requests.length,
       });
     } catch (error) {
-      console.error('Error loading stats:', error);
+      console.error('❌ Error loading stats:', error);
     }
   };
 

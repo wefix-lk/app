@@ -391,11 +391,30 @@ const styles = StyleSheet.create({
   inputGroup: {
     marginBottom: 20,
   },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
   label: {
     fontSize: 14,
     fontWeight: '600',
     color: Colors.text,
-    marginBottom: 8,
+  },
+  verifiedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.success + '15',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  verifiedText: {
+    fontSize: 12,
+    color: Colors.success,
+    fontWeight: '600',
   },
   input: {
     backgroundColor: Colors.background,
@@ -409,6 +428,50 @@ const styles = StyleSheet.create({
   inputDisabled: {
     backgroundColor: Colors.backgroundGray,
     color: Colors.textLight,
+  },
+  verifiedPhoneContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  verifiedPhoneText: {
+    fontSize: 16,
+    color: Colors.textLight,
+  },
+  changePhoneButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: Colors.backgroundGray,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  changePhoneText: {
+    fontSize: 14,
+    color: Colors.primary,
+    fontWeight: '600',
+  },
+  phoneInputRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  phoneInput: {
+    flex: 1,
+  },
+  verifyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 6,
+  },
+  verifyButtonText: {
+    fontSize: 14,
+    color: Colors.textWhite,
+    fontWeight: '600',
   },
   textArea: {
     height: 80,

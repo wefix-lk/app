@@ -42,6 +42,16 @@ export default function TrackingScreen() {
 
   useEffect(() => {
     loadBookings();
+    
+    // Reload bookings when screen comes into focus
+    const unsubscribe = router.addListener?.('focus', () => {
+      console.log('🔄 Tracking screen focused, reloading bookings...');
+      loadBookings();
+    });
+    
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   const loadBookings = async () => {

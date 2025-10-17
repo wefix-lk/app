@@ -16,6 +16,7 @@ interface UserProfile {
   email: string;
   name?: string;
   phone?: string;
+  phoneVerified?: boolean;
   address?: string;
   createdAt: string;
 }

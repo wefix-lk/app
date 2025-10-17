@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   },
   productsList: {
     flex: 1,
-    marginTop: 0,
+    marginTop: -4,
   },
   productsContainer: {
     paddingHorizontal: 16,

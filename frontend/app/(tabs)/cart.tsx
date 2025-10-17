@@ -154,12 +154,10 @@ export default function CartScreen() {
 
         <TouchableOpacity
           style={styles.checkoutButton}
-          onPress={() => {
-            // Placeholder for checkout
-            alert('Checkout feature coming soon!');
-          }}
+          onPress={handleWhatsAppCheckout}
         >
-          <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
+          <Ionicons name="logo-whatsapp" size={20} color={Colors.textWhite} />
+          <Text style={styles.checkoutButtonText}>Proceed to Checkout on WhatsApp</Text>
           <Ionicons name="arrow-forward" size={20} color={Colors.textWhite} />
         </TouchableOpacity>
       </View>

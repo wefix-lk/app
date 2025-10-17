@@ -17,13 +17,19 @@ import { format } from 'date-fns';
 import ConfirmationModal from '../../components/ConfirmationModal';
 
 const statusSteps = [
-  { key: 'pending', label: 'Booking Received', icon: 'checkmark-circle' },
-  { key: 'under-inspection', label: 'Under Inspection', icon: 'eye' },
+  { key: 'pending', label: 'Pending', icon: 'hourglass-outline' },
+  { key: 'confirmed', label: 'Confirmed', icon: 'checkmark-circle' },
   { key: 'parts-ordered', label: 'Parts Ordered', icon: 'cube' },
-  { key: 'repair-in-progress', label: 'Repair in Progress', icon: 'construct' },
-  { key: 'ready-for-delivery', label: 'Ready for Delivery', icon: 'checkmark-done' },
+  { key: 'in-progress', label: 'In Progress', icon: 'construct' },
+  { key: 'testing', label: 'Testing', icon: 'flask' },
+  { key: 'ready', label: 'Ready', icon: 'checkmark-done' },
   { key: 'completed', label: 'Completed', icon: 'trophy' },
 ];
+
+const getStatusIndex = (status: string) => {
+  const index = statusSteps.findIndex(step => step.key === status);
+  return index >= 0 ? index : 0;
+};
 
 export default function TrackingScreen() {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,23 +6,73 @@ import {
   ScrollView,
   TouchableOpacity,
   Switch,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../contexts/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function NotificationsScreen() {
   const router = useRouter();
-  const [settings, setSettings] = React.useState({
+  const { userProfile, updateProfile } = useAuth();
+  
+  const [settings, setSettings] = useState({
     repairUpdates: true,
     promotions: true,
     newProducts: false,
     warrantyExpiry: true,
   });
 
-  const toggleSetting = (key: string) => {
-    setSettings({ ...settings, [key]: !settings[key] });
+  // Load saved preferences on mount
+  useEffect(() => {
+    loadNotificationPreferences();
+  }, []);
+
+  const loadNotificationPreferences = async () => {
+    try {
+      // Try to load from user profile first
+      if (userProfile?.notificationPreferences) {
+        setSettings(userProfile.notificationPreferences);
+        console.log('✅ Loaded notification preferences from profile');
+        return;
+      }
+
+      // Fallback to AsyncStorage
+      const savedPreferences = await AsyncStorage.getItem('notification_preferences');
+      if (savedPreferences) {
+        const parsed = JSON.parse(savedPreferences);
+        setSettings(parsed);
+        console.log('✅ Loaded notification preferences from AsyncStorage');
+      }
+    } catch (error) {
+      console.error('❌ Error loading notification preferences:', error);
+    }
+  };
+
+  const toggleSetting = async (key: string) => {
+    const newSettings = { ...settings, [key]: !settings[key] };
+    setSettings(newSettings);
+    
+    // Save to AsyncStorage
+    try {
+      await AsyncStorage.setItem('notification_preferences', JSON.stringify(newSettings));
+      console.log('✅ Saved notification preferences to AsyncStorage');
+      
+      // Save to user profile
+      await updateProfile({ notificationPreferences: newSettings });
+      console.log('✅ Saved notification preferences to profile');
+      
+      // Show success message
+      Alert.alert('✓ Preferences Updated', 'Your notification settings have been saved', [
+        { text: 'OK' }
+      ]);
+    } catch (error) {
+      console.error('❌ Error saving notification preferences:', error);
+      Alert.alert('Error', 'Failed to save preferences. Please try again.');
+    }
   };
 
   return (

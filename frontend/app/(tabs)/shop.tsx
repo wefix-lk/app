@@ -419,10 +419,12 @@ const styles = StyleSheet.create({
   },
   productsList: {
     flex: 1,
+    marginTop: 0,
   },
   productsContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
     paddingTop: 0,
+    paddingBottom: 16,
     flexGrow: 1,
   },
   productRow: {

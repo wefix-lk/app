@@ -119,22 +119,22 @@ export default function LoginScreen() {
             
             <View style={[styles.inputContainer, hasError && styles.inputContainerError]}>
               <Ionicons 
-                name="mail-outline" 
+                name="call-outline" 
                 size={20} 
                 color={hasError ? Colors.error : Colors.textLight} 
                 style={styles.inputIcon} 
               />
               <TextInput
                 style={styles.input}
-                placeholder="Email Address"
-                value={email}
+                placeholder="Phone Number (07XXXXXXXX)"
+                value={phone}
                 onChangeText={(text) => {
-                  setEmail(text);
+                  setPhone(text);
                   setErrorMessage(''); // Clear error on input change
                   setHasError(false);
                 }}
-                keyboardType="email-address"
-                autoCapitalize="none"
+                keyboardType="phone-pad"
+                maxLength={10}
                 placeholderTextColor={Colors.textLight}
                 editable={!loading}
               />

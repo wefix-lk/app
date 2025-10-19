@@ -19,6 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,14 +37,27 @@ export default function RegisterScreen() {
     return emailRegex.test(email);
   };
 
+  // Phone validation
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[0-9]{10}$/; // 10 digits
+    return phoneRegex.test(phone.replace(/\s/g, ''));
+  };
+
   const handleRegister = async () => {
     // Clear previous errors
     setErrorMessage('');
     setHasError(false);
 
     // Validate all fields are filled
-    if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+    if (!name.trim() || !phone.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setErrorMessage('Please fill in all fields');
+      setHasError(true);
+      return;
+    }
+
+    // Validate phone format
+    if (!validatePhone(phone)) {
+      setErrorMessage('Please enter a valid 10-digit phone number');
       setHasError(true);
       return;
     }
@@ -71,9 +85,24 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      await signUp(email.trim().toLowerCase(), password, name.trim());
-      // Successfully registered, navigate to home
-      router.replace('/(tabs)/home');
+      // Format phone number with +94 prefix
+      const formattedPhone = phone.startsWith('0') 
+        ? `+94${phone.substring(1)}` 
+        : `+94${phone}`;
+      
+      await signUp(email.trim().toLowerCase(), password, name.trim(), formattedPhone);
+      
+      // Successfully registered
+      Alert.alert(
+        'Success!',
+        'Account created successfully. Please login to continue.',
+        [
+          {
+            text: 'OK',
+            onPress: () => router.replace('/(auth)/login')
+          }
+        ]
+      );
     } catch (error: any) {
       console.error('Registration error:', error);
       const errorMsg = error.message || 'Registration failed. Please try again.';

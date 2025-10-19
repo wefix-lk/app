@@ -110,62 +110,82 @@ export default function NewBookingScreen() {
     setLoading(true);
     
     try {
-      const bookingId = `booking_${Date.now()}`;
       const customerName = userProfile?.name || user?.email?.split('@')[0] || 'Unknown Customer';
       const bookingData = {
-        id: bookingId,
-        userId: user?.uid,
-        customerName,
-        customerPhone: verifiedPhone,
         tvBrand,
         tvModel,
         issueType,
         issueDescription,
         address,
-        phone: verifiedPhone, // Keep for backward compatibility
-        serviceType: pickupOption,
+        phone: verifiedPhone,
         pickupOption,
-        status: 'pending',
-        timeline: [
-          {
-            status: 'pending',
-            timestamp: new Date().toISOString(),
-            note: 'Booking created',
-          },
-        ],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        customerName,
       };
 
       console.log('💾 Saving booking data...', bookingData);
+      console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
 
-      if (isFirebaseConfigured) {
-        // Firebase mode
-        console.log('📤 Saving to Firebase...');
-        await addDoc(collection(db, 'bookings'), bookingData);
+      if (PRODUCTION_MODE) {
+        // Production API mode
+        console.log('📤 Sending to Production API...');
+        const response = await api.bookings.create(bookingData);
+        
+        if (response.success && response.data) {
+          console.log('🎉 Booking created successfully in database!');
+          const booking = response.data;
+          
+          // Navigate to success screen with booking details
+          router.push({
+            pathname: '/booking/success',
+            params: {
+              bookingId: booking.id,
+              tvBrand: tvBrand,
+              tvModel: tvModel,
+              issueType: issueTypes.find(i => i.value === issueType)?.label || issueType,
+              phone: verifiedPhone,
+            }
+          });
+        } else {
+          throw new Error('Failed to create booking');
+        }
       } else {
         // Demo mode - save to local storage
         console.log('💾 Saving to local storage (Demo mode)...');
+        const bookingId = `booking_${Date.now()}`;
+        const fullBookingData = {
+          id: bookingId,
+          userId: user?.uid,
+          ...bookingData,
+          status: 'pending',
+          timeline: [
+            {
+              status: 'pending',
+              timestamp: new Date().toISOString(),
+              note: 'Booking created',
+            },
+          ],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        
         const bookingsJson = await AsyncStorage.getItem('local_bookings');
         const bookings = bookingsJson ? JSON.parse(bookingsJson) : [];
-        bookings.push(bookingData);
+        bookings.push(fullBookingData);
         await AsyncStorage.setItem('local_bookings', JSON.stringify(bookings));
         console.log('✅ Saved to local storage. Total bookings:', bookings.length);
+        
+        // Navigate to success screen with booking details
+        router.push({
+          pathname: '/booking/success',
+          params: {
+            bookingId: bookingId,
+            tvBrand: tvBrand,
+            tvModel: tvModel,
+            issueType: issueTypes.find(i => i.value === issueType)?.label || issueType,
+            phone: verifiedPhone,
+          }
+        });
       }
-      
-      console.log('🎉 Booking created successfully!');
-      
-      // Navigate to success screen with booking details
-      router.push({
-        pathname: '/booking/success',
-        params: {
-          bookingId: bookingId,
-          tvBrand: tvBrand,
-          tvModel: tvModel,
-          issueType: issueTypes.find(i => i.value === issueType)?.label || issueType,
-          phone: verifiedPhone,
-        }
-      });
     } catch (error: any) {
       console.error('❌ Booking error:', error);
       Alert.alert('Error', `Failed to create booking: ${error.message || 'Unknown error'}\n\nPlease try again.`);

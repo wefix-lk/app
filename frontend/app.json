@@ -12,6 +12,10 @@
       "enabled": false,
       "fallbackToCacheTimeout": 0
     },
+    "extra": {
+      "EXPO_PUBLIC_API_URL": "http://wefixservers.xyz/api",
+      "EXPO_PUBLIC_PRODUCTION_MODE": "true"
+    },
     "ios": {
       "supportsTablet": true
     },

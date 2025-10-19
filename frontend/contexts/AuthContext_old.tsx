@@ -69,7 +69,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUserProfile(userData);
         setIsAdmin(adminFlag === 'true' || userData.role === 'admin');
         console.log('👤 Restored session:', userData.email, adminFlag === 'true' || userData.role === 'admin' ? '(Admin)' : '(User)');
-        console.log('🌐 Production Mode:', PRODUCTION_MODE ? 'LIVE API' : 'Demo Mode');
       }
       setLoading(false);
     } catch (error) {
@@ -81,7 +80,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       console.log('🔐 Attempting login for:', email);
-      console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
       
       // Check for admin credentials first
       if (email.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
@@ -107,7 +105,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Production API login
       if (PRODUCTION_MODE) {
-        console.log('🌐 Calling production API login...');
         const response = await api.auth.login({
           email,
           password
@@ -134,11 +131,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUserProfile(userProfile);
           setIsAdmin(userData.role === 'admin');
           
-          console.log('✅ Login successful (Production API):', userData.email);
+          console.log('✅ Login successful (Production):', userData.email);
         }
       } else {
         // Demo mode - AsyncStorage fallback
-        console.log('🌐 Using demo mode login...');
         const usersJson = await AsyncStorage.getItem('local_users');
         const users = usersJson ? JSON.parse(usersJson) : {};
         
@@ -170,79 +166,119 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       throw new Error(error.message || 'Login failed. Please try again.');
     }
   };
-
-  const signUp = async (email: string, password: string, name: string, phone?: string) => {
-    try {
-      console.log('🔐 Attempting registration for:', email);
-      console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
-
-      if (PRODUCTION_MODE) {
-        console.log('🌐 Calling production API register...');
-        const response = await api.auth.register({
-          name,
-          email,
-          phone: phone || '',
-          password
-        });
-        
-        if (response.success && response.data) {
-          console.log('✅ Registration successful (Production API):', email);
-          // Don't auto-login, let user login manually
+          await AsyncStorage.setItem('userToken', storedUser.uid);
+          await AsyncStorage.removeItem('isAdmin');
+          
+          setUser({ uid: storedUser.uid, email: storedUser.email });
+          setUserProfile(userProfile);
+          setIsAdmin(false);
+        } else {
+          throw new Error('Invalid email or password. Please check your credentials or create a new account.');
         }
       } else {
-        // Demo mode - store locally
+        // Firebase mode
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        await AsyncStorage.setItem('userToken', result.user.uid);
+        await AsyncStorage.removeItem('isAdmin');
+        setIsAdmin(false);
+      }
+    } catch (error: any) {
+      console.error('Sign in error:', error);
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+        throw new Error('Invalid email or password. Please try again.');
+      } else if (error.code === 'auth/network-request-failed') {
+        throw new Error('Network error. Please check your internet connection.');
+      } else {
+        throw new Error(error.message || 'Failed to sign in. Please try again.');
+      }
+    }
+  };
+
+  const signUp = async (email: string, password: string, name: string) => {
+    try {
+      if (isDemoMode) {
+        // Local development mode - store user locally
         const usersJson = await AsyncStorage.getItem('local_users');
         const users = usersJson ? JSON.parse(usersJson) : {};
         
+        // Check if user already exists
         if (users[email]) {
           throw new Error('An account with this email already exists. Please login instead.');
         }
         
         const uid = `local_${Date.now()}`;
         const userProfile: UserProfile = {
-          id: uid,
           uid,
           email,
           name,
-          phone,
           createdAt: new Date().toISOString()
         };
         
+        // Store user with password
         users[email] = {
           ...userProfile,
           password
         };
         
         await AsyncStorage.setItem('local_users', JSON.stringify(users));
-        console.log('✅ Registration successful (Demo):', email);
+        await AsyncStorage.setItem('local_user', JSON.stringify(userProfile));
+        await AsyncStorage.setItem('userToken', uid);
+        
+        setUser({ uid, email });
+        setUserProfile(userProfile);
+      } else {
+        // Firebase mode
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Create user profile in Firestore
+        const userProfile: UserProfile = {
+          uid: result.user.uid,
+          email: email,
+          name: name,
+          createdAt: new Date().toISOString()
+        };
+        
+        await setDoc(doc(db, 'users', result.user.uid), userProfile);
+        setUserProfile(userProfile);
+        await AsyncStorage.setItem('userToken', result.user.uid);
       }
     } catch (error: any) {
-      console.error('❌ Registration error:', error);
-      throw new Error(error.message || 'Registration failed. Please try again.');
+      console.error('Sign up error:', error);
+      if (error.code === 'auth/email-already-in-use') {
+        throw new Error('This email is already registered. Please login instead.');
+      } else if (error.code === 'auth/weak-password') {
+        throw new Error('Password is too weak. Please use at least 6 characters.');
+      } else if (error.code === 'auth/invalid-email') {
+        throw new Error('Invalid email address. Please check and try again.');
+      } else {
+        throw new Error(error.message || 'Failed to create account. Please try again.');
+      }
     }
   };
 
   const signOut = async () => {
     try {
-      console.log('🔐 Starting sign out...');
+      console.log('🔐 Starting sign out process...', { isDemoMode });
       
-      if (PRODUCTION_MODE) {
-        try {
-          await api.auth.logout();
-        } catch (error) {
-          console.warn('API logout failed, clearing local data anyway');
-        }
+      if (isDemoMode) {
+        console.log('📱 Demo mode: Clearing local storage');
+        await AsyncStorage.removeItem('local_user');
+        await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('isAdmin');
+        setUser(null);
+        setUserProfile(null);
+        setIsAdmin(false);
+        console.log('✅ Demo mode sign out complete');
+      } else {
+        console.log('🔥 Firebase mode: Signing out from Firebase');
+        await firebaseSignOut(auth);
+        await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('isAdmin');
+        setUser(null);
+        setUserProfile(null);
+        setIsAdmin(false);
+        console.log('✅ Firebase sign out complete');
       }
-      
-      await AsyncStorage.removeItem('user_profile');
-      await AsyncStorage.removeItem('auth_token');
-      await AsyncStorage.removeItem('isAdmin');
-      
-      setUser(null);
-      setUserProfile(null);
-      setIsAdmin(false);
-      
-      console.log('✅ Sign out complete');
     } catch (error: any) {
       console.error('❌ Sign out error:', error);
       throw new Error(error.message || 'Failed to sign out');
@@ -251,25 +287,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const resetPassword = async (email: string) => {
     try {
-      console.log('🔄 Password reset requested for:', email);
-      
-      if (PRODUCTION_MODE) {
-        await api.auth.forgotPassword(email);
-        console.log('✅ Password reset email sent (Production)');
-      } else {
-        // Demo mode - just check if email exists
+      if (isDemoMode) {
+        // In demo mode, check if email exists in local storage
+        console.log('🔄 Password reset requested for:', email);
         const usersJson = await AsyncStorage.getItem('local_users');
         const users = usersJson ? JSON.parse(usersJson) : {};
         
         if (!users[email]) {
+          console.log('❌ Email not found:', email);
           throw new Error('No account found with this email address.');
         }
         
-        console.log('✅ Email found (Demo mode simulation)');
+        console.log('✅ Email found, simulating password reset email sent');
+        // In production, Firebase will send the actual email
+      } else {
+        // Firebase mode
+        await sendPasswordResetEmail(auth, email);
       }
     } catch (error: any) {
       console.error('❌ Reset password error:', error);
-      throw new Error(error.message || 'Failed to send reset email. Please try again.');
+      if (error.code === 'auth/user-not-found') {
+        throw new Error('No account found with this email address.');
+      } else if (error.code === 'auth/invalid-email') {
+        throw new Error('Invalid email address. Please check and try again.');
+      } else if (error.message) {
+        throw error; // Re-throw our custom errors
+      } else {
+        throw new Error('Failed to send reset email. Please try again.');
+      }
     }
   };
 
@@ -277,22 +322,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) throw new Error('No user logged in');
     
     try {
-      console.log('🔄 Updating profile...');
-      
-      if (PRODUCTION_MODE) {
-        await api.profile.update(data);
+      if (isDemoMode) {
         const updatedProfile = { ...userProfile, ...data } as UserProfile;
-        await AsyncStorage.setItem('user_profile', JSON.stringify(updatedProfile));
+        await AsyncStorage.setItem('local_user', JSON.stringify(updatedProfile));
         setUserProfile(updatedProfile);
-        console.log('✅ Profile updated (Production)');
       } else {
-        const updatedProfile = { ...userProfile, ...data } as UserProfile;
-        await AsyncStorage.setItem('user_profile', JSON.stringify(updatedProfile));
-        setUserProfile(updatedProfile);
-        console.log('✅ Profile updated (Demo)');
+        await setDoc(doc(db, 'users', user.uid), data, { merge: true });
+        setUserProfile({ ...userProfile, ...data } as UserProfile);
       }
     } catch (error: any) {
-      console.error('❌ Update profile error:', error);
       throw new Error(error.message || 'Failed to update profile');
     }
   };
@@ -310,9 +348,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isAdmin
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

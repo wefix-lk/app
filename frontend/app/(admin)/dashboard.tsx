@@ -890,6 +890,54 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: 'top',
   },
+  picker: {
+    backgroundColor: Colors.backgroundGray,
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  pickerText: {
+    fontSize: 16,
+    color: Colors.text,
+  },
+  placeholder: {
+    color: Colors.textLight,
+  },
+  pickerOptions: {
+    backgroundColor: Colors.background,
+    borderRadius: 12,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    maxHeight: 200,
+    overflow: 'hidden',
+  },
+  pickerScrollView: {
+    maxHeight: 200,
+  },
+  pickerOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  pickerOptionSelected: {
+    backgroundColor: Colors.primary + '10',
+  },
+  pickerOptionText: {
+    fontSize: 16,
+    color: Colors.text,
+  },
+  pickerOptionTextSelected: {
+    color: Colors.primary,
+    fontWeight: '600',
+  },
   imagePickerButton: {
     flexDirection: 'row',
     alignItems: 'center',

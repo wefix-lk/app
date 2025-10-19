@@ -38,8 +38,8 @@ export default function ShopScreen() {
     { id: 'all', label: 'All' },
     { id: 'TV Panels', label: 'TV Panels' },
     { id: 'Backlights', label: 'Backlights' },
-    { id: 'T-CON Boards', label: 'T-CON Boards' },
-    { id: 'TV Main Boards', label: 'TV Main Boards' },
+    { id: 'T-CON Board', label: 'T-CON Board' },
+    { id: 'TV Main Board', label: 'TV Main Board' },
     { id: 'Multi Products', label: 'Multi Products' },
   ];
 

@@ -28,7 +28,7 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [hasError, setHasError] = useState(false);
-  const { signUp } = useAuth();
+  const { signUp, signIn } = useAuth();
   const router = useRouter();
 
   // Email validation regex

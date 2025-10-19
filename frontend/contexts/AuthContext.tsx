@@ -78,13 +78,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (phoneOrEmail: string, password: string) => {
     try {
-      console.log('🔐 Attempting login for:', email);
+      console.log('🔐 Attempting login for:', phoneOrEmail);
       console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
       
-      // Check for admin credentials first
-      if (email.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      // Check for admin credentials first (admin uses email)
+      if (phoneOrEmail.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         console.log('🔐 Admin login detected');
         const adminProfile: UserProfile = {
           id: 'admin_001',
@@ -108,10 +108,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Production API login
       if (PRODUCTION_MODE) {
         console.log('🌐 Calling production API login...');
-        const response = await api.auth.login({
-          email,
-          password
-        });
+        
+        // Check if it's a phone number (starts with +) or email (contains @)
+        const isPhone = phoneOrEmail.startsWith('+');
+        const loginData = isPhone 
+          ? { phone: phoneOrEmail, password }
+          : { email: phoneOrEmail, password };
+        
+        const response = await api.auth.login(loginData);
         
         if (response.success && response.data) {
           const userData = response.data.user;
@@ -134,7 +138,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUserProfile(userProfile);
           setIsAdmin(userData.role === 'admin');
           
-          console.log('✅ Login successful (Production API):', userData.email);
+          console.log('✅ Login successful (Production API):', userData.phone || userData.email);
         }
       } else {
         // Demo mode - AsyncStorage fallback

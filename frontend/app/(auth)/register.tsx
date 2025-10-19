@@ -181,6 +181,19 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputContainer}>
+              <Ionicons name="call-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Phone Number (07XXXXXXXX)"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                maxLength={10}
+                placeholderTextColor={Colors.textLight}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
               <Ionicons name="mail-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
@@ -222,9 +235,19 @@ export default function RegisterScreen() {
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
-                secureTextEntry={!showPassword}
+                secureTextEntry={!showConfirmPassword}
                 placeholderTextColor={Colors.textLight}
               />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={styles.eyeIcon}
+              >
+                <Ionicons
+                  name={showConfirmPassword ? 'eye-outline' : 'eye-off-outline'}
+                  size={20}
+                  color={Colors.textLight}
+                />
+              </TouchableOpacity>
             </View>
 
             <TouchableOpacity

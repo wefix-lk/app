@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 // Get API URL from environment
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL || 
                 process.env.EXPO_PUBLIC_API_URL || 
-                'http://wefixservers.xyz/api';
+                'https://wefixservers.xyz/api';
 
 const PRODUCTION_MODE = Constants.expoConfig?.extra?.EXPO_PUBLIC_PRODUCTION_MODE || 
                         process.env.EXPO_PUBLIC_PRODUCTION_MODE === 'true';

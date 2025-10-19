@@ -111,9 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         // Check if it's a phone number (starts with +) or email (contains @)
         const isPhone = phoneOrEmail.startsWith('+');
-        const loginData = isPhone 
-          ? { phone: phoneOrEmail, password }
-          : { email: phoneOrEmail, password };
+        const loginData = { phone: phoneOrEmail, password };
         
         const response = await api.auth.login(loginData);
         

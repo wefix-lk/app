@@ -96,9 +96,9 @@ export default function RegisterScreen() {
       console.log('✅ Registration successful, auto-logging in...');
       
       // Step 2: Automatically login the user
-      await signIn(email.trim().toLowerCase(), password);
+      await signIn(formattedPhone, password);
       
-      console.log('✅ Auto-login successful, redirecting to home...');
+      console.log('✅ Auto-login successful, redirecting to home...'+ formattedPhone);
       
       // Step 3: Redirect to home
       router.replace('/(tabs)/home');

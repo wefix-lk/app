@@ -351,41 +351,47 @@ export default function NewBookingScreen() {
                 
                 {showAddressPicker && (
                   <View style={styles.pickerOptions}>
-                    <TouchableOpacity
-                      style={styles.pickerOption}
-                      onPress={() => {
-                        setSelectedAddressId('new');
-                        setAddress('');
-                        setShowAddressPicker(false);
-                      }}
+                    <ScrollView 
+                      style={styles.pickerScrollView}
+                      nestedScrollEnabled={true}
+                      showsVerticalScrollIndicator={true}
                     >
-                      <View style={styles.addressOptionRow}>
-                        <Ionicons name="create-outline" size={20} color={Colors.primary} />
-                        <Text style={styles.pickerOptionText}>Enter New Address</Text>
-                      </View>
-                    </TouchableOpacity>
-                    
-                    {savedAddresses.map((addr) => (
                       <TouchableOpacity
-                        key={addr.id}
                         style={styles.pickerOption}
                         onPress={() => {
-                          setSelectedAddressId(addr.id);
-                          setAddress(addr.address);
+                          setSelectedAddressId('new');
+                          setAddress('');
                           setShowAddressPicker(false);
                         }}
                       >
                         <View style={styles.addressOptionRow}>
-                          <Ionicons name="location" size={20} color={Colors.primary} />
-                          <View style={styles.addressOptionContent}>
-                            <Text style={styles.addressOptionLabel}>{addr.label}</Text>
-                            <Text style={styles.addressOptionText} numberOfLines={1}>
-                              {addr.address}
-                            </Text>
-                          </View>
+                          <Ionicons name="create-outline" size={20} color={Colors.primary} />
+                          <Text style={styles.pickerOptionText}>Enter New Address</Text>
                         </View>
                       </TouchableOpacity>
-                    ))}
+                      
+                      {savedAddresses.map((addr) => (
+                        <TouchableOpacity
+                          key={addr.id}
+                          style={styles.pickerOption}
+                          onPress={() => {
+                            setSelectedAddressId(addr.id);
+                            setAddress(addr.address);
+                            setShowAddressPicker(false);
+                          }}
+                        >
+                          <View style={styles.addressOptionRow}>
+                            <Ionicons name="location" size={20} color={Colors.primary} />
+                            <View style={styles.addressOptionContent}>
+                              <Text style={styles.addressOptionLabel}>{addr.label}</Text>
+                              <Text style={styles.addressOptionText} numberOfLines={1}>
+                                {addr.address}
+                              </Text>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
                   </View>
                 )}
               </>

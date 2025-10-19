@@ -260,7 +260,7 @@ export default function RegisterScreen() {
               <Ionicons name="lock-closed-outline" size={20} color={Colors.textLight} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Password (min 6 characters)"
+                placeholder="Password (min 8 characters)"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}

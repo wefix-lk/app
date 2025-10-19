@@ -191,23 +191,6 @@ export default function BookingsScreen() {
     setSelectedBooking(booking);
     setShowDeleteModal(true);
   };
-        const allBookings = JSON.parse(bookingsJson);
-        const updatedBookings = allBookings.filter((b: any) => b.id !== selectedBooking.id);
-        
-        await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
-        await loadBookings();
-        
-        console.log('✅ Booking permanently deleted');
-        Alert.alert('Success', 'Booking deleted successfully.');
-      }
-      
-      setSelectedBooking(null);
-    } catch (error) {
-      console.error('❌ Error deleting booking:', error);
-      Alert.alert('Error', 'Failed to delete booking. Please try again.');
-      setSelectedBooking(null);
-    }
-  };
 
   const canCancelBooking = (status: string) => {
     const cancellableStatuses = ['pending', 'booking-received', 'under-inspection'];

@@ -69,9 +69,9 @@ export default function RegisterScreen() {
       return;
     }
 
-    // Validate password length
-    if (password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters');
+    // Validate password length (frontend check - but backend requires 8)
+    if (password.length < 8) {
+      setErrorMessage('Password must be at least 8 characters');
       setHasError(true);
       return;
     }
@@ -98,15 +98,66 @@ export default function RegisterScreen() {
       // Step 2: Automatically login the user
       await signIn(formattedPhone, password);
       
-      console.log('✅ Auto-login successful, redirecting to home...'+ formattedPhone);
+      console.log('✅ Auto-login successful, redirecting to home...');
       
       // Step 3: Redirect to home
       router.replace('/(tabs)/home');
       
     } catch (error: any) {
-      console.error('Registration error:', error);
-      const errorMsg = error.message || 'Registration failed. Please try again.';
-      setErrorMessage(errorMsg);
+      console.error('❌ Registration error:', error);
+      
+      // Parse detailed error messages from backend
+      let errorMsg = 'Registration failed. Please try again.';
+      
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        
+        // Check for validation errors with details
+        if (errorData.details) {
+          const details = errorData.details;
+          const errorMessages = [];
+          
+          // Parse each field error
+          if (details.email && details.email.length > 0) {
+            errorMessages.push(`Email: ${details.email[0]}`);
+          }
+          if (details.phone && details.phone.length > 0) {
+            errorMessages.push(`Phone: ${details.phone[0]}`);
+          }
+          if (details.password && details.password.length > 0) {
+            errorMessages.push(`Password: ${details.password[0]}`);
+          }
+          if (details.name && details.name.length > 0) {
+            errorMessages.push(`Name: ${details.name[0]}`);
+          }
+          
+          if (errorMessages.length > 0) {
+            errorMsg = errorMessages.join('\n');
+          } else if (errorData.message) {
+            errorMsg = errorData.message;
+          }
+        } else if (errorData.message) {
+          errorMsg = errorData.message;
+        }
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+      
+      // Handle specific error cases
+      if (errorMsg.toLowerCase().includes('already been taken') || 
+          errorMsg.toLowerCase().includes('already exists') ||
+          errorMsg.toLowerCase().includes('already registered')) {
+        if (errorMsg.toLowerCase().includes('email')) {
+          setErrorMessage('This email is already registered. Please login instead.');
+        } else if (errorMsg.toLowerCase().includes('phone')) {
+          setErrorMessage('This phone number is already registered. Please login instead.');
+        } else {
+          setErrorMessage('This account already exists. Please login instead.');
+        }
+      } else {
+        setErrorMessage(errorMsg);
+      }
+      
       setHasError(true);
       
       // If it's a duplicate email error, we'll show the "Go to Login" button

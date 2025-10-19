@@ -644,6 +644,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderWidth: 1,
     borderColor: Colors.border,
+    maxHeight: 250,
+    overflow: 'hidden',
+  },
+  pickerScrollView: {
+    maxHeight: 250,
   },
   pickerOption: {
     padding: 14,

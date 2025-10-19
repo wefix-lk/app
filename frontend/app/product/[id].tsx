@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,14 @@ import {
   Dimensions,
   Alert,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Colors } from '../../constants/Colors';
 import { mockProducts } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
@@ -22,8 +24,56 @@ export default function ProductDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [quantity, setQuantity] = useState(1);
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const product = mockProducts.find((p) => p.id === id);
+  useEffect(() => {
+    loadProduct();
+  }, [id]);
+
+  const loadProduct = async () => {
+    try {
+      console.log('🔍 Looking for product with ID:', id);
+      
+      // First, check mock products
+      let foundProduct = mockProducts.find((p) => p.id === id);
+      
+      // If not found in mock products, check admin products
+      if (!foundProduct) {
+        const adminProductsJson = await AsyncStorage.getItem('admin_products');
+        if (adminProductsJson) {
+          const adminProducts = JSON.parse(adminProductsJson);
+          foundProduct = adminProducts.find((p: any) => p.id === id);
+          
+          // Transform admin product to match expected format
+          if (foundProduct) {
+            foundProduct = {
+              id: foundProduct.id,
+              name: foundProduct.name,
+              category: foundProduct.category,
+              price: foundProduct.price,
+              images: foundProduct.images && foundProduct.images.length > 0 
+                ? foundProduct.images 
+                : ['https://via.placeholder.com/300'],
+              isInStock: (foundProduct.stock || 0) > 0,
+              stock: foundProduct.stock || 0,
+              description: foundProduct.description || 'No description available.',
+              modelNumber: foundProduct.modelNumber || '',
+            };
+            console.log('✅ Found product in admin products:', foundProduct.name);
+          }
+        }
+      } else {
+        console.log('✅ Found product in mock products:', foundProduct.name);
+      }
+      
+      setProduct(foundProduct);
+      setLoading(false);
+    } catch (error) {
+      console.error('❌ Error loading product:', error);
+      setLoading(false);
+    }
+  };
 
   if (!product) {
     return (

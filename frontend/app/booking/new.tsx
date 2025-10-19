@@ -255,7 +255,11 @@ export default function NewBookingScreen() {
             </TouchableOpacity>
             {showIssuePicker && (
               <View style={styles.pickerOptions}>
-                <ScrollView style={{ maxHeight: 200 }}>
+                <ScrollView 
+                  style={styles.pickerScrollView}
+                  nestedScrollEnabled={true}
+                  showsVerticalScrollIndicator={true}
+                >
                   {issueTypes.map((issue) => (
                     <TouchableOpacity
                       key={issue.value}

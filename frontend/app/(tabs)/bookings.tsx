@@ -9,13 +9,14 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { Colors, StatusColors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { format } from 'date-fns';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { api, PRODUCTION_MODE } from '../../services/api';
 
 export default function BookingsScreen() {
   const router = useRouter();
@@ -31,28 +32,52 @@ export default function BookingsScreen() {
     loadBookings();
   }, [user]);
 
+  // Reload bookings when screen gains focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadBookings();
+    }, [])
+  );
+
   const loadBookings = async () => {
     try {
       console.log('📥 Loading bookings for user:', user?.uid);
-      const bookingsJson = await AsyncStorage.getItem('local_bookings');
-      if (bookingsJson) {
-        const allBookings = JSON.parse(bookingsJson);
-        // Filter bookings for current user
-        const userBookings = allBookings.filter(
-          (b: any) => b.userId === user?.uid
-        );
-        // Sort by most recent first
-        userBookings.sort((a: any, b: any) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        console.log('✅ Loaded', userBookings.length, 'bookings');
-        setBookings(userBookings);
+      console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
+      
+      if (PRODUCTION_MODE) {
+        // Production API mode
+        console.log('📤 Fetching from Production API...');
+        const response = await api.bookings.getUserBookings();
+        
+        if (response.success && response.data) {
+          const userBookings = response.data.bookings || [];
+          console.log('✅ Loaded', userBookings.length, 'bookings from API');
+          setBookings(userBookings);
+        } else {
+          console.log('ℹ️ No bookings found in API');
+          setBookings([]);
+        }
       } else {
-        console.log('ℹ️ No bookings found in storage');
-        setBookings([]);
+        // Demo mode - load from AsyncStorage
+        const bookingsJson = await AsyncStorage.getItem('local_bookings');
+        if (bookingsJson) {
+          const allBookings = JSON.parse(bookingsJson);
+          const userBookings = allBookings.filter(
+            (b: any) => b.userId === user?.uid
+          );
+          userBookings.sort((a: any, b: any) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          console.log('✅ Loaded', userBookings.length, 'bookings from AsyncStorage');
+          setBookings(userBookings);
+        } else {
+          console.log('ℹ️ No bookings found in storage');
+          setBookings([]);
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error loading bookings:', error);
+      Alert.alert('Error', 'Failed to load bookings. Please try again.');
       setBookings([]);
     } finally {
       setLoading(false);

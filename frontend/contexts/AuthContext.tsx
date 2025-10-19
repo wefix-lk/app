@@ -43,8 +43,22 @@ export const useAuth = () => {
 };
 
 // Admin credentials (hard-coded for MVP)
-const ADMIN_EMAIL = 'wefixtvrepair@gmail.com';
-const ADMIN_PASSWORD = 'swift@123';
+const ADMIN_ACCOUNTS = [
+  {
+    email: 'wefixtvrepair@gmail.com',
+    password: 'swift@123',
+    phone: null,
+    id: 'admin_001',
+    name: 'WeFix Admin (Email)',
+  },
+  {
+    email: null,
+    password: 'swift@123',
+    phone: '+94757000028',
+    id: 'admin_002',
+    name: 'WeFix Admin (Phone)',
+  },
+];
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);

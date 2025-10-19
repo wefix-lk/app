@@ -303,11 +303,11 @@ export default function ProductDetailScreen() {
         {/* Contact Info */}
         <View style={styles.contactSection}>
           <Text style={styles.sectionTitle}>Need Help?</Text>
-          <TouchableOpacity style={styles.contactButton}>
+          <TouchableOpacity style={styles.contactButton} onPress={handleCallSupport}>
             <Ionicons name="call" size={20} color={Colors.primary} />
-            <Text style={styles.contactText}>Call: +94 77 123 4567</Text>
+            <Text style={styles.contactText}>Call: +94 77 330 0905</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.contactButton}>
+          <TouchableOpacity style={styles.contactButton} onPress={handleWhatsAppSupport}>
             <Ionicons name="logo-whatsapp" size={20} color={Colors.secondary} />
             <Text style={styles.contactText}>WhatsApp Support</Text>
           </TouchableOpacity>

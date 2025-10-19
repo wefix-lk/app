@@ -1,29 +1,21 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { 
-  User,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  sendPasswordResetEmail
-} from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db, isFirebaseConfigured } from '../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api, PRODUCTION_MODE } from '../services/api';
 
 interface UserProfile {
+  id: string;
   uid: string;
   email: string;
   name?: string;
   phone?: string;
   phoneVerified?: boolean;
   address?: string;
+  role?: string;
   createdAt: string;
   notificationPreferences?: {
-    repairUpdates: boolean;
-    promotions: boolean;
-    newProducts: boolean;
-    warrantyExpiry: boolean;
+    email?: boolean;
+    push?: boolean;
+    sms?: boolean;
   };
 }
 
@@ -32,7 +24,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string) => Promise<void>;
+  signUp: (email: string, password: string, name: string, phone?: string) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
@@ -58,72 +50,51 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isDemoMode] = useState(!isFirebaseConfigured);
+  const [isDemoMode] = useState(!PRODUCTION_MODE);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (isDemoMode) {
-      // Local development mode - check AsyncStorage
-      checkLocalAuth();
-    } else {
-      // Firebase mode
-      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-        setUser(firebaseUser);
-        
-        if (firebaseUser) {
-          try {
-            // Fetch user profile from Firestore
-            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-            if (userDoc.exists()) {
-              setUserProfile(userDoc.data() as UserProfile);
-            }
-          } catch (error) {
-            console.warn('Error fetching user profile:', error);
-          }
-        } else {
-          setUserProfile(null);
-        }
-        
-        setLoading(false);
-      });
+    checkAuth();
+  }, []);
 
-      return unsubscribe;
-    }
-  }, [isDemoMode]);
-
-  const checkLocalAuth = async () => {
+  const checkAuth = async () => {
     try {
-      const localUser = await AsyncStorage.getItem('local_user');
+      const token = await AsyncStorage.getItem('auth_token');
+      const storedUser = await AsyncStorage.getItem('user_profile');
       const adminFlag = await AsyncStorage.getItem('isAdmin');
       
-      if (localUser) {
-        const userData = JSON.parse(localUser);
-        setUser({ uid: userData.uid, email: userData.email });
+      if (token && storedUser) {
+        const userData = JSON.parse(storedUser);
+        setUser({ uid: userData.id || userData.uid, email: userData.email });
         setUserProfile(userData);
-        setIsAdmin(adminFlag === 'true');
-        console.log('👤 Restored session:', userData.email, adminFlag === 'true' ? '(Admin)' : '(User)');
+        setIsAdmin(adminFlag === 'true' || userData.role === 'admin');
+        console.log('👤 Restored session:', userData.email, adminFlag === 'true' || userData.role === 'admin' ? '(Admin)' : '(User)');
       }
       setLoading(false);
     } catch (error) {
-      console.error('Error checking local auth:', error);
+      console.error('Error checking auth:', error);
       setLoading(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
+      console.log('🔐 Attempting login for:', email);
+      
       // Check for admin credentials first
       if (email.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         console.log('🔐 Admin login detected');
         const adminProfile: UserProfile = {
+          id: 'admin_001',
           uid: 'admin_001',
           email: ADMIN_EMAIL,
           name: 'WeFix Admin',
+          role: 'admin',
           createdAt: new Date().toISOString()
         };
         
-        await AsyncStorage.setItem('local_user', JSON.stringify(adminProfile));
-        await AsyncStorage.setItem('userToken', 'admin_001');
+        await AsyncStorage.setItem('user_profile', JSON.stringify(adminProfile));
+        await AsyncStorage.setItem('auth_token', 'admin_token');
         await AsyncStorage.setItem('isAdmin', 'true');
         
         setUser({ uid: 'admin_001', email: ADMIN_EMAIL });
@@ -132,22 +103,69 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      if (isDemoMode) {
-        // Local development mode - check stored users
+      // Production API login
+      if (PRODUCTION_MODE) {
+        const response = await api.auth.login({
+          email,
+          password
+        });
+        
+        if (response.success && response.data) {
+          const userData = response.data.user;
+          const userProfile: UserProfile = {
+            id: userData.id,
+            uid: userData.id,
+            email: userData.email,
+            name: userData.name,
+            phone: userData.phone,
+            phoneVerified: userData.phoneVerified,
+            role: userData.role,
+            createdAt: userData.createdAt,
+            notificationPreferences: userData.notificationPreferences
+          };
+          
+          await AsyncStorage.setItem('user_profile', JSON.stringify(userProfile));
+          await AsyncStorage.setItem('isAdmin', userData.role === 'admin' ? 'true' : 'false');
+          
+          setUser({ uid: userData.id, email: userData.email });
+          setUserProfile(userProfile);
+          setIsAdmin(userData.role === 'admin');
+          
+          console.log('✅ Login successful (Production):', userData.email);
+        }
+      } else {
+        // Demo mode - AsyncStorage fallback
         const usersJson = await AsyncStorage.getItem('local_users');
         const users = usersJson ? JSON.parse(usersJson) : {};
         
         const storedUser = users[email];
         if (storedUser && storedUser.password === password) {
-          // Successful login
           const userProfile: UserProfile = {
+            id: storedUser.uid,
             uid: storedUser.uid,
             email: storedUser.email,
             name: storedUser.name,
             createdAt: storedUser.createdAt
           };
           
-          await AsyncStorage.setItem('local_user', JSON.stringify(userProfile));
+          await AsyncStorage.setItem('user_profile', JSON.stringify(userProfile));
+          await AsyncStorage.setItem('auth_token', storedUser.uid);
+          await AsyncStorage.setItem('isAdmin', 'false');
+          
+          setUser({ uid: storedUser.uid, email: storedUser.email });
+          setUserProfile(userProfile);
+          setIsAdmin(false);
+          
+          console.log('✅ Login successful (Demo):', storedUser.email);
+        } else {
+          throw new Error('Invalid email or password');
+        }
+      }
+    } catch (error: any) {
+      console.error('❌ Login error:', error);
+      throw new Error(error.message || 'Login failed. Please try again.');
+    }
+  };
           await AsyncStorage.setItem('userToken', storedUser.uid);
           await AsyncStorage.removeItem('isAdmin');
           

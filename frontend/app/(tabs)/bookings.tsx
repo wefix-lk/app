@@ -103,26 +103,88 @@ export default function BookingsScreen() {
       console.log('🚫 Cancelling booking:', selectedBooking.id);
       setShowCancelModal(false);
 
-      const bookingsJson = await AsyncStorage.getItem('local_bookings');
-      if (bookingsJson) {
-        const allBookings = JSON.parse(bookingsJson);
+      if (PRODUCTION_MODE) {
+        // Production API mode
+        await api.bookings.cancel(selectedBooking.id, 'Cancelled by user');
+        console.log('✅ Booking cancelled via API');
         
-        const updatedBookings = allBookings.map((b: any) => {
-          if (b.id === selectedBooking.id) {
-            return {
-              ...b,
-              status: 'cancelled',
-              updatedAt: new Date().toISOString(),
-              timeline: [
-                ...b.timeline,
-                {
-                  status: 'cancelled',
-                  timestamp: new Date().toISOString(),
-                  note: 'Booking cancelled by user',
-                },
-              ],
-            };
-          }
+        // Reload bookings
+        await loadBookings();
+        
+        Alert.alert('Success', 'Booking cancelled successfully');
+      } else {
+        // Demo mode
+        const bookingsJson = await AsyncStorage.getItem('local_bookings');
+        if (bookingsJson) {
+          const allBookings = JSON.parse(bookingsJson);
+          
+          const updatedBookings = allBookings.map((b: any) => {
+            if (b.id === selectedBooking.id) {
+              return {
+                ...b,
+                status: 'cancelled',
+                updatedAt: new Date().toISOString(),
+                timeline: [
+                  ...b.timeline,
+                  {
+                    status: 'cancelled',
+                    timestamp: new Date().toISOString(),
+                    note: 'Booking cancelled by user',
+                  },
+                ],
+              };
+            }
+            return b;
+          });
+
+          await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
+          console.log('✅ Booking cancelled in local storage');
+          
+          await loadBookings();
+          Alert.alert('Success', 'Booking cancelled successfully');
+        }
+      }
+    } catch (error: any) {
+      console.error('❌ Error cancelling booking:', error);
+      Alert.alert('Error', 'Failed to cancel booking. Please try again.');
+    }
+  };
+
+  const confirmDeleteBooking = async () => {
+    if (!selectedBooking) return;
+
+    try {
+      console.log('🗑️ Deleting booking:', selectedBooking.id);
+      setShowDeleteModal(false);
+
+      if (PRODUCTION_MODE) {
+        // Production API mode
+        await api.bookings.delete(selectedBooking.id);
+        console.log('✅ Booking deleted via API');
+        
+        // Reload bookings
+        await loadBookings();
+        
+        Alert.alert('Success', 'Booking deleted successfully');
+      } else {
+        // Demo mode
+        const bookingsJson = await AsyncStorage.getItem('local_bookings');
+        if (bookingsJson) {
+          const allBookings = JSON.parse(bookingsJson);
+          const updatedBookings = allBookings.filter((b: any) => b.id !== selectedBooking.id);
+          
+          await AsyncStorage.setItem('local_bookings', JSON.stringify(updatedBookings));
+          console.log('✅ Booking deleted from local storage');
+          
+          await loadBookings();
+          Alert.alert('Success', 'Booking deleted successfully');
+        }
+      }
+    } catch (error: any) {
+      console.error('❌ Error deleting booking:', error);
+      Alert.alert('Error', 'Failed to delete booking. Please try again.');
+    }
+  };
           return b;
         });
         

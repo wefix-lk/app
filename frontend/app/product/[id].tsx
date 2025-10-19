@@ -239,15 +239,6 @@ export default function ProductDetailScreen() {
           <Text style={styles.description}>{product.description}</Text>
         </View>
 
-        {/* Features */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Key Features</Text>
-          <FeatureItem icon="checkmark-circle" text="Original Part - 100% Genuine" />
-          <FeatureItem icon="checkmark-circle" text="1 Year Warranty Included" />
-          <FeatureItem icon="checkmark-circle" text="Free Installation Support" />
-          <FeatureItem icon="checkmark-circle" text="Cash on Delivery Available" />
-        </View>
-
         {/* Quantity Selector */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Quantity</Text>

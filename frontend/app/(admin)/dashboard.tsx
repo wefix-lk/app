@@ -23,6 +23,15 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
+// Predefined categories - MUST match customer panel exactly
+const PRODUCT_CATEGORIES = [
+  'TV Panels',
+  'Backlights',
+  'T-CON Board',
+  'TV Main Board',
+  'Multi Products',
+];
+
 interface Stats {
   totalBookings: number;
   pendingBookings: number;

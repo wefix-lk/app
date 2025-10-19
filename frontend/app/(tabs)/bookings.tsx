@@ -306,7 +306,9 @@ export default function BookingsScreen() {
                 <View style={styles.detailRow}>
                   <Ionicons name="calendar-outline" size={16} color={Colors.textLight} />
                   <Text style={styles.detailText}>
-                    {format(new Date(item.createdAt), 'dd MMM yyyy, hh:mm a')}
+                    {item.createdAt && item.createdAt !== 'Invalid Date' 
+                      ? format(new Date(item.createdAt), 'dd MMM yyyy, hh:mm a')
+                      : 'Date not available'}
                   </Text>
                 </View>
                 <View style={styles.detailRow}>
@@ -316,7 +318,7 @@ export default function BookingsScreen() {
                     color={Colors.textLight} 
                   />
                   <Text style={styles.detailText}>
-                    {item.pickupOption === 'pickup' ? 'Free Pickup' : 'Home Service'}
+                    {item.pickupOption === 'pickup' ? 'Pick Up' : 'Visit to Our Shop'}
                   </Text>
                 </View>
               </View>

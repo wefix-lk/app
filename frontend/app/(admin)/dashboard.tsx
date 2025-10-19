@@ -68,6 +68,7 @@ export default function AdminDashboard() {
   const [stock, setStock] = useState('');
   const [productImages, setProductImages] = useState<string[]>([]);
   const [isSavingProduct, setIsSavingProduct] = useState(false);
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
 
   // Notification Form
   const [notificationTitle, setNotificationTitle] = useState('');

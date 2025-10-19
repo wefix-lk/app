@@ -97,23 +97,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('🔐 Attempting login for:', phoneOrEmail);
       console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
       
-      // Check for admin credentials first (admin uses email)
-      if (phoneOrEmail.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        console.log('🔐 Admin login detected');
+      // Check for admin credentials (support both email and phone)
+      const adminAccount = ADMIN_ACCOUNTS.find(admin => {
+        if (admin.email && phoneOrEmail.toLowerCase() === admin.email.toLowerCase()) {
+          return admin.password === password;
+        }
+        if (admin.phone && phoneOrEmail === admin.phone) {
+          return admin.password === password;
+        }
+        return false;
+      });
+
+      if (adminAccount) {
+        console.log('🔐 Admin login detected:', adminAccount.name);
         const adminProfile: UserProfile = {
-          id: 'admin_001',
-          uid: 'admin_001',
-          email: ADMIN_EMAIL,
-          name: 'WeFix Admin',
+          id: adminAccount.id,
+          uid: adminAccount.id,
+          email: adminAccount.email || `${adminAccount.id}@wefix.lk`,
+          name: adminAccount.name,
+          phone: adminAccount.phone || undefined,
           role: 'admin',
           createdAt: new Date().toISOString()
         };
         
         await AsyncStorage.setItem('user_profile', JSON.stringify(adminProfile));
-        await AsyncStorage.setItem('auth_token', 'admin_token');
+        await AsyncStorage.setItem('auth_token', `${adminAccount.id}_token`);
         await AsyncStorage.setItem('isAdmin', 'true');
         
-        setUser({ uid: 'admin_001', email: ADMIN_EMAIL });
+        setUser({ uid: adminAccount.id, email: adminProfile.email });
         setUserProfile(adminProfile);
         setIsAdmin(true);
         return;

@@ -83,7 +83,7 @@ export const api = {
       });
     },
 
-    login: async (data: { email: string; password: string }) => {
+    login: async (data: { phone?: string; email?: string; password: string }) => {
       const response = await apiRequest('/auth/login', {
         method: 'POST',
         body: JSON.stringify(data),

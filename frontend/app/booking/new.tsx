@@ -207,18 +207,24 @@ export default function NewBookingScreen() {
             </TouchableOpacity>
             {showBrandPicker && (
               <View style={styles.pickerOptions}>
-                {tvBrands.map((brand) => (
-                  <TouchableOpacity
-                    key={brand}
-                    style={styles.pickerOption}
-                    onPress={() => {
-                      setTvBrand(brand);
-                      setShowBrandPicker(false);
-                    }}
-                  >
-                    <Text style={styles.pickerOptionText}>{brand}</Text>
-                  </TouchableOpacity>
-                ))}
+                <ScrollView 
+                  style={styles.pickerScrollView}
+                  nestedScrollEnabled={true}
+                  showsVerticalScrollIndicator={true}
+                >
+                  {tvBrands.map((brand) => (
+                    <TouchableOpacity
+                      key={brand}
+                      style={styles.pickerOption}
+                      onPress={() => {
+                        setTvBrand(brand);
+                        setShowBrandPicker(false);
+                      }}
+                    >
+                      <Text style={styles.pickerOptionText}>{brand}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
             )}
           </View>

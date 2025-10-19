@@ -410,16 +410,6 @@ const styles = StyleSheet.create({
     color: Colors.text,
     lineHeight: 24,
   },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  featureText: {
-    fontSize: 16,
-    color: Colors.text,
-    marginLeft: 12,
-  },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -532,13 +532,49 @@ export default function AdminDashboard() {
 
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Category *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="e.g., TV Parts, Accessories"
-                  value={category}
-                  onChangeText={setCategory}
-                  placeholderTextColor={Colors.textLight}
-                />
+                <TouchableOpacity
+                  style={styles.picker}
+                  onPress={() => setShowCategoryPicker(!showCategoryPicker)}
+                >
+                  <Text style={[styles.pickerText, !category && styles.placeholder]}>
+                    {category || 'Select Category'}
+                  </Text>
+                  <Ionicons name="chevron-down" size={20} color={Colors.textLight} />
+                </TouchableOpacity>
+                
+                {showCategoryPicker && (
+                  <View style={styles.pickerOptions}>
+                    <ScrollView 
+                      style={styles.pickerScrollView}
+                      nestedScrollEnabled={true}
+                      showsVerticalScrollIndicator={true}
+                    >
+                      {PRODUCT_CATEGORIES.map((cat) => (
+                        <TouchableOpacity
+                          key={cat}
+                          style={[
+                            styles.pickerOption,
+                            category === cat && styles.pickerOptionSelected
+                          ]}
+                          onPress={() => {
+                            setCategory(cat);
+                            setShowCategoryPicker(false);
+                          }}
+                        >
+                          <Text style={[
+                            styles.pickerOptionText,
+                            category === cat && styles.pickerOptionTextSelected
+                          ]}>
+                            {cat}
+                          </Text>
+                          {category === cat && (
+                            <Ionicons name="checkmark" size={20} color={Colors.primary} />
+                          )}
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
               </View>
 
               <View style={styles.formGroup}>

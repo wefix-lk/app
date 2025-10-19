@@ -19,7 +19,7 @@ import { Colors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,10 +28,10 @@ export default function LoginScreen() {
   const { signIn, isDemoMode } = useAuth();
   const router = useRouter();
 
-  // Email validation regex
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  // Phone validation
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[0-9]{10}$/; // 10 digits
+    return phoneRegex.test(phone.replace(/\s/g, ''));
   };
 
   const handleLogin = async () => {
@@ -39,23 +39,28 @@ export default function LoginScreen() {
     setErrorMessage('');
     setHasError(false);
 
-    // Validate email and password are not empty
-    if (!email.trim() || !password.trim()) {
+    // Validate phone and password are not empty
+    if (!phone.trim() || !password.trim()) {
       setErrorMessage('Please fill in all fields');
       setHasError(true);
       return;
     }
 
-    // Validate email format
-    if (!validateEmail(email.trim())) {
-      setErrorMessage('Please enter a valid email address');
+    // Validate phone format
+    if (!validatePhone(phone)) {
+      setErrorMessage('Please enter a valid 10-digit phone number');
       setHasError(true);
       return;
     }
 
     setLoading(true);
     try {
-      await signIn(email.trim().toLowerCase(), password);
+      // Format phone number with +94 prefix
+      const formattedPhone = phone.startsWith('0') 
+        ? `+94${phone.substring(1)}` 
+        : `+94${phone}`;
+      
+      await signIn(formattedPhone, password);
       
       // Check if admin login
       const isAdminFlag = await AsyncStorage.getItem('isAdmin');
@@ -68,7 +73,7 @@ export default function LoginScreen() {
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      setErrorMessage(error.message || 'Invalid email or password. Please try again.');
+      setErrorMessage(error.message || 'Invalid phone number or password. Please try again.');
       setHasError(true);
     } finally {
       setLoading(false);

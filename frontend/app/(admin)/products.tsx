@@ -32,6 +32,15 @@ interface Product {
   isActive: boolean;
 }
 
+// Predefined categories - MUST match customer panel exactly
+const PRODUCT_CATEGORIES = [
+  'TV Panels',
+  'Backlights',
+  'T-CON Board',
+  'TV Main Board',
+  'Multi Products',
+];
+
 export default function ManageProductsScreen() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
@@ -50,6 +59,7 @@ export default function ManageProductsScreen() {
   const [editStock, setEditStock] = useState('');
   const [editImages, setEditImages] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
 
   // Delete Modal States
   const [showDeleteModal, setShowDeleteModal] = useState(false);

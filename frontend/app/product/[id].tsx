@@ -295,15 +295,6 @@ export default function ProductDetailScreen() {
   );
 }
 
-function FeatureItem({ icon, text }: { icon: string; text: string }) {
-  return (
-    <View style={styles.featureItem}>
-      <Ionicons name={icon as any} size={20} color={Colors.secondary} />
-      <Text style={styles.featureText}>{text}</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

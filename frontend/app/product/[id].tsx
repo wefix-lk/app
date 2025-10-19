@@ -173,17 +173,58 @@ export default function ProductDetailScreen() {
       } else {
         Alert.alert(
           'WhatsApp Not Available',
-          'WhatsApp is not installed on this device. Please install WhatsApp to continue.',
-          [{ text: 'OK' }]
+          'Please make sure WhatsApp is installed on your device.'
         );
       }
     } catch (error) {
-      console.error('❌ Error opening WhatsApp:', error);
-      Alert.alert(
-        'Error',
-        'Could not open WhatsApp. Please make sure WhatsApp is installed.',
-        [{ text: 'OK' }]
-      );
+      console.error('Error opening WhatsApp:', error);
+      Alert.alert('Error', 'Could not open WhatsApp. Please try again.');
+    }
+  };
+
+  const handleCallSupport = async () => {
+    const phoneNumber = 'tel:+94773300905';
+    
+    console.log('📞 Opening phone dialer:', phoneNumber);
+    
+    try {
+      const canOpen = await Linking.canOpenURL(phoneNumber);
+      
+      if (canOpen) {
+        await Linking.openURL(phoneNumber);
+      } else {
+        Alert.alert('Error', 'Could not open phone dialer.');
+      }
+    } catch (error) {
+      console.error('Error opening phone dialer:', error);
+      Alert.alert('Error', 'Could not open phone dialer. Please try again.');
+    }
+  };
+
+  const handleWhatsAppSupport = async () => {
+    const whatsappNumber = '94773300905'; // +94 77 330 0905
+    
+    const message = `Hello WeFix.lk 👋,\n\nI'd like to know more about this product:\n\n📦 ${product.name}\n💰 Price: LKR ${product.price.toLocaleString()}\n\nCould you please provide more details?`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    console.log('📱 WhatsApp Support - Opening WhatsApp:', whatsappUrl);
+
+    try {
+      const canOpen = await Linking.canOpenURL(whatsappUrl);
+      
+      if (canOpen) {
+        await Linking.openURL(whatsappUrl);
+      } else {
+        Alert.alert(
+          'WhatsApp Not Available',
+          'Please make sure WhatsApp is installed on your device.'
+        );
+      }
+    } catch (error) {
+      console.error('Error opening WhatsApp:', error);
+      Alert.alert('Error', 'Could not open WhatsApp. Please try again.');
     }
   };
 

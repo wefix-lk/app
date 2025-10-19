@@ -75,16 +75,62 @@ export default function ProductDetailScreen() {
     }
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color={Colors.text} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Product Details</Text>
+          <View style={{ width: 40 }} />
+        </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+          <Text style={styles.loadingText}>Loading product...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   if (!product) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Product not found</Text>
+        <View style={styles.header}>
           <TouchableOpacity
-            style={styles.button}
+            style={styles.backButton}
             onPress={() => router.back()}
           >
-            <Text style={styles.buttonText}>Go Back</Text>
+            <Ionicons name="arrow-back" size={24} color={Colors.text} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Product Details</Text>
+          <View style={{ width: 40 }} />
+        </View>
+        <View style={styles.errorContainer}>
+          <Ionicons name="alert-circle-outline" size={80} color={Colors.textLight} />
+          <Text style={styles.errorTitle}>Product Not Available</Text>
+          <Text style={styles.errorText}>
+            This product data is not available. {'\n'}
+            Please refresh or try again.
+          </Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              setLoading(true);
+              loadProduct();
+            }}
+          >
+            <Ionicons name="refresh" size={20} color={Colors.textWhite} />
+            <Text style={styles.buttonText}>Refresh</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.secondaryButton]}
+            onPress={() => router.back()}
+          >
+            <Text style={[styles.buttonText, styles.secondaryButtonText]}>Go Back</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

@@ -9,6 +9,7 @@ import {
   Alert,
   Platform,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -16,8 +17,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Colors } from '../../constants/Colors';
 import { tvBrands, issueTypes } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
-import { collection, addDoc } from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '../../config/firebase';
+import { api, PRODUCTION_MODE } from '../../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Shop address constant

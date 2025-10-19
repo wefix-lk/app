@@ -519,26 +519,58 @@ const styles = StyleSheet.create({
   disabledButton: {
     opacity: 0.5,
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: Colors.textLight,
+    marginTop: 16,
+  },
   errorContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 32,
   },
-  errorText: {
-    fontSize: 18,
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
     color: Colors.text,
-    marginBottom: 16,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  errorText: {
+    fontSize: 16,
+    color: Colors.textLight,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 24,
   },
   button: {
     backgroundColor: Colors.primary,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
   },
   buttonText: {
     color: Colors.textWhite,
     fontSize: 16,
     fontWeight: '600',
+  },
+  secondaryButton: {
+    backgroundColor: Colors.backgroundGray,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  secondaryButtonText: {
+    color: Colors.text,
   },
 });

@@ -90,19 +90,19 @@ export default function RegisterScreen() {
         ? `+94${phone.substring(1)}` 
         : `+94${phone}`;
       
+      // Step 1: Register the user
       await signUp(email.trim().toLowerCase(), password, name.trim(), formattedPhone);
       
-      // Successfully registered
-      Alert.alert(
-        'Success!',
-        'Account created successfully. Please login to continue.',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.replace('/(auth)/login')
-          }
-        ]
-      );
+      console.log('✅ Registration successful, auto-logging in...');
+      
+      // Step 2: Automatically login the user
+      await signIn(email.trim().toLowerCase(), password);
+      
+      console.log('✅ Auto-login successful, redirecting to home...');
+      
+      // Step 3: Redirect to home
+      router.replace('/(tabs)/home');
+      
     } catch (error: any) {
       console.error('Registration error:', error);
       const errorMsg = error.message || 'Registration failed. Please try again.';
@@ -110,7 +110,6 @@ export default function RegisterScreen() {
       setHasError(true);
       
       // If it's a duplicate email error, we'll show the "Go to Login" button
-      // Check if error message contains "already registered" or "already exists"
       if (errorMsg.toLowerCase().includes('already registered') || 
           errorMsg.toLowerCase().includes('already exists')) {
         // Error handling for duplicate email - button will be shown

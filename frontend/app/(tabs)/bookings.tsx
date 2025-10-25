@@ -306,8 +306,8 @@ export default function BookingsScreen() {
                 <View style={styles.detailRow}>
                   <Ionicons name="calendar-outline" size={16} color={Colors.textLight} />
                   <Text style={styles.detailText}>
-                    {item.createdAt && item.createdAt !== 'Invalid Date' 
-                      ? format(new Date(item.createdAt), 'dd MMM yyyy, hh:mm a')
+                    {item.created_at && item.created_at !== 'Invalid Date' 
+                      ? format(new Date(item.created_at), 'dd MMM yyyy, hh:mm a')
                       : 'Date not available'}
                   </Text>
                 </View>

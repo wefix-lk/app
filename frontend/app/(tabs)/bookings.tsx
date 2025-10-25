@@ -280,9 +280,9 @@ export default function BookingsScreen() {
             >
               <View style={styles.bookingHeader}>
                 <View style={styles.bookingInfo}>
-                  <Text style={styles.tvName}>{item.tvBrand} {item.tvModel}</Text>
+                  <Text style={styles.tv_name}>{item.tv_brand} {item.tv_model}</Text>
                   <Text style={styles.issueText}>
-                    {item.issueType ? item.issueType.replace(/-/g, ' ') : 'No issue specified'}
+                    {item.issue_type ? item.issue_type.replace(/-/g, ' ') : 'No issue specified'}
                   </Text>
                 </View>
                 <View

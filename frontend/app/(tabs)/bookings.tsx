@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   bookingInfo: {
     flex: 1,
   },
-  tvName: {
+  tv_name: {
     fontSize: 16,
     fontWeight: '600',
     color: Colors.text,

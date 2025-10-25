@@ -368,7 +368,8 @@ export default function BookingsScreen() {
                 )}
               </View>
             </TouchableOpacity>
-          )}
+            );
+          }}
         />
       )}
     </SafeAreaView>

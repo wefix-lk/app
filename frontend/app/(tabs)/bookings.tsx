@@ -276,16 +276,23 @@ export default function BookingsScreen() {
               tintColor={Colors.primary}
             />
           }
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {
+            // Support both camelCase and snake_case for backward compatibility
+            const tvBrand = item.tv_brand || item.tvBrand || '';
+            const tvModel = item.tv_model || item.tvModel || '';
+            const issueType = item.issue_type || item.issueType || '';
+            const createdAt = item.created_at || item.createdAt || '';
+            
+            return (
             <TouchableOpacity 
               style={styles.bookingCard}
               onPress={() => router.push('/tracking')}
             >
               <View style={styles.bookingHeader}>
                 <View style={styles.bookingInfo}>
-                  <Text style={styles.tv_name}>{item.tv_brand} {item.tv_model}</Text>
+                  <Text style={styles.tv_name}>{tvBrand} {tvModel}</Text>
                   <Text style={styles.issueText}>
-                    {item.issue_type ? item.issue_type.replace(/-/g, ' ') : 'No issue specified'}
+                    {issueType ? issueType.replace(/-/g, ' ') : 'No issue specified'}
                   </Text>
                 </View>
                 <View
@@ -309,8 +316,8 @@ export default function BookingsScreen() {
                 <View style={styles.detailRow}>
                   <Ionicons name="calendar-outline" size={16} color={Colors.textLight} />
                   <Text style={styles.detailText}>
-                    {item.created_at && item.created_at !== 'Invalid Date' 
-                      ? format(new Date(item.created_at), 'dd MMM yyyy, hh:mm a')
+                    {createdAt && createdAt !== 'Invalid Date' 
+                      ? format(new Date(createdAt), 'dd MMM yyyy, hh:mm a')
                       : 'Date not available'}
                   </Text>
                 </View>

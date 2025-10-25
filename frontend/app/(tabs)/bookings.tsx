@@ -49,9 +49,12 @@ export default function BookingsScreen() {
         console.log('📤 Fetching from Production API...');
         const response = await api.bookings.getUserBookings();
         
+        console.log('🔍 API Response:', JSON.stringify(response, null, 2));
+        
         if (response.success && response.data) {
           const userBookings = response.data.bookings || [];
           console.log('✅ Loaded', userBookings.length, 'bookings from API');
+          console.log('🔍 First booking sample:', userBookings.length > 0 ? JSON.stringify(userBookings[0], null, 2) : 'No bookings');
           setBookings(userBookings);
         } else {
           console.log('ℹ️ No bookings found in API');

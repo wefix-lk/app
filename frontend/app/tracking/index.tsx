@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { format } from 'date-fns';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { api, PRODUCTION_MODE } from '../../services/api';
 
 const statusSteps = [
   { key: 'pending', label: 'Pending', icon: 'hourglass-outline' },

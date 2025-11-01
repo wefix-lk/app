@@ -236,14 +236,21 @@ export default function TrackingScreen() {
           </View>
         ) : (
           bookings.map((booking) => {
+            // Support both camelCase and snake_case for backward compatibility
+            const tvBrand = booking.tv_brand || booking.tvBrand || '';
+            const tvModel = booking.tv_model || booking.tvModel || '';
+            const issueType = booking.issue_type || booking.issueType || '';
+            const createdAt = booking.created_at || booking.createdAt || '';
+            const pickupOption = booking.pickup_option || booking.pickupOption || '';
+            
             const currentStatusIndex = getStatusIndex(booking.status);
             
             return (
               <View key={booking.id} style={styles.trackingCard}>
                 <View style={styles.cardHeader}>
                   <View style={styles.cardHeaderLeft}>
-                    <Text style={styles.tvName}>{booking.tvBrand} {booking.tvModel}</Text>
-                    <Text style={styles.issueType}>{booking.issueType.replace('-', ' ')}</Text>
+                    <Text style={styles.tvName}>{tvBrand} {tvModel}</Text>
+                    <Text style={styles.issueType}>{issueType.replace(/-/g, ' ')}</Text>
                   </View>
                   <View style={styles.cardHeaderRight}>
                     <View

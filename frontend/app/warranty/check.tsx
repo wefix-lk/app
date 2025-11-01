@@ -512,45 +512,22 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 16,
   },
-  searchTypeContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 20,
-  },
-  searchTypeButton: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    borderRadius: 12,
-    padding: 12,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: Colors.border,
-  },
-  searchTypeButtonActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  searchTypeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: Colors.text,
-    marginTop: 6,
-    textAlign: 'center',
-  },
-  searchTypeTextActive: {
-    color: Colors.textWhite,
-  },
   searchCard: {
     backgroundColor: Colors.background,
     borderRadius: 12,
     padding: 20,
     marginBottom: 20,
   },
+  iconTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   searchLabel: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: Colors.text,
-    marginBottom: 12,
+    marginLeft: 12,
   },
   input: {
     backgroundColor: Colors.backgroundGray,
@@ -576,6 +553,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  notFoundCard: {
+    backgroundColor: Colors.background,
+    borderRadius: 12,
+    padding: 40,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  notFoundTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  notFoundText: {
+    fontSize: 14,
+    color: Colors.textLight,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
   resultCard: {
     backgroundColor: Colors.background,
     borderRadius: 12,
@@ -585,14 +582,15 @@ const styles = StyleSheet.create({
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
+    justifyContent: 'center',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
   },
   statusText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 12,
   },
   resultRow: {
     flexDirection: 'row',
@@ -605,11 +603,32 @@ const styles = StyleSheet.create({
   resultLabel: {
     fontSize: 14,
     color: Colors.textLight,
+    flex: 1,
   },
   resultValue: {
     fontSize: 14,
     fontWeight: '600',
     color: Colors.text,
+    flex: 1,
+    textAlign: 'right',
+  },
+  notesBox: {
+    backgroundColor: Colors.backgroundGray,
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 8,
+    marginBottom: 12,
+  },
+  notesLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: Colors.textLight,
+    marginBottom: 4,
+  },
+  notesText: {
+    fontSize: 14,
+    color: Colors.text,
+    lineHeight: 20,
   },
   infoBox: {
     flexDirection: 'row',
@@ -623,6 +642,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.text,
     marginLeft: 8,
+    lineHeight: 20,
+  },
+  warningBox: {
+    flexDirection: 'row',
+    backgroundColor: Colors.error + '10',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  warningText: {
+    flex: 1,
+    fontSize: 14,
+    color: Colors.text,
+    marginLeft: 8,
+    lineHeight: 20,
   },
   infoCard: {
     backgroundColor: Colors.background,
@@ -637,7 +671,8 @@ const styles = StyleSheet.create({
   },
   infoItem: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: 16,
+    alignItems: 'flex-start',
   },
   infoItemText: {
     flex: 1,

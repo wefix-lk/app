@@ -42,8 +42,16 @@ export default function WarrantyCheckScreen() {
       if (response.success && response.data) {
         setWarrantyResult(response.data);
         setShowNotFound(false);
+      } else if (response.success === false) {
+        // API returned success: false
+        setShowNotFound(true);
+        setWarrantyResult(null);
+        // Show the error message from API if available
+        if (response.message) {
+          Alert.alert('Not Found', response.message);
+        }
       } else {
-        // Should not reach here if backend properly returns 404
+        // Unexpected response format
         setShowNotFound(true);
         setWarrantyResult(null);
       }
@@ -55,7 +63,11 @@ export default function WarrantyCheckScreen() {
         setShowNotFound(true);
         setWarrantyResult(null);
       } else {
-        Alert.alert('Error', 'Failed to check warranty. Please try again.');
+        // Show error alert for other errors
+        const errorMessage = error.message || 'Failed to check warranty. Please try again.';
+        Alert.alert('Error', errorMessage);
+        setShowNotFound(false);
+        setWarrantyResult(null);
       }
     } finally {
       setLoading(false);

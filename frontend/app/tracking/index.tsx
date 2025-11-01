@@ -57,6 +57,7 @@ export default function TrackingScreen() {
   }, []);
 
   const loadBookings = async () => {
+    setLoading(true);
     try {
       console.log('📥 Loading bookings for tracking...');
       console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
@@ -93,6 +94,8 @@ export default function TrackingScreen() {
     } catch (error) {
       console.error('❌ Error loading bookings:', error);
       setBookings([]);
+    } finally {
+      setLoading(false);
     }
   };
 

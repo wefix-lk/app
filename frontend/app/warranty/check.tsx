@@ -14,56 +14,240 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../config/firebase';
-import { format, isPast } from 'date-fns';
+import { format, differenceInDays } from 'date-fns';
+import { api } from '../../services/api';
 
 export default function WarrantyCheckScreen() {
   const router = useRouter();
-  const [searchType, setSearchType] = useState<'serial' | 'bill' | 'phone'>('serial');
-  const [searchValue, setSearchValue] = useState('');
+  const [serialNumber, setSerialNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [warrantyResult, setWarrantyResult] = useState<any>(null);
+  const [showNotFound, setShowNotFound] = useState(false);
 
   const handleCheck = async () => {
-    if (!searchValue) {
-      Alert.alert('Error', 'Please enter a search value');
+    if (!serialNumber.trim()) {
+      Alert.alert('Error', 'Please enter a serial number');
       return;
     }
 
     setLoading(true);
+    setShowNotFound(false);
+    setWarrantyResult(null);
+    
     try {
-      const warrantyRef = collection(db, 'warranties');
-      let field = 'serialNumber';
-      if (searchType === 'bill') field = 'billNumber';
-      if (searchType === 'phone') field = 'phoneNumber';
+      const response = await api.warranty.check({
+        serialNumber: serialNumber.trim(),
+      });
       
-      const q = query(warrantyRef, where(field, '==', searchValue));
-      
-      const snapshot = await getDocs(q);
-      
-      if (snapshot.empty) {
-        setWarrantyResult(null);
-        let searchLabel = 'serial number';
-        if (searchType === 'bill') searchLabel = 'bill number';
-        if (searchType === 'phone') searchLabel = 'phone number';
-        
-        Alert.alert(
-          'Not Found',
-          `No warranty information found for this ${searchLabel}`
-        );
+      if (response.success && response.data) {
+        setWarrantyResult(response.data);
+        setShowNotFound(false);
       } else {
-        const data = snapshot.docs[0].data();
-        const isExpired = isPast(new Date(data.expiryDate));
-        setWarrantyResult({ ...data, id: snapshot.docs[0].id, isExpired });
+        // Should not reach here if backend properly returns 404
+        setShowNotFound(true);
+        setWarrantyResult(null);
       }
-    } catch (error) {
-      Alert.alert('Error', 'Failed to check warranty. Please try again.');
+    } catch (error: any) {
       console.error('Warranty check error:', error);
+      
+      // Handle 404 - WARRANTY_NOT_FOUND
+      if (error.message && error.message.toLowerCase().includes('not found')) {
+        setShowNotFound(true);
+        setWarrantyResult(null);
+      } else {
+        Alert.alert('Error', 'Failed to check warranty. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  const getDaysRemainingText = (daysRemaining: number) => {
+    if (daysRemaining < 0) return 'Expired';
+    if (daysRemaining === 0) return 'Expires today';
+    if (daysRemaining === 1) return '1 day remaining';
+    return `${daysRemaining} days remaining`;
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={24} color={Colors.text} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Check Warranty</Text>
+          <View style={{ width: 40 }} />
+        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Search Input */}
+          <View style={styles.searchCard}>
+            <View style={styles.iconTitleRow}>
+              <Ionicons name="hardware-chip" size={28} color={Colors.primary} />
+              <Text style={styles.searchLabel}>Enter Serial Number</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g., SN123456789"
+              value={serialNumber}
+              onChangeText={setSerialNumber}
+              placeholderTextColor={Colors.textLight}
+              autoCapitalize="characters"
+            />
+            <TouchableOpacity
+              style={[styles.checkButton, loading && styles.checkButtonDisabled]}
+              onPress={handleCheck}
+              disabled={loading}
+            >
+              <Text style={styles.checkButtonText}>
+                {loading ? 'Checking...' : 'Check Warranty'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Not Found Message */}
+          {showNotFound && (
+            <View style={styles.notFoundCard}>
+              <Ionicons name="alert-circle" size={60} color={Colors.error} />
+              <Text style={styles.notFoundTitle}>No Warranty Found</Text>
+              <Text style={styles.notFoundText}>
+                No warranty found with the provided serial number. Please check the serial number and try again.
+              </Text>
+            </View>
+          )}
+
+          {/* Warranty Result - Valid */}
+          {warrantyResult && warrantyResult.isValid && (
+            <View style={styles.resultCard}>
+              <View style={[styles.statusBadge, { backgroundColor: Colors.success + '20' }]}>
+                <Ionicons name="checkmark-circle" size={32} color={Colors.success} />
+                <Text style={[styles.statusText, { color: Colors.success }]}>
+                  Warranty Active
+                </Text>
+              </View>
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Product:</Text>
+                <Text style={styles.resultValue}>{warrantyResult.product}</Text>
+              </View>
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Purchase Date:</Text>
+                <Text style={styles.resultValue}>
+                  {format(new Date(warrantyResult.purchaseDate), 'dd MMM yyyy')}
+                </Text>
+              </View>
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Expiry Date:</Text>
+                <Text style={styles.resultValue}>
+                  {format(new Date(warrantyResult.expiryDate), 'dd MMM yyyy')}
+                </Text>
+              </View>
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Time Remaining:</Text>
+                <Text style={[styles.resultValue, { color: Colors.success, fontWeight: 'bold' }]}>
+                  {getDaysRemainingText(warrantyResult.daysRemaining || 0)}
+                </Text>
+              </View>
+
+              {warrantyResult.coverageType && (
+                <View style={styles.resultRow}>
+                  <Text style={styles.resultLabel}>Coverage Type:</Text>
+                  <Text style={styles.resultValue}>{warrantyResult.coverageType}</Text>
+                </View>
+              )}
+
+              {warrantyResult.notes && (
+                <View style={styles.notesBox}>
+                  <Text style={styles.notesLabel}>Notes:</Text>
+                  <Text style={styles.notesText}>{warrantyResult.notes}</Text>
+                </View>
+              )}
+
+              <View style={styles.infoBox}>
+                <Ionicons name="information-circle" size={20} color={Colors.info} />
+                <Text style={styles.infoText}>
+                  Your warranty is active. Contact us for any repair needs covered under warranty.
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Warranty Result - Expired */}
+          {warrantyResult && !warrantyResult.isValid && (
+            <View style={styles.resultCard}>
+              <View style={[styles.statusBadge, { backgroundColor: Colors.error + '20' }]}>
+                <Ionicons name="close-circle" size={32} color={Colors.error} />
+                <Text style={[styles.statusText, { color: Colors.error }]}>
+                  Warranty Expired
+                </Text>
+              </View>
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Product:</Text>
+                <Text style={styles.resultValue}>{warrantyResult.product}</Text>
+              </View>
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Purchase Date:</Text>
+                <Text style={styles.resultValue}>
+                  {format(new Date(warrantyResult.purchaseDate), 'dd MMM yyyy')}
+                </Text>
+              </View>
+
+              <View style={styles.resultRow}>
+                <Text style={styles.resultLabel}>Expiry Date:</Text>
+                <Text style={styles.resultValue}>
+                  {format(new Date(warrantyResult.expiryDate), 'dd MMM yyyy')}
+                </Text>
+              </View>
+
+              <View style={styles.warningBox}>
+                <Ionicons name="warning" size={20} color={Colors.error} />
+                <Text style={styles.warningText}>
+                  {warrantyResult.message || 'This warranty has expired. Contact us for paid repair services.'}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Information */}
+          <View style={styles.infoCard}>
+            <Text style={styles.infoTitle}>Where to find Serial Number?</Text>
+            <View style={styles.infoItem}>
+              <Ionicons name="hardware-chip" size={20} color={Colors.primary} />
+              <Text style={styles.infoItemText}>
+                <Text style={{ fontWeight: '600' }}>Back Panel:</Text> Check the back of your TV for a sticker with the serial number
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Ionicons name="settings" size={20} color={Colors.primary} />
+              <Text style={styles.infoItemText}>
+                <Text style={{ fontWeight: '600' }}>Settings Menu:</Text> Go to Settings → About/System → Serial Number
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Ionicons name="document-text" size={20} color={Colors.primary} />
+              <Text style={styles.infoItemText}>
+                <Text style={{ fontWeight: '600' }}>Purchase Documents:</Text> Check your purchase invoice or warranty card
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
 
   return (
     <SafeAreaView style={styles.container}>

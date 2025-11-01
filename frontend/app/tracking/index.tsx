@@ -338,17 +338,17 @@ export default function TrackingScreen() {
                   <View style={styles.infoRow}>
                     <Ionicons name="calendar-outline" size={16} color={Colors.textLight} />
                     <Text style={styles.infoText}>
-                      Booked: {format(new Date(booking.createdAt), 'dd MMM yyyy')}
+                      Booked: {createdAt ? format(new Date(createdAt), 'dd MMM yyyy') : 'N/A'}
                     </Text>
                   </View>
                   <View style={styles.infoRow}>
                     <Ionicons
-                      name={booking.pickupOption === 'pickup' ? 'car-outline' : 'home-outline'}
+                      name={pickupOption === 'pickup' ? 'car-outline' : 'home-outline'}
                       size={16}
                       color={Colors.textLight}
                     />
                     <Text style={styles.infoText}>
-                      {booking.pickupOption === 'pickup' ? 'Pickup Service' : 'Home Service'}
+                      {pickupOption === 'pickup' ? 'Pick Up Service' : 'Visit to Our Shop'}
                     </Text>
                   </View>
                 </View>

@@ -324,12 +324,12 @@ export default function BookingsScreen() {
                 </View>
                 <View style={styles.detailRow}>
                   <Ionicons 
-                    name={item.pickupOption === 'pickup' ? 'car-outline' : 'home-outline'}
+                    name={pickupOption === 'pickup' ? 'car-outline' : 'home-outline'}
                     size={16} 
                     color={Colors.textLight} 
                   />
                   <Text style={styles.detailText}>
-                    {item.pickupOption === 'pickup' ? 'Pick Up' : 'Visit to Our Shop'}
+                    {pickupOption === 'pickup' ? 'Pick Up' : 'Visit to Our Shop'}
                   </Text>
                 </View>
               </View>

@@ -282,6 +282,7 @@ export default function BookingsScreen() {
             const tvModel = item.tv_model || item.tvModel || '';
             const issueType = item.issue_type || item.issueType || '';
             const createdAt = item.created_at || item.createdAt || '';
+            const pickupOption = item.pickup_option || item.pickupOption || '';
             
             return (
             <TouchableOpacity 

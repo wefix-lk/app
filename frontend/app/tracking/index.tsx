@@ -224,7 +224,12 @@ export default function TrackingScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {bookings.length === 0 ? (
+        {loading ? (
+          <View style={styles.emptyContainer}>
+            <Ionicons name="hourglass-outline" size={60} color={Colors.primary} />
+            <Text style={styles.loadingText}>Loading bookings...</Text>
+          </View>
+        ) : bookings.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Ionicons name="location-outline" size={80} color={Colors.textLight} />
             <Text style={styles.emptyTitle}>No Active Repairs</Text>

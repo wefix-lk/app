@@ -57,20 +57,41 @@ export default function TrackingScreen() {
 
   const loadBookings = async () => {
     try {
-      const bookingsJson = await AsyncStorage.getItem('local_bookings');
-      if (bookingsJson) {
-        const allBookings = JSON.parse(bookingsJson);
-        const userBookings = allBookings.filter(
-          (b: any) => b.userId === user?.uid
-        );
-        // Sort by most recent
-        userBookings.sort((a: any, b: any) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        setBookings(userBookings);
+      console.log('📥 Loading bookings for tracking...');
+      console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
+      
+      if (PRODUCTION_MODE) {
+        // Production API mode
+        const response = await api.bookings.getUserBookings();
+        
+        if (response.success && response.data) {
+          const userBookings = response.data.bookings || [];
+          console.log('✅ Loaded', userBookings.length, 'bookings from API for tracking');
+          setBookings(userBookings);
+        } else {
+          console.log('ℹ️ No bookings found in API');
+          setBookings([]);
+        }
+      } else {
+        // Demo mode - load from AsyncStorage
+        const bookingsJson = await AsyncStorage.getItem('local_bookings');
+        if (bookingsJson) {
+          const allBookings = JSON.parse(bookingsJson);
+          const userBookings = allBookings.filter(
+            (b: any) => b.userId === user?.uid
+          );
+          // Sort by most recent
+          userBookings.sort((a: any, b: any) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          setBookings(userBookings);
+        } else {
+          setBookings([]);
+        }
       }
     } catch (error) {
-      console.error('Error loading bookings:', error);
+      console.error('❌ Error loading bookings:', error);
+      setBookings([]);
     }
   };
 

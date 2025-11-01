@@ -469,6 +469,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
   },
+  loadingText: {
+    fontSize: 16,
+    color: Colors.textLight,
+    marginTop: 16,
+  },
   button: {
     backgroundColor: Colors.primary,
     borderRadius: 12,

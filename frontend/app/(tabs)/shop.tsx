@@ -58,38 +58,73 @@ export default function ShopScreen() {
 
   const loadProducts = async () => {
     try {
-      // Load admin-added products
-      const adminProductsJson = await AsyncStorage.getItem('admin_products');
-      const adminProducts = adminProductsJson ? JSON.parse(adminProductsJson) : [];
+      setLoading(true);
+      setError(null);
       
-      // Filter only active/visible products
-      const visibleAdminProducts = adminProducts.filter((p: any) => p.isActive !== false);
+      console.log('📥 Loading products...');
+      console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
       
-      // Transform admin products to match the expected format
-      const transformedAdminProducts = visibleAdminProducts.map((p: any) => ({
-        id: p.id,
-        name: p.name,
-        category: p.category,
-        price: p.price,
-        images: p.images && p.images.length > 0 ? p.images : ['https://via.placeholder.com/300'],
-        isInStock: (p.stock || 0) > 0,
-        stock: p.stock || 0,
-        description: p.description || '',
-        modelNumber: p.modelNumber || '',
-      }));
+      if (PRODUCTION_MODE) {
+        // Production API mode - fetch from server
+        const response = await api.products.getAll({
+          limit: 100, // Get all products
+        });
+        
+        if (response.success && response.data) {
+          const products = response.data.products || [];
+          
+          // Transform API products to match app format
+          const transformedProducts = products.map((p: any) => ({
+            id: p.id,
+            name: p.pro_name,
+            category: p.category?.name || p.category || 'Uncategorized',
+            price: parseFloat(p.price) || 0,
+            cost: parseFloat(p.cost) || 0,
+            images: p.pro_image ? [p.pro_image] : ['https://via.placeholder.com/300'],
+            isInStock: (p.qty || 0) > 0,
+            stock: p.qty || 0,
+            description: p.description || '',
+            modelNumber: p.sku || '',
+            sku: p.sku,
+            posCode: p.pos_code,
+            supplier: p.supplier,
+          }));
+          
+          setAllProducts(transformedProducts);
+          console.log('✅ Loaded', transformedProducts.length, 'products from API');
+        } else {
+          console.log('ℹ️ No products found in API');
+          setAllProducts([]);
+        }
+      } else {
+        // Demo mode - load from AsyncStorage
+        const adminProductsJson = await AsyncStorage.getItem('admin_products');
+        const adminProducts = adminProductsJson ? JSON.parse(adminProductsJson) : [];
+        
+        const visibleAdminProducts = adminProducts.filter((p: any) => p.isActive !== false);
+        
+        const transformedAdminProducts = visibleAdminProducts.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          category: p.category,
+          price: p.price,
+          images: p.images && p.images.length > 0 ? p.images : ['https://via.placeholder.com/300'],
+          isInStock: (p.stock || 0) > 0,
+          stock: p.stock || 0,
+          description: p.description || '',
+          modelNumber: p.modelNumber || '',
+        }));
 
-      // Combine mock products with admin products
-      const combined = [...mockProducts, ...transformedAdminProducts];
-      setAllProducts(combined);
-      
-      console.log('📦 Loaded products:', {
-        mock: mockProducts.length,
-        admin: transformedAdminProducts.length,
-        total: combined.length
-      });
-    } catch (error) {
+        setAllProducts(transformedAdminProducts);
+        console.log('✅ Loaded', transformedAdminProducts.length, 'products from local storage');
+      }
+    } catch (error: any) {
       console.error('❌ Error loading products:', error);
-      setAllProducts(mockProducts); // Fallback to mock products
+      setError(error.message || 'Failed to load products');
+      setAllProducts([]);
+      Alert.alert('Error', 'Failed to load products. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 

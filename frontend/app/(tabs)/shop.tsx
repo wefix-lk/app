@@ -74,20 +74,25 @@ export default function ShopScreen() {
           const products = response.data.products || [];
           
           // Transform API products to match app format
+          // API now returns camelCase keys
           const transformedProducts = products.map((p: any) => ({
-            id: p.id,
-            name: p.pro_name,
+            id: p.id, // Already has 'product_' prefix from API
+            name: p.name, // Changed from pro_name to name
             category: p.category?.name || p.category || 'Uncategorized',
             price: parseFloat(p.price) || 0,
             cost: parseFloat(p.cost) || 0,
-            images: p.pro_image ? [`https://wefixservers.xyz/assets/images/products/${p.pro_image}`] : ['https://via.placeholder.com/300'],
-            isInStock: (p.qty || 0) > 0,
-            stock: p.qty || 0,
+            // Images is now an array, construct full URLs
+            images: p.images && p.images.length > 0 
+              ? p.images.map((img: string) => `https://wefixservers.xyz/assets/images/products/${img}`)
+              : ['https://via.placeholder.com/300'],
+            isInStock: (p.stock || 0) > 0, // Changed from qty to stock
+            stock: p.stock || 0, // Changed from qty to stock
             description: p.description || '',
-            modelNumber: p.sku || '',
-            sku: p.sku,
-            posCode: p.pos_code,
-            supplier: p.supplier,
+            modelNumber: p.modelNumber || '', // Already camelCase
+            sku: p.modelNumber, // Map modelNumber to sku for compatibility
+            isActive: p.isActive !== false,
+            createdAt: p.createdAt,
+            updatedAt: p.updatedAt,
           }));
           
           setAllProducts(transformedProducts);

@@ -97,6 +97,10 @@ export default function ShopScreen() {
           
           setAllProducts(transformedProducts);
           console.log('✅ Loaded', transformedProducts.length, 'products from API');
+          
+          // Debug: Log unique categories
+          const uniqueCategories = [...new Set(transformedProducts.map(p => p.category))];
+          console.log('📦 Categories found:', uniqueCategories);
         } else {
           console.log('ℹ️ No products found in API');
           setAllProducts([]);

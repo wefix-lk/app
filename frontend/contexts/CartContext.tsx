@@ -173,7 +173,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       
       if (PRODUCTION_MODE && user) {
-        // Production API mode
+        // Production API mode - cart item IDs don't need prefix stripping
+        console.log('Removing from cart:', { id });
         const response = await api.cart.removeItem(id);
         
         if (response.success) {
@@ -204,7 +205,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       
       if (PRODUCTION_MODE && user) {
-        // Production API mode
+        // Production API mode - cart item IDs don't need prefix stripping
+        console.log('Updating cart item quantity:', { id, quantity });
         const response = await api.cart.updateItem(id, quantity);
         
         if (response.success) {

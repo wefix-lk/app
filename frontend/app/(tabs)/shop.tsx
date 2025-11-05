@@ -220,18 +220,44 @@ export default function ShopScreen() {
         ))}
       </ScrollView>
 
-      {/* Products Grid */}
-      <FlatList
-        data={filteredProducts}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.productsContainer}
-        columnWrapperStyle={styles.productRow}
-        style={styles.productsList}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        renderItem={({ item }) => (
+      {/* Loading State */}
+      {loading ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+          <Text style={styles.loadingText}>Loading products...</Text>
+        </View>
+      ) : error ? (
+        <View style={styles.centerContainer}>
+          <Ionicons name="alert-circle" size={60} color={Colors.error} />
+          <Text style={styles.errorTitle}>Failed to Load Products</Text>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={loadProducts}>
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      ) : filteredProducts.length === 0 ? (
+        <View style={styles.centerContainer}>
+          <Ionicons name="cube-outline" size={60} color={Colors.textLight} />
+          <Text style={styles.emptyTitle}>No Products Found</Text>
+          <Text style={styles.emptyText}>
+            {selectedCategory === 'all' 
+              ? 'No products available at the moment' 
+              : `No products found in ${categories.find(c => c.id === selectedCategory)?.label}`}
+          </Text>
+        </View>
+      ) : (
+        /* Products Grid */
+        <FlatList
+          data={filteredProducts}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          contentContainerStyle={styles.productsContainer}
+          columnWrapperStyle={styles.productRow}
+          style={styles.productsList}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          renderItem={({ item }) => (
           <View style={styles.productCard}>
             <TouchableOpacity
               onPress={() => router.push(`/product/${item.id}`)}

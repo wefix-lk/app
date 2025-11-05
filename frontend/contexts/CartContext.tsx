@@ -70,6 +70,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const items = response.data.items || [];
           const summary = response.data.summary || null;
           
+          console.log('🛒 Raw cart items from API:', JSON.stringify(items, null, 2));
+          
           // Transform API cart items to match app format
           const transformedItems = items.map((item: any) => {
             let imageUrl = item.product?.images?.[0] || item.image || '';
@@ -79,11 +81,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               imageUrl = `https://wefixservers.xyz/assets/images/products/${imageUrl}`;
             }
             
+            // Extract price - try multiple sources
+            let price = 0;
+            if (item.price) {
+              price = parseFloat(item.price);
+            } else if (item.product?.price) {
+              price = parseFloat(item.product.price);
+            }
+            
+            console.log('💰 Price extraction:', {
+              itemId: item.id,
+              itemPrice: item.price,
+              productPrice: item.product?.price,
+              finalPrice: price
+            });
+            
             return {
               id: item.id,
               productId: item.productId || item.product_id,
               name: item.product?.name || item.name || 'Product',
-              price: parseFloat(item.price) || 0,
+              price: price,
               image: imageUrl,
               quantity: item.quantity || 1,
               category: item.product?.category || item.category || 'Uncategorized',
@@ -93,6 +110,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           setCartItems(transformedItems);
           setCartSummary(summary);
           console.log('✅ Loaded', transformedItems.length, 'cart items from API');
+          console.log('🛒 Transformed items:', transformedItems);
         } else {
           setCartItems([]);
           setCartSummary(null);

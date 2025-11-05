@@ -114,24 +114,50 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.id === item.id);
+  const addToCart = async (item: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
+    try {
+      setLoading(true);
       
-      if (existingItem) {
-        // Update quantity if item already exists
-        return prevItems.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
+      if (PRODUCTION_MODE && user) {
+        // Production API mode
+        const productId = item.productId || item.id;
+        const response = await api.cart.addItem(productId, quantity);
+        
+        if (response.success) {
+          // Reload cart to get updated data
+          await loadCart();
+          Alert.alert('Added to Cart', `${item.name} has been added to your cart!`, [
+            { text: 'OK' }
+          ]);
+        } else {
+          throw new Error(response.message || 'Failed to add item to cart');
+        }
       } else {
-        // Add new item with quantity 1
-        return [...prevItems, { ...item, quantity: 1 }];
+        // Demo mode - update local state
+        setCartItems((prevItems) => {
+          const existingItem = prevItems.find((i) => i.id === item.id);
+          
+          if (existingItem) {
+            // Update quantity if item already exists
+            return prevItems.map((i) =>
+              i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
+            );
+          } else {
+            // Add new item with specified quantity
+            return [...prevItems, { ...item, quantity }];
+          }
+        });
+        
+        Alert.alert('Added to Cart', `${item.name} has been added to your cart!`, [
+          { text: 'OK' }
+        ]);
       }
-    });
-    
-    Alert.alert('Added to Cart', `${item.name} has been added to your cart!`, [
-      { text: 'OK' }
-    ]);
+    } catch (error: any) {
+      console.error('❌ Error adding to cart:', error);
+      Alert.alert('Error', error.message || 'Failed to add item to cart. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const removeFromCart = (id: string) => {

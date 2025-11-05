@@ -298,9 +298,10 @@ export default function ShopScreen() {
                   if (item.isInStock) {
                     addToCart({
                       id: item.id,
+                      productId: item.id, // Include productId for API
                       name: item.name,
                       price: item.price,
-                      image: item.images[0],
+                      image: item.images[0] || '',
                       category: item.category,
                     });
                   }

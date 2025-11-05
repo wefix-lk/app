@@ -17,11 +17,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
-import { mockProducts } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCart } from '../../contexts/CartContext';
+import { api, PRODUCTION_MODE } from '../../services/api';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;
@@ -30,9 +30,11 @@ export default function ShopScreen() {
   const router = useRouter();
   const { addToCart } = useCart();
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [allProducts, setAllProducts] = useState(mockProducts);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const categories = [
     { id: 'all', label: 'All' },

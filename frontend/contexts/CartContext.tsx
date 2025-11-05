@@ -49,29 +49,68 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  // Save cart to storage whenever it changes
+  // Save cart to local storage (demo mode only)
   useEffect(() => {
-    saveCart();
+    if (!PRODUCTION_MODE) {
+      saveCartLocal();
+    }
   }, [cartItems]);
 
   const loadCart = async () => {
     try {
-      const cartJson = await AsyncStorage.getItem('shopping_cart');
-      if (cartJson) {
-        const cart = JSON.parse(cartJson);
-        setCartItems(cart);
-        console.log('🛒 Loaded cart:', cart.length, 'items');
+      setLoading(true);
+      console.log('🛒 Loading cart...');
+      console.log('🌐 Using:', PRODUCTION_MODE ? 'Production API' : 'Demo Mode');
+      
+      if (PRODUCTION_MODE && user) {
+        // Production API mode
+        const response = await api.cart.get();
+        
+        if (response.success && response.data) {
+          const items = response.data.items || [];
+          const summary = response.data.summary || null;
+          
+          // Transform API cart items to match app format
+          const transformedItems = items.map((item: any) => ({
+            id: item.id,
+            productId: item.productId || item.product_id,
+            name: item.product?.name || item.name || 'Product',
+            price: parseFloat(item.price) || 0,
+            image: item.product?.images?.[0] || item.image || '',
+            quantity: item.quantity || 1,
+            category: item.product?.category || item.category || 'Uncategorized',
+          }));
+          
+          setCartItems(transformedItems);
+          setCartSummary(summary);
+          console.log('✅ Loaded', transformedItems.length, 'cart items from API');
+        } else {
+          setCartItems([]);
+          setCartSummary(null);
+        }
+      } else {
+        // Demo mode - load from AsyncStorage
+        const cartJson = await AsyncStorage.getItem('shopping_cart');
+        if (cartJson) {
+          const cart = JSON.parse(cartJson);
+          setCartItems(cart);
+          console.log('🛒 Loaded cart:', cart.length, 'items from local storage');
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error loading cart:', error);
+      setCartItems([]);
+      setCartSummary(null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const saveCart = async () => {
+  const saveCartLocal = async () => {
     try {
       await AsyncStorage.setItem('shopping_cart', JSON.stringify(cartItems));
     } catch (error) {
-      console.error('❌ Error saving cart:', error);
+      console.error('❌ Error saving cart locally:', error);
     }
   };
 

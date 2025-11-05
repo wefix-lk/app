@@ -261,10 +261,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const getCartTotal = () => {
+    // Use cart summary if available (from API), otherwise calculate from items
+    if (cartSummary) {
+      return cartSummary.total;
+    }
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const getCartCount = () => {
+    // Use cart summary if available (from API), otherwise calculate from items
+    if (cartSummary) {
+      return cartSummary.itemCount;
+    }
     return cartItems.reduce((count, item) => count + item.quantity, 0);
   };
 
@@ -272,12 +280,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     <CartContext.Provider
       value={{
         cartItems,
+        cartSummary,
+        loading,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
         getCartTotal,
         getCartCount,
+        loadCart,
       }}
     >
       {children}

@@ -626,4 +626,51 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontWeight: '600',
   },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: Colors.textLight,
+  },
+  errorTitle: {
+    marginTop: 16,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  errorText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: Colors.textLight,
+    textAlign: 'center',
+  },
+  retryButton: {
+    marginTop: 20,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  retryButtonText: {
+    color: Colors.textWhite,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  emptyTitle: {
+    marginTop: 16,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  emptyText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: Colors.textLight,
+    textAlign: 'center',
+  },
 });

@@ -160,24 +160,68 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const removeFromCart = (id: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const removeFromCart = async (id: string) => {
+    try {
+      setLoading(true);
+      
+      if (PRODUCTION_MODE && user) {
+        // Production API mode
+        const response = await api.cart.removeItem(id);
+        
+        if (response.success) {
+          // Reload cart to get updated data
+          await loadCart();
+        } else {
+          throw new Error(response.message || 'Failed to remove item');
+        }
+      } else {
+        // Demo mode - update local state
+        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+      }
+    } catch (error: any) {
+      console.error('❌ Error removing from cart:', error);
+      Alert.alert('Error', error.message || 'Failed to remove item. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = async (id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(id);
+      await removeFromCart(id);
       return;
     }
     
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+    try {
+      setLoading(true);
+      
+      if (PRODUCTION_MODE && user) {
+        // Production API mode
+        const response = await api.cart.updateItem(id, quantity);
+        
+        if (response.success) {
+          // Reload cart to get updated data
+          await loadCart();
+        } else {
+          throw new Error(response.message || 'Failed to update quantity');
+        }
+      } else {
+        // Demo mode - update local state
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === id ? { ...item, quantity } : item
+          )
+        );
+      }
+    } catch (error: any) {
+      console.error('❌ Error updating quantity:', error);
+      Alert.alert('Error', error.message || 'Failed to update quantity. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const clearCart = () => {
+  const clearCart = async () => {
     Alert.alert(
       'Clear Cart',
       'Are you sure you want to remove all items from your cart?',
@@ -186,7 +230,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         {
           text: 'Clear',
           style: 'destructive',
-          onPress: () => setCartItems([]),
+          onPress: async () => {
+            try {
+              setLoading(true);
+              
+              if (PRODUCTION_MODE && user) {
+                // Production API mode
+                const response = await api.cart.clear();
+                
+                if (response.success) {
+                  setCartItems([]);
+                  setCartSummary(null);
+                } else {
+                  throw new Error(response.message || 'Failed to clear cart');
+                }
+              } else {
+                // Demo mode - clear local state
+                setCartItems([]);
+              }
+            } catch (error: any) {
+              console.error('❌ Error clearing cart:', error);
+              Alert.alert('Error', error.message || 'Failed to clear cart. Please try again.');
+            } finally {
+              setLoading(false);
+            }
+          },
         },
       ]
     );

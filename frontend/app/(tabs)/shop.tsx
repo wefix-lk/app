@@ -329,6 +329,7 @@ export default function ShopScreen() {
           </View>
         )}
       />
+      )}
 
       {/* Category Selection Modal */}
       <Modal

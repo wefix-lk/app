@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { api, PRODUCTION_MODE } from '../services/api';
+import { useAuth } from './AuthContext';
 
 interface CartItem {
   id: string;
+  productId?: string;
   name: string;
   price: number;
   image: string;
@@ -11,25 +14,40 @@ interface CartItem {
   category: string;
 }
 
+interface CartSummary {
+  itemCount: number;
+  subtotal: number;
+  tax: number;
+  total: number;
+}
+
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
-  clearCart: () => void;
+  cartSummary: CartSummary | null;
+  loading: boolean;
+  addToCart: (item: Omit<CartItem, 'quantity'>, quantity?: number) => Promise<void>;
+  removeFromCart: (id: string) => Promise<void>;
+  updateQuantity: (id: string, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
   getCartTotal: () => number;
   getCartCount: () => number;
+  loadCart: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartSummary, setCartSummary] = useState<CartSummary | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
-  // Load cart from storage on mount
+  // Load cart from API or storage on mount
   useEffect(() => {
-    loadCart();
-  }, []);
+    if (user) {
+      loadCart();
+    }
+  }, [user]);
 
   // Save cart to storage whenever it changes
   useEffect(() => {

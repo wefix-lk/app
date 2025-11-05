@@ -113,7 +113,7 @@ export default function ShopScreen() {
           name: p.name,
           category: p.category,
           price: p.price,
-          images: p.images && p.images.length > 0 ? p.images : ['https://via.placeholder.com/300'],
+          images: p.images && p.images.length > 0 ? p.images : [],
           isInStock: (p.stock || 0) > 0,
           stock: p.stock || 0,
           description: p.description || '',

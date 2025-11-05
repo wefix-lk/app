@@ -120,7 +120,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       
       if (PRODUCTION_MODE && user) {
         // Production API mode
-        const productId = item.productId || item.id;
+        let productId = item.productId || item.id;
+        
+        // Strip "product_" prefix if present to get numeric ID
+        if (typeof productId === 'string' && productId.startsWith('product_')) {
+          productId = productId.replace('product_', '');
+        }
+        
+        console.log('Adding to cart:', { productId, quantity, originalId: item.id });
+        
         const response = await api.cart.addItem(productId, quantity);
         
         if (response.success) {

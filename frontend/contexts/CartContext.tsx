@@ -71,15 +71,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const summary = response.data.summary || null;
           
           // Transform API cart items to match app format
-          const transformedItems = items.map((item: any) => ({
-            id: item.id,
-            productId: item.productId || item.product_id,
-            name: item.product?.name || item.name || 'Product',
-            price: parseFloat(item.price) || 0,
-            image: item.product?.images?.[0] || item.image || '',
-            quantity: item.quantity || 1,
-            category: item.product?.category || item.category || 'Uncategorized',
-          }));
+          const transformedItems = items.map((item: any) => {
+            let imageUrl = item.product?.images?.[0] || item.image || '';
+            
+            // Construct full image URL if it's not already a full URL
+            if (imageUrl && !imageUrl.startsWith('http')) {
+              imageUrl = `https://wefixservers.xyz/assets/images/products/${imageUrl}`;
+            }
+            
+            return {
+              id: item.id,
+              productId: item.productId || item.product_id,
+              name: item.product?.name || item.name || 'Product',
+              price: parseFloat(item.price) || 0,
+              image: imageUrl,
+              quantity: item.quantity || 1,
+              category: item.product?.category || item.category || 'Uncategorized',
+            };
+          });
           
           setCartItems(transformedItems);
           setCartSummary(summary);
@@ -253,6 +262,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           onPress: async () => {
             try {
               setLoading(true);
+              console.log('🗑️ Clearing cart...');
               
               if (PRODUCTION_MODE && user) {
                 // Production API mode
@@ -261,12 +271,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 if (response.success) {
                   setCartItems([]);
                   setCartSummary(null);
+                  console.log('✅ Cart cleared successfully');
                 } else {
                   throw new Error(response.message || 'Failed to clear cart');
                 }
               } else {
                 // Demo mode - clear local state
                 setCartItems([]);
+                console.log('✅ Cart cleared (demo mode)');
               }
             } catch (error: any) {
               console.error('❌ Error clearing cart:', error);

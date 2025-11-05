@@ -80,7 +80,7 @@ export default function ShopScreen() {
             category: p.category?.name || p.category || 'Uncategorized',
             price: parseFloat(p.price) || 0,
             cost: parseFloat(p.cost) || 0,
-            images: p.pro_image ? [p.pro_image] : ['https://via.placeholder.com/300'],
+            images: p.pro_image ? [`https://wefixservers.xyz/assets/images/products/${p.pro_image}`] : ['https://via.placeholder.com/300'],
             isInStock: (p.qty || 0) > 0,
             stock: p.qty || 0,
             description: p.description || '',

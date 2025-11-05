@@ -14,15 +14,17 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Colors } from '../../constants/Colors';
-import { mockProducts } from '../../data/mockProducts';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api, PRODUCTION_MODE } from '../../services/api';
+import { useCart } from '../../contexts/CartContext';
 
 const { width } = Dimensions.get('window');
 
 export default function ProductDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -34,18 +36,52 @@ export default function ProductDetailScreen() {
   const loadProduct = async () => {
     try {
       console.log('🔍 Looking for product with ID:', id);
+      setLoading(true);
       
-      // First, check mock products
-      let foundProduct = mockProducts.find((p) => p.id === id);
+      let foundProduct = null;
       
-      // If not found in mock products, check admin products
-      if (!foundProduct) {
+      if (PRODUCTION_MODE) {
+        // Load all products from API and find the matching one
+        const response = await api.products.getAll({ limit: 100 });
+        
+        if (response.success && response.data) {
+          const products = response.data.products || [];
+          
+          // Find product by ID (with or without product_ prefix)
+          const searchId = typeof id === 'string' && id.startsWith('product_') ? id : `product_${id}`;
+          const searchIdNumeric = typeof id === 'string' && id.startsWith('product_') ? id.replace('product_', '') : id;
+          
+          foundProduct = products.find((p: any) => 
+            p.id === searchId || p.id === searchIdNumeric || p.id === id
+          );
+          
+          if (foundProduct) {
+            // Transform API product to match app format
+            foundProduct = {
+              id: foundProduct.id,
+              name: foundProduct.name,
+              category: foundProduct.category?.name || foundProduct.category || 'Uncategorized',
+              price: parseFloat(foundProduct.price) || 0,
+              images: foundProduct.images && foundProduct.images.length > 0
+                ? foundProduct.images.map((img: string) => 
+                    img.startsWith('http') ? img : `https://wefixservers.xyz/assets/images/products/${img}`
+                  )
+                : [],
+              isInStock: (foundProduct.stock || 0) > 0,
+              stock: foundProduct.stock || 0,
+              description: foundProduct.description || 'No description available.',
+              modelNumber: foundProduct.modelNumber || '',
+            };
+            console.log('✅ Found product from API:', foundProduct.name);
+          }
+        }
+      } else {
+        // Demo mode - check admin products from AsyncStorage
         const adminProductsJson = await AsyncStorage.getItem('admin_products');
         if (adminProductsJson) {
           const adminProducts = JSON.parse(adminProductsJson);
           foundProduct = adminProducts.find((p: any) => p.id === id);
           
-          // Transform admin product to match expected format
           if (foundProduct) {
             foundProduct = {
               id: foundProduct.id,
@@ -54,23 +90,21 @@ export default function ProductDetailScreen() {
               price: foundProduct.price,
               images: foundProduct.images && foundProduct.images.length > 0 
                 ? foundProduct.images 
-                : ['https://via.placeholder.com/300'],
+                : [],
               isInStock: (foundProduct.stock || 0) > 0,
               stock: foundProduct.stock || 0,
               description: foundProduct.description || 'No description available.',
               modelNumber: foundProduct.modelNumber || '',
             };
-            console.log('✅ Found product in admin products:', foundProduct.name);
+            console.log('✅ Found product from local storage:', foundProduct.name);
           }
         }
-      } else {
-        console.log('✅ Found product in mock products:', foundProduct.name);
       }
       
       setProduct(foundProduct);
-      setLoading(false);
     } catch (error) {
       console.error('❌ Error loading product:', error);
+    } finally {
       setLoading(false);
     }
   };

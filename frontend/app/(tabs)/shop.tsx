@@ -84,7 +84,7 @@ export default function ShopScreen() {
             // Images is now an array, construct full URLs
             images: p.images && p.images.length > 0 
               ? p.images.map((img: string) => `https://wefixservers.xyz/assets/images/products/${img}`)
-              : ['https://via.placeholder.com/300'],
+              : [],
             isInStock: (p.stock || 0) > 0, // Changed from qty to stock
             stock: p.stock || 0, // Changed from qty to stock
             description: p.description || '',

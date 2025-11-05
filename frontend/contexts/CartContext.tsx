@@ -173,9 +173,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       
       if (PRODUCTION_MODE && user) {
-        // Production API mode - cart item IDs don't need prefix stripping
-        console.log('Removing from cart:', { id });
-        const response = await api.cart.removeItem(id);
+        // Production API mode - strip cart_item_ prefix if present
+        let itemId = id;
+        if (typeof itemId === 'string' && itemId.startsWith('cart_item_')) {
+          itemId = itemId.replace('cart_item_', '');
+        }
+        
+        console.log('Removing from cart:', { originalId: id, itemId });
+        const response = await api.cart.removeItem(itemId);
         
         if (response.success) {
           // Reload cart to get updated data
@@ -205,9 +210,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       
       if (PRODUCTION_MODE && user) {
-        // Production API mode - cart item IDs don't need prefix stripping
-        console.log('Updating cart item quantity:', { id, quantity });
-        const response = await api.cart.updateItem(id, quantity);
+        // Production API mode - strip cart_item_ prefix if present
+        let itemId = id;
+        if (typeof itemId === 'string' && itemId.startsWith('cart_item_')) {
+          itemId = itemId.replace('cart_item_', '');
+        }
+        
+        console.log('Updating cart item quantity:', { originalId: id, itemId, quantity });
+        const response = await api.cart.updateItem(itemId, quantity);
         
         if (response.success) {
           // Reload cart to get updated data

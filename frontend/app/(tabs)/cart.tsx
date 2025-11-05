@@ -63,9 +63,20 @@ export default function CartScreen() {
     }
   };
 
+  const handleClearCart = () => {
+    console.log('🗑️ Clear Cart button pressed');
+    clearCart();
+  };
+
   const renderCartItem = ({ item }: { item: any }) => (
     <View style={styles.cartItem}>
-      <Image source={{ uri: item.image }} style={styles.itemImage} />
+      {item.image ? (
+        <Image source={{ uri: item.image }} style={styles.itemImage} />
+      ) : (
+        <View style={[styles.itemImage, styles.placeholderImage]}>
+          <Ionicons name="image-outline" size={30} color={Colors.textLight} />
+        </View>
+      )}
       
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>{item.name}</Text>
@@ -106,17 +117,18 @@ export default function CartScreen() {
         <View style={styles.header}>
           <Text style={styles.title}>Shopping Cart</Text>
         </View>
-
+        
         <View style={styles.emptyContainer}>
-          <Ionicons name="cart-outline" size={80} color={Colors.textLight} />
+          <Ionicons name="cart-outline" size={100} color={Colors.textLight} />
           <Text style={styles.emptyTitle}>Your cart is empty</Text>
-          <Text style={styles.emptyText}>Add some products to get started!</Text>
-          
+          <Text style={styles.emptyText}>
+            Add items from the shop to get started
+          </Text>
           <TouchableOpacity
             style={styles.shopButton}
-            onPress={() => router.push('/(tabs)/shop')}
+            onPress={() => router.push('/shop')}
           >
-            <Text style={styles.shopButtonText}>Continue Shopping</Text>
+            <Text style={styles.shopButtonText}>Start Shopping</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -126,8 +138,8 @@ export default function CartScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Shopping Cart</Text>
-        <TouchableOpacity onPress={clearCart}>
+        <Text style={styles.title}>Shopping Cart ({getCartCount()})</Text>
+        <TouchableOpacity onPress={handleClearCart}>
           <Text style={styles.clearButton}>Clear All</Text>
         </TouchableOpacity>
       </View>
@@ -136,29 +148,21 @@ export default function CartScreen() {
         data={cartItems}
         keyExtractor={(item) => item.id}
         renderItem={renderCartItem}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={styles.listContent}
       />
 
       <View style={styles.footer}>
-        <View style={styles.totalContainer}>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Items:</Text>
-            <Text style={styles.totalValue}>{getCartCount()}</Text>
-          </View>
-          
-          <View style={[styles.totalRow, styles.grandTotal]}>
-            <Text style={styles.grandTotalLabel}>Total:</Text>
-            <Text style={styles.grandTotalValue}>LKR {getCartTotal().toLocaleString()}</Text>
-          </View>
+        <View style={styles.totalRow}>
+          <Text style={styles.totalLabel}>Total:</Text>
+          <Text style={styles.totalAmount}>LKR {getCartTotal().toLocaleString()}</Text>
         </View>
-
+        
         <TouchableOpacity
           style={styles.checkoutButton}
           onPress={handleWhatsAppCheckout}
         >
-          <Ionicons name="logo-whatsapp" size={20} color={Colors.textWhite} />
-          <Text style={styles.checkoutButtonText}>Proceed to Checkout on WhatsApp</Text>
-          <Ionicons name="arrow-forward" size={20} color={Colors.textWhite} />
+          <Ionicons name="logo-whatsapp" size={24} color={Colors.textWhite} />
+          <Text style={styles.checkoutButtonText}>Checkout via WhatsApp</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -174,8 +178,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    padding: 16,
     backgroundColor: Colors.background,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
@@ -190,7 +193,7 @@ const styles = StyleSheet.create({
     color: Colors.error,
     fontWeight: '600',
   },
-  listContainer: {
+  listContent: {
     padding: 16,
   },
   cartItem: {
@@ -202,14 +205,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemImage: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 8,
+    marginRight: 12,
+  },
+  placeholderImage: {
     backgroundColor: Colors.backgroundGray,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemInfo: {
     flex: 1,
-    marginLeft: 12,
   },
   itemName: {
     fontSize: 14,
@@ -223,35 +230,69 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   itemPrice: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: Colors.primary,
   },
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginRight: 8,
+    marginRight: 12,
   },
   quantityButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
     backgroundColor: Colors.backgroundGray,
-    justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: Colors.primary,
+    justifyContent: 'center',
   },
   quantityText: {
     fontSize: 16,
     fontWeight: '600',
     color: Colors.text,
-    minWidth: 30,
+    marginHorizontal: 12,
+    minWidth: 24,
     textAlign: 'center',
   },
   removeButton: {
     padding: 8,
+  },
+  footer: {
+    padding: 16,
+    backgroundColor: Colors.background,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  totalLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  totalAmount: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.primary,
+  },
+  checkoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#25D366',
+    borderRadius: 12,
+    padding: 16,
+    gap: 8,
+  },
+  checkoutButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.textWhite,
   },
   emptyContainer: {
     flex: 1,
@@ -260,80 +301,27 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   emptyTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: Colors.text,
     marginTop: 16,
     marginBottom: 8,
   },
   emptyText: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.textLight,
     textAlign: 'center',
     marginBottom: 24,
   },
   shopButton: {
     backgroundColor: Colors.primary,
-    paddingHorizontal: 32,
-    paddingVertical: 12,
     borderRadius: 12,
+    paddingHorizontal: 32,
+    paddingVertical: 14,
   },
   shopButtonText: {
-    color: Colors.textWhite,
     fontSize: 16,
     fontWeight: '600',
-  },
-  footer: {
-    backgroundColor: Colors.background,
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
-  },
-  totalContainer: {
-    marginBottom: 16,
-  },
-  totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  totalLabel: {
-    fontSize: 14,
-    color: Colors.textLight,
-  },
-  totalValue: {
-    fontSize: 14,
-    color: Colors.text,
-    fontWeight: '500',
-  },
-  grandTotal: {
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
-    paddingTop: 12,
-    marginTop: 4,
-  },
-  grandTotalLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.text,
-  },
-  grandTotalValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.primary,
-  },
-  checkoutButton: {
-    backgroundColor: Colors.primary,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 12,
-    gap: 8,
-  },
-  checkoutButtonText: {
     color: Colors.textWhite,
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

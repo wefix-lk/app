@@ -100,7 +100,8 @@ export default function ShopScreen() {
           
           // Debug: Log unique categories
           const uniqueCategories = [...new Set(transformedProducts.map(p => p.category))];
-          console.log('📦 Categories found:', uniqueCategories);
+          console.log('📦 Categories found in products:', uniqueCategories);
+          console.log('🏷️ Filter categories:', categories.map(c => c.id));
         } else {
           console.log('ℹ️ No products found in API');
           setAllProducts([]);
@@ -182,8 +183,17 @@ export default function ShopScreen() {
           // Normalize both category values for comparison
           const productCategory = (p.category || '').toLowerCase().trim();
           const selectedCat = selectedCategory.toLowerCase().trim();
-          return productCategory === selectedCat;
+          const matches = productCategory === selectedCat;
+          
+          // Debug logging
+          if (!matches && productCategory) {
+            console.log('❌ Category mismatch:', { productCategory, selectedCat, productName: p.name });
+          }
+          
+          return matches;
         });
+
+  console.log('🔍 Filtering:', { selectedCategory, totalProducts: allProducts.length, filteredCount: filteredProducts.length });
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: 0, backgroundColor: Colors.backgroundGray }]}>
@@ -220,7 +230,10 @@ export default function ShopScreen() {
               styles.categoryChip,
               selectedCategory === item.id && styles.categoryChipActive,
             ]}
-            onPress={() => setSelectedCategory(item.id)}
+            onPress={() => {
+              console.log('🏷️ Category selected:', item.id);
+              setSelectedCategory(item.id);
+            }}
           >
             <Text
               style={[
@@ -258,6 +271,12 @@ export default function ShopScreen() {
               ? 'No products available at the moment' 
               : `No products found in ${categories.find(c => c.id === selectedCategory)?.label}`}
           </Text>
+          <TouchableOpacity 
+            style={styles.retryButton} 
+            onPress={() => setSelectedCategory('all')}
+          >
+            <Text style={styles.retryButtonText}>View All Products</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         /* Products Grid */
@@ -272,78 +291,75 @@ export default function ShopScreen() {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           renderItem={({ item }) => (
-          <View style={styles.productCard}>
             <TouchableOpacity
+              style={styles.productCard}
               onPress={() => router.push(`/product/${item.id}`)}
               activeOpacity={0.7}
             >
-              <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+              {item.images && item.images.length > 0 ? (
+                <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+              ) : (
+                <View style={[styles.productImage, styles.placeholderImage]}>
+                  <Ionicons name="image-outline" size={40} color={Colors.textLight} />
+                </View>
+              )}
+              
+              {!item.isInStock && (
+                <View style={styles.outOfStockBadge}>
+                  <Text style={styles.outOfStockText}>Out of Stock</Text>
+                </View>
+              )}
+
               <View style={styles.productInfo}>
                 <Text style={styles.productName} numberOfLines={2}>
                   {item.name}
                 </Text>
-                <Text style={styles.productPrice}>
-                  LKR {item.price.toLocaleString()}
-                </Text>
-                <View style={styles.stockBadge}>
-                  {item.isInStock ? (
-                    <Text style={styles.inStockText}>In Stock</Text>
-                  ) : (
-                    <Text style={styles.outOfStockText}>Out of Stock</Text>
-                  )}
-                </View>
+                <Text style={styles.productCategory}>{item.category}</Text>
+                <Text style={styles.productPrice}>LKR {item.price.toLocaleString()}</Text>
+                
+                {item.isInStock && (
+                  <Text style={styles.inStockText}>In Stock</Text>
+                )}
               </View>
-            </TouchableOpacity>
-            
-            {/* Action Buttons Row */}
-            <View style={styles.actionButtonsRow}>
-              {/* Add to Cart Button */}
-              <TouchableOpacity
-                style={[
-                  styles.addToCartButton,
-                  !item.isInStock && styles.addToCartButtonDisabled
-                ]}
-                onPress={() => {
-                  if (item.isInStock) {
-                    addToCart({
-                      id: item.id,
-                      productId: item.id, // Include productId for API
-                      name: item.name,
-                      price: item.price,
-                      image: item.images[0] || '',
-                      category: item.category,
-                    });
-                  }
-                }}
-                disabled={!item.isInStock}
-              >
-                <Ionicons 
-                  name="cart" 
-                  size={16} 
-                  color={item.isInStock ? Colors.textWhite : Colors.textLight} 
-                />
-                <Text style={[
-                  styles.addToCartText,
-                  !item.isInStock && styles.addToCartTextDisabled
-                ]}>
-                  {item.isInStock ? 'Add to Cart' : 'Out of Stock'}
-                </Text>
-              </TouchableOpacity>
 
-              {/* Buy Now Button */}
               {item.isInStock && (
                 <TouchableOpacity
-                  style={styles.buyNowButton}
-                  onPress={() => handleBuyNow(item)}
+                  style={[
+                    styles.addToCartButton,
+                    !item.isInStock && styles.addToCartButtonDisabled
+                  ]}
+                  onPress={() => {
+                    if (item.isInStock) {
+                      addToCart({
+                        id: item.id,
+                        productId: item.id, // Include productId for API
+                        name: item.name,
+                        price: item.price,
+                        image: item.images[0] || '',
+                        category: item.category,
+                      });
+                    }
+                  }}
+                  disabled={!item.isInStock}
                 >
-                  <Ionicons name="logo-whatsapp" size={16} color={Colors.textWhite} />
-                  <Text style={styles.buyNowText}>Buy Now</Text>
+                  <Ionicons 
+                    name="cart" 
+                    size={18} 
+                    color={item.isInStock ? Colors.textWhite : Colors.textLight} 
+                  />
+                  <Text
+                    style={[
+                      styles.addToCartText,
+                      !item.isInStock && styles.addToCartTextDisabled
+                    ]}
+                  >
+                    Add to Cart
+                  </Text>
                 </TouchableOpacity>
               )}
-            </View>
-          </View>
-        )}
-      />
+            </TouchableOpacity>
+          )}
+        />
       )}
 
       {/* Category Selection Modal */}
@@ -375,19 +391,16 @@ export default function ShopScreen() {
                     setShowSearchModal(false);
                   }}
                 >
-                  <Ionicons 
-                    name={category.id === 'all' ? 'grid' : 'cube'} 
-                    size={20} 
-                    color={selectedCategory === category.id ? Colors.primary : Colors.textLight} 
-                  />
-                  <Text style={[
-                    styles.categoryOptionText,
-                    selectedCategory === category.id && styles.categoryOptionTextActive
-                  ]}>
+                  <Text
+                    style={[
+                      styles.categoryOptionText,
+                      selectedCategory === category.id && styles.categoryOptionTextActive
+                    ]}
+                  >
                     {category.label}
                   </Text>
                   {selectedCategory === category.id && (
-                    <Ionicons name="checkmark" size={20} color={Colors.primary} />
+                    <Ionicons name="checkmark" size={24} color={Colors.primary} />
                   )}
                 </TouchableOpacity>
               ))}
@@ -465,48 +478,35 @@ const styles = StyleSheet.create({
   },
   categoriesContainer: {
     paddingHorizontal: 16,
-    paddingTop: 6,
-    paddingBottom: 6,
+    paddingVertical: 8,
+    gap: 8,
   },
   categoryChip: {
+    backgroundColor: Colors.background,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: Colors.backgroundGray,
-    marginRight: 8,
-    minWidth: 70,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   categoryChipActive: {
     backgroundColor: Colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    height: 36,
+    borderColor: Colors.primary,
   },
   categoryText: {
     fontSize: 14,
     color: Colors.text,
     fontWeight: '500',
-    lineHeight: 18,
   },
   categoryTextActive: {
     color: Colors.textWhite,
-    fontWeight: '500',
-    fontSize: 14,
-    lineHeight: 18,
+    fontWeight: '600',
   },
   productsList: {
     flex: 1,
-    marginTop: 6,
   },
   productsContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 16,
-    flexGrow: 1,
+    padding: 16,
   },
   productRow: {
     justifyContent: 'space-between',
@@ -517,84 +517,79 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     borderRadius: 12,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   productImage: {
     width: '100%',
-    height: 120,
+    height: cardWidth * 0.8,
     backgroundColor: Colors.backgroundGray,
   },
+  placeholderImage: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  outOfStockBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: Colors.error,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  outOfStockText: {
+    color: Colors.textWhite,
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
   productInfo: {
-    padding: 10,
+    padding: 12,
   },
   productName: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     color: Colors.text,
     marginBottom: 4,
-    height: 36,
+  },
+  productCategory: {
+    fontSize: 12,
+    color: Colors.textLight,
+    marginBottom: 8,
   },
   productPrice: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.primary,
-    marginBottom: 6,
-  },
-  stockBadge: {
-    alignSelf: 'flex-start',
+    marginBottom: 4,
   },
   inStockText: {
     fontSize: 12,
     color: Colors.success,
     fontWeight: '500',
   },
-  outOfStockText: {
-    fontSize: 12,
-    color: Colors.error,
-    fontWeight: '500',
-  },
-  actionButtonsRow: {
-    flexDirection: 'row',
-    gap: 8,
-    padding: 8,
-  },
   addToCartButton: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    gap: 4,
+    padding: 10,
+    gap: 6,
   },
   addToCartButtonDisabled: {
-    backgroundColor: Colors.backgroundGray,
-    flex: 1,
+    backgroundColor: Colors.border,
+    opacity: 0.5,
   },
   addToCartText: {
     color: Colors.textWhite,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
   },
   addToCartTextDisabled: {
     color: Colors.textLight,
-  },
-  buyNowButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#25D366',
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    gap: 4,
-  },
-  buyNowText: {
-    color: Colors.textWhite,
-    fontSize: 12,
-    fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,
@@ -621,7 +616,7 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   modalBody: {
-    maxHeight: 400,
+    padding: 20,
   },
   categoryOption: {
     flexDirection: 'row',

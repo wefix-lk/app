@@ -251,45 +251,81 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const clearCart = async () => {
-    Alert.alert(
-      'Clear Cart',
-      'Are you sure you want to remove all items from your cart?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              setLoading(true);
-              console.log('🗑️ Clearing cart...');
-              
-              if (PRODUCTION_MODE && user) {
-                // Production API mode
-                const response = await api.cart.clear();
-                
-                if (response.success) {
-                  setCartItems([]);
-                  setCartSummary(null);
-                  console.log('✅ Cart cleared successfully');
-                } else {
-                  throw new Error(response.message || 'Failed to clear cart');
-                }
-              } else {
-                // Demo mode - clear local state
-                setCartItems([]);
-                console.log('✅ Cart cleared (demo mode)');
-              }
-            } catch (error: any) {
-              console.error('❌ Error clearing cart:', error);
-              Alert.alert('Error', error.message || 'Failed to clear cart. Please try again.');
-            } finally {
-              setLoading(false);
-            }
+    console.log('🗑️ clearCart function called');
+    console.log('📊 Current cart items:', cartItems.length);
+    
+    try {
+      Alert.alert(
+        'Clear Cart',
+        'Are you sure you want to remove all items from your cart?',
+        [
+          { 
+            text: 'Cancel', 
+            style: 'cancel',
+            onPress: () => console.log('❌ Clear cart cancelled')
           },
-        },
-      ]
-    );
+          {
+            text: 'Clear',
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                setLoading(true);
+                console.log('🗑️ Clearing cart confirmed...');
+                
+                if (PRODUCTION_MODE && user) {
+                  // Production API mode
+                  console.log('📡 Calling API to clear cart');
+                  const response = await api.cart.clear();
+                  
+                  console.log('📥 API Response:', response);
+                  
+                  if (response.success) {
+                    setCartItems([]);
+                    setCartSummary(null);
+                    console.log('✅ Cart cleared successfully from API');
+                  } else {
+                    throw new Error(response.message || 'Failed to clear cart');
+                  }
+                } else {
+                  // Demo mode - clear local state
+                  console.log('💾 Clearing local cart (demo mode)');
+                  setCartItems([]);
+                  console.log('✅ Cart cleared (demo mode)');
+                }
+              } catch (error: any) {
+                console.error('❌ Error clearing cart:', error);
+                Alert.alert('Error', error.message || 'Failed to clear cart. Please try again.');
+              } finally {
+                setLoading(false);
+              }
+            },
+          },
+        ]
+      );
+      console.log('✅ Alert dialog should be showing');
+    } catch (error: any) {
+      console.error('❌ Error showing alert:', error);
+      // Fallback - clear directly if Alert fails
+      console.log('🔄 Attempting direct clear as fallback');
+      try {
+        setLoading(true);
+        if (PRODUCTION_MODE && user) {
+          const response = await api.cart.clear();
+          if (response.success) {
+            setCartItems([]);
+            setCartSummary(null);
+            console.log('✅ Cart cleared successfully (fallback)');
+          }
+        } else {
+          setCartItems([]);
+          console.log('✅ Cart cleared (fallback demo mode)');
+        }
+      } catch (fallbackError) {
+        console.error('❌ Fallback clear failed:', fallbackError);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   const getCartTotal = () => {

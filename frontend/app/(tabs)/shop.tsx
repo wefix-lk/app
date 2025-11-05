@@ -174,7 +174,12 @@ export default function ShopScreen() {
   const filteredProducts =
     selectedCategory === 'all'
       ? allProducts
-      : allProducts.filter((p) => p.category === selectedCategory);
+      : allProducts.filter((p) => {
+          // Normalize both category values for comparison
+          const productCategory = (p.category || '').toLowerCase().trim();
+          const selectedCat = selectedCategory.toLowerCase().trim();
+          return productCategory === selectedCat;
+        });
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: 0, backgroundColor: Colors.backgroundGray }]}>

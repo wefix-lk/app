@@ -1,29 +1,48 @@
 import React, { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useSegments } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 import { Colors } from '../constants/Colors';
 
 export default function Index() {
   const { user, loading, isAdmin } = useAuth();
   const router = useRouter();
+  const segments = useSegments();
 
   useEffect(() => {
     if (!loading) {
+      // Don't redirect if already on a valid route
+      const inAuthGroup = segments[0] === '(auth)';
+      const inTabsGroup = segments[0] === '(tabs)';
+      const inAdminGroup = segments[0] === '(admin)';
+      
+      console.log('🔍 Current segments:', segments);
+      console.log('👤 User:', user?.email, 'Admin:', isAdmin);
+      
       if (user) {
-        // Redirect based on admin status
+        // User is logged in
         if (isAdmin) {
-          console.log('🔐 Redirecting admin to dashboard');
-          router.replace('/(admin)/dashboard');
+          // Admin user - only redirect if not already in admin or tabs
+          if (!inAdminGroup && !inTabsGroup && segments.length <= 1) {
+            console.log('🔐 Redirecting admin to dashboard');
+            router.replace('/(admin)/dashboard');
+          }
         } else {
-          console.log('👤 Redirecting user to home');
-          router.replace('/(tabs)/home');
+          // Regular user - only redirect if not already in tabs
+          if (!inTabsGroup && segments.length <= 1) {
+            console.log('👤 Redirecting user to home');
+            router.replace('/(tabs)/home');
+          }
         }
       } else {
-        router.replace('/(auth)/login');
+        // Not logged in - redirect to login
+        if (!inAuthGroup) {
+          console.log('🔓 Redirecting to login');
+          router.replace('/(auth)/login');
+        }
       }
     }
-  }, [user, loading, isAdmin]);
+  }, [user, loading, isAdmin, segments]);
 
   return (
     <View style={styles.container}>

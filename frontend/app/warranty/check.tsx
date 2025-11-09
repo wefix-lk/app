@@ -17,16 +17,26 @@ import { Ionicons } from '@expo/vector-icons';
 import { format } from 'date-fns';
 import { api } from '../../services/api';
 
+type VerificationType = 'serial' | 'bill' | 'phone';
+
 export default function WarrantyCheckScreen() {
   const router = useRouter();
-  const [serialNumber, setSerialNumber] = useState('');
+  const [verificationType, setVerificationType] = useState<VerificationType>('serial');
+  const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [warrantyResult, setWarrantyResult] = useState<any>(null);
   const [showNotFound, setShowNotFound] = useState(false);
 
+  const verificationOptions = [
+    { id: 'serial', label: 'Serial Number', icon: 'hardware-chip', placeholder: 'e.g., SN123456789' },
+    { id: 'bill', label: 'Bill Number', icon: 'receipt', placeholder: 'e.g., BILL-2024-001' },
+    { id: 'phone', label: 'Phone Number', icon: 'call', placeholder: 'e.g., 0771234567' },
+  ];
+
   const handleCheck = async () => {
-    if (!serialNumber.trim()) {
-      Alert.alert('Error', 'Please enter a serial number');
+    if (!inputValue.trim()) {
+      const typeLabel = verificationOptions.find(v => v.id === verificationType)?.label;
+      Alert.alert('Error', `Please enter a ${typeLabel?.toLowerCase()}`);
       return;
     }
 
@@ -35,9 +45,21 @@ export default function WarrantyCheckScreen() {
     setWarrantyResult(null);
     
     try {
-      const response = await api.warranty.check({
-        serialNumber: serialNumber.trim(),
-      });
+      // Build request payload based on verification type
+      const payload: any = {};
+      if (verificationType === 'serial') {
+        payload.serial_number = inputValue.trim();
+      } else if (verificationType === 'bill') {
+        payload.bill_number = inputValue.trim();
+      } else if (verificationType === 'phone') {
+        payload.phone_number = inputValue.trim();
+      }
+
+      console.log('🔍 Checking warranty with:', payload);
+      
+      const response = await api.warranty.check(payload);
+      
+      console.log('📥 Warranty check response:', response);
       
       if (response.success && response.data) {
         setWarrantyResult(response.data);
@@ -56,7 +78,7 @@ export default function WarrantyCheckScreen() {
         setWarrantyResult(null);
       }
     } catch (error: any) {
-      console.error('Warranty check error:', error);
+      console.error('❌ Warranty check error:', error);
       
       // Handle 404 - WARRANTY_NOT_FOUND
       if (error.message && error.message.toLowerCase().includes('not found')) {
@@ -81,6 +103,8 @@ export default function WarrantyCheckScreen() {
     return `${daysRemaining} days remaining`;
   };
 
+  const currentOption = verificationOptions.find(v => v.id === verificationType);
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -100,19 +124,56 @@ export default function WarrantyCheckScreen() {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Verification Type Selection */}
+          <View style={styles.typeSelectionCard}>
+            <Text style={styles.sectionTitle}>Verify Using</Text>
+            <View style={styles.typeButtonsContainer}>
+              {verificationOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.id}
+                  style={[
+                    styles.typeButton,
+                    verificationType === option.id && styles.typeButtonActive,
+                  ]}
+                  onPress={() => {
+                    setVerificationType(option.id as VerificationType);
+                    setInputValue('');
+                    setWarrantyResult(null);
+                    setShowNotFound(false);
+                  }}
+                >
+                  <Ionicons
+                    name={option.icon as any}
+                    size={24}
+                    color={verificationType === option.id ? Colors.primary : Colors.textLight}
+                  />
+                  <Text
+                    style={[
+                      styles.typeButtonText,
+                      verificationType === option.id && styles.typeButtonTextActive,
+                    ]}
+                  >
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
           {/* Search Input */}
           <View style={styles.searchCard}>
             <View style={styles.iconTitleRow}>
-              <Ionicons name="hardware-chip" size={28} color={Colors.primary} />
-              <Text style={styles.searchLabel}>Enter Serial Number</Text>
+              <Ionicons name={currentOption?.icon as any} size={28} color={Colors.primary} />
+              <Text style={styles.searchLabel}>Enter {currentOption?.label}</Text>
             </View>
             <TextInput
               style={styles.input}
-              placeholder="e.g., SN123456789"
-              value={serialNumber}
-              onChangeText={setSerialNumber}
+              placeholder={currentOption?.placeholder}
+              value={inputValue}
+              onChangeText={setInputValue}
               placeholderTextColor={Colors.textLight}
-              autoCapitalize="characters"
+              autoCapitalize={verificationType === 'phone' ? 'none' : 'characters'}
+              keyboardType={verificationType === 'phone' ? 'phone-pad' : 'default'}
             />
             <TouchableOpacity
               style={[styles.checkButton, loading && styles.checkButtonDisabled]}
@@ -131,7 +192,7 @@ export default function WarrantyCheckScreen() {
               <Ionicons name="alert-circle" size={60} color={Colors.error} />
               <Text style={styles.notFoundTitle}>No Warranty Found</Text>
               <Text style={styles.notFoundText}>
-                No warranty found with the provided serial number. Please check the serial number and try again.
+                No warranty found with the provided {currentOption?.label.toLowerCase()}. Please check and try again.
               </Text>
             </View>
           )}
@@ -235,25 +296,62 @@ export default function WarrantyCheckScreen() {
 
           {/* Information */}
           <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>Where to find Serial Number?</Text>
-            <View style={styles.infoItem}>
-              <Ionicons name="hardware-chip" size={20} color={Colors.primary} />
-              <Text style={styles.infoItemText}>
-                <Text style={{ fontWeight: '600' }}>Back Panel:</Text> Check the back of your TV for a sticker with the serial number
-              </Text>
-            </View>
-            <View style={styles.infoItem}>
-              <Ionicons name="settings" size={20} color={Colors.primary} />
-              <Text style={styles.infoItemText}>
-                <Text style={{ fontWeight: '600' }}>Settings Menu:</Text> Go to Settings → About/System → Serial Number
-              </Text>
-            </View>
-            <View style={styles.infoItem}>
-              <Ionicons name="document-text" size={20} color={Colors.primary} />
-              <Text style={styles.infoItemText}>
-                <Text style={{ fontWeight: '600' }}>Purchase Documents:</Text> Check your purchase invoice or warranty card
-              </Text>
-            </View>
+            <Text style={styles.infoTitle}>
+              {verificationType === 'serial' && 'Where to find Serial Number?'}
+              {verificationType === 'bill' && 'Where to find Bill Number?'}
+              {verificationType === 'phone' && 'Phone Number Information'}
+            </Text>
+            
+            {verificationType === 'serial' && (
+              <>
+                <View style={styles.infoItem}>
+                  <Ionicons name="hardware-chip" size={20} color={Colors.primary} />
+                  <Text style={styles.infoItemText}>
+                    <Text style={{ fontWeight: '600' }}>Back Panel:</Text> Check the back of your TV for a sticker with the serial number
+                  </Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Ionicons name="settings" size={20} color={Colors.primary} />
+                  <Text style={styles.infoItemText}>
+                    <Text style={{ fontWeight: '600' }}>Settings Menu:</Text> Go to Settings → About/System → Serial Number
+                  </Text>
+                </View>
+              </>
+            )}
+            
+            {verificationType === 'bill' && (
+              <>
+                <View style={styles.infoItem}>
+                  <Ionicons name="document-text" size={20} color={Colors.primary} />
+                  <Text style={styles.infoItemText}>
+                    <Text style={{ fontWeight: '600' }}>Purchase Invoice:</Text> Check your purchase invoice or receipt for the bill number
+                  </Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Ionicons name="receipt" size={20} color={Colors.primary} />
+                  <Text style={styles.infoItemText}>
+                    <Text style={{ fontWeight: '600' }}>Format:</Text> Bill number is usually at the top of your invoice
+                  </Text>
+                </View>
+              </>
+            )}
+            
+            {verificationType === 'phone' && (
+              <>
+                <View style={styles.infoItem}>
+                  <Ionicons name="call" size={20} color={Colors.primary} />
+                  <Text style={styles.infoItemText}>
+                    <Text style={{ fontWeight: '600' }}>Registered Number:</Text> Enter the phone number used during product registration or purchase
+                  </Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Ionicons name="shield-checkmark" size={20} color={Colors.primary} />
+                  <Text style={styles.infoItemText}>
+                    <Text style={{ fontWeight: '600' }}>Verification:</Text> This must match the number in our warranty records
+                  </Text>
+                </View>
+              </>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -292,6 +390,46 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 16,
+  },
+  typeSelectionCard: {
+    backgroundColor: Colors.background,
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 16,
+  },
+  typeButtonsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  typeButton: {
+    flex: 1,
+    backgroundColor: Colors.backgroundGray,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: Colors.border,
+  },
+  typeButtonActive: {
+    backgroundColor: Colors.primary + '10',
+    borderColor: Colors.primary,
+  },
+  typeButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: Colors.textLight,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  typeButtonTextActive: {
+    color: Colors.primary,
+    fontWeight: '600',
   },
   searchCard: {
     backgroundColor: Colors.background,
